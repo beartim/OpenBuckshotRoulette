@@ -79,6 +79,14 @@ func SpawnShells(numberOfShells : int, numberOfLives : int, numberOfBlanks : int
 		spawnedShellObjectArray[i].queue_free()
 	spawnedShellObjectArray = []
 	
+	# 随机生成子弹
+	randomize()
+	var rng = RandomNumberGenerator.new()
+	numberOfShells = rng.randi_range(2, 8)
+	var max_lives = min(6, numberOfShells - 1)
+	numberOfLives = rng.randi_range(1, max_lives)
+	numberOfBlanks = numberOfShells - numberOfLives
+	
 	#SETUP SHELL ARRAY
 	sequenceArray = []
 	tempSequence = []

@@ -1,6 +1,6 @@
 extends Node
 class_name MP
-const PROTOCOL:= 2
+const PROTOCOL:= 3
 
 @export var interaction_branch_bathroom_door: InteractionBranch
 @export var interaction_manager: InteractionManagerMP
