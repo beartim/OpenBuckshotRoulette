@@ -1,0 +1,7 @@
+# Godot
+.godot/
+dist/
+export_presets.cfg
+
+# VS Code
+.vscode/
