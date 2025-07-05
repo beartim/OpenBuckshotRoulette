@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Open Buckshot Roulette"
+config/version="v0.3.3"
 run/main_scene="uid://bvumuv2g7ohx3"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="dev1503.openbuckshotroulette"

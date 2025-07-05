@@ -23,6 +23,7 @@ signal on_response_get_health(health:int)
 @onready var control_join_match: Control = $Control/Control_JoinMatch
 @onready var label_wait_for_player_text: Label = $Control/Control_WaitForPlayer/Label_WaitForPlayerText
 @onready var text_dealer: Label3D = $"../tabletop parent/main tabletop/health counter/health counter ui parent/health UI_dealer side/text_dealer"
+@onready var label_protocol: Label = $Label_Protocol
 
 @onready var visibles:= [
 	control,
@@ -40,10 +41,12 @@ var oppenent_signature:= ''
 var opponent_shells_ready:= false
 var health:int
 var opponent_health_ready:= false
+var my_health_ready:= false
 
 func _ready() -> void:
 	interaction_branch_bathroom_door.interactionAllowed = false
 	text_edit_match_addr.text = OpenBRConfig.fetch('mp', 'last_match_addr', '127.0.0.1')
+	label_protocol.text = 'PROTOCOL: ' + str(PROTOCOL)
 	
 	for node in invisibles:
 		if node != null: node.hide()
@@ -157,6 +160,7 @@ func interact_with(alias:String):
 
 func setup_health(h:int):
 	health = h
+	my_health_ready = true
 
 
 
@@ -265,7 +269,7 @@ func rpc_get_health(_match_id:int):
 	timer.wait_time = 0.05
 	timer.one_shot = true
 	timer.timeout.connect(func():
-		if opponent_health_ready: timer.start()
+		if !(!opponent_health_ready and my_health_ready and health_counter.roundManager.health_player > 0 and health_counter.roundManager.health_opponent > 0): timer.start()
 		else:
 			timer.stop()
 			_rpc_on_signal(on_response_get_health, {
