@@ -7,10 +7,12 @@ const PROTOCOL:= 3
 @export var shell_spawner: ShellSpawnerMP
 @export var permission_manager: PermissionManager
 @export var dealer: DealerIntelligenceMP
+@export var health_counter: HealthCounter
 @export var signature:= ''
 
 signal on_response_get_server_info(info:Dictionary)
 signal on_response_get_shells(shells:Array)
+signal on_response_get_health(health:int)
 
 @onready var control: Control = $Control
 @onready var control_main: Control = $Control/Control_Main
@@ -36,9 +38,12 @@ var peer:= ENetMultiplayerPeer.new()
 var oppenent_id:= 0
 var oppenent_signature:= ''
 var opponent_shells_ready:= false
+var health:int
+var opponent_health_ready:= false
 
 func _ready() -> void:
 	interaction_branch_bathroom_door.interactionAllowed = false
+	text_edit_match_addr.text = OpenBRConfig.fetch('mp', 'last_match_addr', '127.0.0.1')
 	
 	for node in invisibles:
 		if node != null: node.hide()
@@ -88,6 +93,7 @@ func action(act:String):
 			control_join_match.hide()
 		'true_join':
 			text_edit_match_addr.text = text_edit_match_addr.text.strip_edges()
+			OpenBRConfig.put('mp','last_match_addr',text_edit_match_addr.text)
 			if text_edit_match_addr.text.is_empty(): return
 			peer.create_client(text_edit_match_addr.text, 34952)
 			control_main.hide()
@@ -120,10 +126,11 @@ func action(act:String):
 			multiplayer.multiplayer_peer = peer
 
 func _input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed('OpenBR_test'): print(IP.resolve_hostname('DESKTOP-1503'))
-	if Input.is_action_just_pressed('debug_r_alt'): rpc_id(get_opponent_id(), 'rpc_talk', get_id(), 0, 'hello')
+	# if Input.is_action_just_pressed('OpenBR_test'): print(IP.resolve_hostname('DESKTOP-1503'))
+	# if Input.is_action_just_pressed('debug_r_alt'): rpc_id(get_opponent_id(), 'rpc_talk', get_id(), 0, 'hello')
 	#if Input.is_action_just_pressed('debug_.'): interaction_manager.InteractWith('bathroom door')
 	#if Input.is_action_just_pressed('debug_;'): rpc_interact_with(get_id(), 0, 'bathroom door')
+	return
 func _exit_tree() -> void:
 	peer.disconnect_peer(get_opponent_id())
 
@@ -147,6 +154,15 @@ func interact_with(alias:String):
 			_rpc_shoot(get_opponent_id())
 		'text you':
 			_rpc_shoot(get_id())
+
+func setup_health(h:int):
+	health = h
+
+
+
+
+
+
 
 @rpc("any_peer")
 func rpc_talk(id:int, match_id:int, msg:String):
@@ -193,7 +209,8 @@ func rpc_get_shells(match_id:int):
 				'shells': shell_spawner.sequenceArray
 			})
 			opponent_shells_ready = true
-			permission_manager.SetInteractionPermissions(true)
+			if opponent_health_ready:
+				permission_manager.SetInteractionPermissions(true)
 	)
 	timer.start()
 func _rpc_get_shells():
@@ -207,6 +224,8 @@ func rpc_on_signal(id:int, match_id:int, _signal:Signal, data:Dictionary):
 			on_response_get_shells.emit(data.shells)
 		'on_response_get_server_info':
 			on_response_get_server_info.emit(data.info)
+		'on_response_get_health':
+			on_response_get_health.emit(data.health)
 func _rpc_on_signal(_signal:Signal, data:Dictionary):
 	print('Sending signal ', _signal.get_name(), ': ', data)
 	rpc_id(get_opponent_id(), 'rpc_on_signal', get_id(), 0, _signal, data)
@@ -239,12 +258,39 @@ func rpc_put_down_shotgun(id:int, match_id:int):
 func _rpc_put_down_shotgun():
 	rpc_id(get_opponent_id(), 'rpc_put_down_shotgun', get_id(), 0)
 
+@rpc('any_peer')
+func rpc_get_health(_match_id:int):
+	var timer:= Timer.new()
+	add_child(timer)
+	timer.wait_time = 0.05
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		if opponent_health_ready: timer.start()
+		else:
+			timer.stop()
+			_rpc_on_signal(on_response_get_health, {
+				'health': health
+			})
+			opponent_health_ready = true
+			if opponent_shells_ready:
+				permission_manager.SetInteractionPermissions(true)
+	)
+	timer.start()
+func _rpc_get_health():
+	rpc_id(get_opponent_id(), 'rpc_get_health', 0)
+
+@rpc('any_peer')
+func rpc_reset_health_status(_match_id:int):
+	opponent_health_ready = false
+func _rpc_reset_health_status():
+	rpc_id(get_opponent_id(), 'rpc_reset_health_status', 0)
+
 
 
 
 
 func _on_text_edit_addr_gui_input(event: InputEvent) -> void:
-	if Input.is_action_pressed('backspace'):  # 直接使用你的判断方式
+	if Input.is_action_pressed('backspace'):
 		text_edit_match_addr.backspace()
 
 
@@ -256,4 +302,3 @@ func _on_timer_opponent_signature_animation_timeout() -> void:
 		'....': text_dealer.text = '.....'
 		'.....': text_dealer.text = '......'
 		'......': text_dealer.text = '.'
-	pass # Replace with function body.

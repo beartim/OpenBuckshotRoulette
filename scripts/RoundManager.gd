@@ -129,7 +129,9 @@ func MainBatchSetup(dealerEnterAtStart : bool):
 	if (playerData.hasReadIntroduction): roundArray[0].hasIntroductoryText = false
 	else: roundArray[0].hasIntroductoryText = true
 	if (roundArray[0].showingIndicator): await(RoundIndicator())
-	healthCounter.SetupHealth()
+	if healthCounter.mp and !healthCounter.mp.is_server():
+		await healthCounter.SetupHealth()
+	else: healthCounter.SetupHealth()
 	lerping = true
 	#await get_tree().create_timer(1.5, false).timeout
 	if (!endless): ParseMainGameAmounts()

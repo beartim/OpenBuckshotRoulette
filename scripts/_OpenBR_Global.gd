@@ -171,3 +171,6 @@ func get_touch_delay() -> float:
 	var delay:= 1 - float(fps) * 0.04
 	if delay < 0.07: delay = 0.07
 	return delay
+
+func randi(_min:int, _max:int) -> int:
+	return randi() % (_max - _min + 1) + _min

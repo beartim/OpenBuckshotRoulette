@@ -25,6 +25,7 @@ var dialogueEntered_player = false
 var dialogueEntered_dealer = false
 
 func _ready():
+	mp.health_counter = self
 	ClearDisplay()
 	pass
 
@@ -46,6 +47,23 @@ func SetupHealth():
 			roundManager.health_opponent = roundManager.roundArray[roundManager.currentRound].startingHealth
 		dialogueEntered_player = false
 		dialogueEntered_dealer = false
+		# 多人游戏血量
+		if mp:
+			if mp.is_server():
+				mp.opponent_health_ready = false
+				var random_health = OpenBRGlobal.randi(2, 6)
+				roundManager.health_player = random_health
+				roundManager.health_opponent = random_health
+				mp.setup_health(random_health)
+			else:
+				mp._rpc_reset_health_status()
+				mp.on_response_get_health.connect(func(health):
+					print('GOT HEALTH: ', health)
+					roundManager.health_player = health
+					roundManager.health_opponent = health
+				)
+				mp._rpc_get_health()
+				await mp.on_response_get_health
 
 func UpdateDisplay():
 	for i in range(symbolArray_player.size()):
