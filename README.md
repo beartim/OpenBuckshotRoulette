@@ -1,4 +1,6 @@
 # Open Buckshot Roulette
+该项目将在未来重置: [project-open-buckshot-roulette](https://github.com/1503Dev/project-open-buckshot-roulette)
+
 这是一个把 Buckshot Roulette (恶魔轮盘) 开源并扩展的项目  
 如果你想修改或使用 Open Buckshot Roulette 请确保 Buckshot Roulette 在你的 itch.io 或 Steam 账户上可用
 
