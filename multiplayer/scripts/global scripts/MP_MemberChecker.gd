@@ -61,8 +61,9 @@ func MemberJoinedList(steam_id : int):
 	UpdateMemberList()
 	var packet = {
 		"packet category": "lobby",
-		"packat alias": "update member list",
-		"number of players here": amountOfPlayers_here
+		"packet alias": "update member list",
+		"sent_from": "host",
+		"packet_id": 5,
 	}
 	for id in membersHere_list:
 		if (id != GlobalSteam.HOST_ID):
@@ -75,36 +76,5 @@ func UpdateMemberList():
 
 func MembersArrived():
 	anim_fade.play("fade")
-	await get_tree().create_timer(2.7, false).timeout
+	await GlobalVariables.tree.create_timer(2.7, false).timeout
 	instance_handler.StartMainGame()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

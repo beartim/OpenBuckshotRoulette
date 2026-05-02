@@ -31,6 +31,6 @@ func SendDialogue():
 		fulldia = tr(firstpart) + "\n" + "... " + tr(secondpart)
 	else: fulldia = tr("UNFORTUNATE")
 	dia.ShowText_Forever(fulldia)
-	await get_tree().create_timer(3, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	dia.HideText()
 

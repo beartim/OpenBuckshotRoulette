@@ -108,7 +108,7 @@ func SwapBind(firstevent : InputEvent, secondevent : InputEvent, _action : Strin
 
 func ReturnFromRebind():
 	waitingForAnyInput = false
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	var parent = globalparent
 	controller.checkingForInput = true
 	controller.SetRebindFocus(true)
@@ -125,7 +125,7 @@ func CancelRebind():
 	mouseblocker.visible = false
 	cursor.SetCursor(true, false)
 	checkingForCancel = false
-	#await get_tree().create_timer(1, false).timeout
+	#await GlobalVariables.tree.create_timer(1, false).timeout
 	menu.failsafed = true
 
 var cancelAllowed = false

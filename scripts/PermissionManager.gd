@@ -40,7 +40,7 @@ func SetInteractionPermissions(state : bool):
 	if (!state):
 		for i in range(interactionBranchArray.size()):
 			interactionBranchArray[i].interactionAllowed = false
-	if (roundManager.roundArray.size() > roundManager.currentRound and roundManager.roundArray[roundManager.currentRound].usingItems && itemManager.items_dynamicIndicatorArray.size() != 0):
+	if (roundManager.roundArray[roundManager.currentRound].usingItems && itemManager.items_dynamicIndicatorArray.size() != 0):
 		if (state):
 			for i in range(itemManager.items_dynamicInteractionArray.size()):
 				itemManager.items_dynamicInteractionArray[i].interactionAllowed = true

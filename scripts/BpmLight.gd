@@ -19,8 +19,8 @@ func Hit():
 func BeginLoop():
 	while (looping):
 		Hit()
-		await OpenBRGlobal.fetch_tree().create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		Hit()
-		await OpenBRGlobal.fetch_tree().create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		pass
 	pass

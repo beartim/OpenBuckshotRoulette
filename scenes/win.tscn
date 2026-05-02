@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://cojlpc0on3p56"]
+[gd_scene format=3 uid="uid://cojlpc0on3p56"]
 
-[ext_resource type="Script" uid="uid://bq1bifooc55ll" path="res://scripts/MouseRaycast.gd" id="1"]
-[ext_resource type="Shader" uid="uid://cy0j4o6o711t8" path="res://main player/vignette.gdshader" id="2"]
-[ext_resource type="Shader" uid="uid://ci2t4jjagxk81" path="res://main player/posterization test.gdshader" id="3"]
+[ext_resource type="Script" uid="uid://brj6migmml2nb" path="res://scripts/MouseRaycast.gd" id="1"]
+[ext_resource type="Script" uid="uid://owvlmc6ev6v0" path="res://scripts/win.gd" id="1_d70ak"]
+[ext_resource type="Shader" uid="uid://biv0yaosseb2a" path="res://main player/vignette.gdshader" id="2"]
+[ext_resource type="Shader" uid="uid://dkjefugsrp3b8" path="res://main player/posterization test.gdshader" id="3"]
 [ext_resource type="Material" uid="uid://1cc5f0tvkdn5" path="res://main player/mat_color precision.tres" id="4"]
 [ext_resource type="Material" uid="uid://cbt5cvhck0euq" path="res://main player/mat_dithering.tres" id="5"]
 [ext_resource type="Material" uid="uid://cdrlcynkcj7w6" path="res://main player/test shader.tres" id="6"]
@@ -27,16 +28,17 @@ shader_parameter/RED_COMPONENT = 7.0
 shader_parameter/GREEN_COMPONENT = 7.0
 shader_parameter/BLUE_COMPONENT = 7.0
 
-[node name="win" type="Node3D"]
+[node name="win" type="Node3D" unique_id=1105239823]
+script = ExtResource("1_d70ak")
 
-[node name="Camera" type="Camera3D" parent="."]
+[node name="Camera" type="Camera3D" parent="." unique_id=756258318]
 transform = Transform3D(-3.61999e-06, 0.25038, -0.968148, 0, 0.968148, 0.25038, 1, 9.06374e-07, -3.50469e-06, -13.5898, 7.32321, 0.0237952)
 fov = 65.5
 script = ExtResource("1")
 
-[node name="post processing" type="Node" parent="Camera"]
+[node name="post processing" type="Node" parent="Camera" unique_id=8176392]
 
-[node name="vignette" type="Control" parent="Camera/post processing"]
+[node name="vignette" type="Control" parent="Camera/post processing" unique_id=635396146]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -3.05176e-05
@@ -44,12 +46,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/vignette"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/vignette" unique_id=1390569149]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/vignette/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/vignette/BackBufferCopy" unique_id=1990471746]
 visible = false
 material = SubResource("ShaderMaterial_awopu")
 offset_left = -99.0
@@ -59,19 +61,19 @@ offset_bottom = 138.0
 rotation = 0.00159616
 mouse_filter = 2
 
-[node name="posterization test" type="Control" parent="Camera/post processing"]
+[node name="posterization test" type="Control" parent="Camera/post processing" unique_id=255843325]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/posterization test"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/posterization test" unique_id=626526210]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/posterization test/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/posterization test/BackBufferCopy" unique_id=1042949999]
 material = SubResource("ShaderMaterial_8ctpl")
 offset_left = -99.0
 offset_top = -98.0
@@ -79,7 +81,7 @@ offset_right = 140.0
 offset_bottom = 139.0
 mouse_filter = 2
 
-[node name="color precision" type="Control" parent="Camera/post processing"]
+[node name="color precision" type="Control" parent="Camera/post processing" unique_id=1312808389]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -87,12 +89,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/color precision"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/color precision" unique_id=643145057]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/color precision/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/color precision/BackBufferCopy" unique_id=1274194158]
 material = ExtResource("4")
 offset_left = -98.9733
 offset_top = -98.1818
@@ -100,7 +102,7 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="dithering" type="Control" parent="Camera/post processing"]
+[node name="dithering" type="Control" parent="Camera/post processing" unique_id=1416041270]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -108,13 +110,13 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/dithering"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/dithering" unique_id=1245443678]
 visible = false
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/dithering/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/dithering/BackBufferCopy" unique_id=571713600]
 visible = false
 material = ExtResource("5")
 offset_left = -98.9733
@@ -123,7 +125,7 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="test" type="Control" parent="Camera/post processing"]
+[node name="test" type="Control" parent="Camera/post processing" unique_id=1722507763]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -131,12 +133,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/test"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/test" unique_id=1468826285]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/test/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/test/BackBufferCopy" unique_id=401486393]
 material = ExtResource("6")
 offset_left = -98.9733
 offset_top = -98.1818
@@ -144,22 +146,22 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="dialogue UI" type="Node" parent="Camera"]
+[node name="dialogue UI" type="Node" parent="Camera" unique_id=1645976448]
 
-[node name="death screen" type="Control" parent="Camera/dialogue UI"]
+[node name="death screen" type="Control" parent="Camera/dialogue UI" unique_id=1127265568]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="TextureRect" type="TextureRect" parent="Camera/dialogue UI/death screen"]
+[node name="TextureRect" type="TextureRect" parent="Camera/dialogue UI/death screen" unique_id=1364143720]
 layout_mode = 0
 offset_right = 960.0
 offset_bottom = 540.0
 texture = ExtResource("7")
 expand_mode = 1
 
-[node name="viewblocker parent" type="Control" parent="Camera/dialogue UI"]
+[node name="viewblocker parent" type="Control" parent="Camera/dialogue UI" unique_id=1364847649]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -168,7 +170,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="viewblcoker" type="ColorRect" parent="Camera/dialogue UI/viewblocker parent"]
+[node name="viewblcoker" type="ColorRect" parent="Camera/dialogue UI/viewblocker parent" unique_id=1755831318]
 layout_mode = 0
 offset_left = -10.0
 offset_top = -3.0
@@ -176,7 +178,7 @@ offset_right = 972.0
 offset_bottom = 553.0
 color = Color(0, 0, 0, 0)
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=951352705]
 stream = ExtResource("8")
 autoplay = true
 panning_strength = 0.0

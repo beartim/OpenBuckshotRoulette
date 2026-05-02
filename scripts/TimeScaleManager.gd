@@ -24,7 +24,7 @@ func LerpTimeScale():
 		var c = clampf(elapsed / timeScaleLerpDuration, 0.0 , 1.0)
 		c = ease(c, 0.4)
 		var val = lerpf(from, to, c)
-		Engine.time_scale = val
+		GlobalVariables.ApplyTimeScale(val)
 
 func _unhandled_input(event):
 	if GlobalVariables.mp_debugging:

@@ -16,12 +16,12 @@ func GrowBarrel():
 	roundManager.currentShotgunDamage = 1
 	roundManager.barrelSawedOff = false
 	camera.BeginLerp("grow barrel")
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	ShowSegment()
 	speaker.play()
-	await get_tree().create_timer(1.8, false).timeout
+	await GlobalVariables.tree.create_timer(1.8, false).timeout
 	camera.BeginLerp(prevsocket)
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	pass
 
 func HideSegment():

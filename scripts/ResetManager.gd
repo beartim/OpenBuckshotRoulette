@@ -25,6 +25,6 @@ func _process(delta):
 
 func Reset():
 	save.ClearSave()
-	print("changing scene to: death / 4")
-	SceneChanger.change("res://scenes/main.tscn")
+	print("changing scene to: death")
+	GlobalVariables.tree.change_scene_to_file("res://scenes/death.tscn")
 	fs = true

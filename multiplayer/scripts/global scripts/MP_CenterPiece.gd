@@ -54,7 +54,7 @@ func MoveToSocket(socket_next : float, direction : String = ""):
 		if arms_locked_array[i]:
 			Arms("unlock", i)
 			waiting_for_unlock = true
-	if (waiting_for_unlock): get_tree().create_timer(.15, false).timeout
+	if (waiting_for_unlock): GlobalVariables.tree.create_timer(.15, false).timeout
 	if arms_open: RotateArms_Close()
 	
 	dur_current = dur
@@ -102,7 +102,7 @@ func MoveToLoadingDock():
 	docked = true
 
 func LockRotation(opening_arms : bool = false):
-	await get_tree().create_timer(dur_current, false).timeout
+	await GlobalVariables.tree.create_timer(dur_current, false).timeout
 	adding_exponent = false
 	fs = false
 	moving = false
@@ -123,14 +123,14 @@ func PlayMovementSound():
 	if fs2: speakerctrl_main_rotation.speaker.play()
 	speakerctrl_main_rotation.fadeDuration = dur_current
 	if fs2: speakerctrl_main_rotation.FadeIn()
-	await get_tree().create_timer(dur_current, false).timeout
+	await GlobalVariables.tree.create_timer(dur_current, false).timeout
 	if fs2: speakerctrl_main_rotation.StopPlaying()
 	speaker_rotation_hit.pitch_scale = randf_range(.85, 1)
 	if fs2: speaker_rotation_hit.play()
 	fs2 = true
 
 func RotateArms_Open():
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	speaker_latch_open.play()
 	lerp_arm_fore.StartLerp(lerp_arm_fore.obj.transform.origin, lerp_arm_fore.obj.transform.origin, lerp_arm_fore.obj.rotation_degrees, rot_fore_open, 1, dur_arm_rotation)
 	lerp_arm_rear.StartLerp(lerp_arm_rear.obj.transform.origin, lerp_arm_rear.obj.transform.origin, lerp_arm_rear.obj.rotation_degrees, rot_rear_open, 1, dur_arm_rotation)

@@ -2,6 +2,8 @@
 .godot/
 dist/
 export_presets.cfg
+*.import
+# *.uid
 
 # VS Code
 .vscode/

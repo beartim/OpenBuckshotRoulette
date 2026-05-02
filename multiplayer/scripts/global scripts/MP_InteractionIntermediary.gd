@@ -55,14 +55,14 @@ func ExitGame(message_to_forward : String = ""):
 	input_blocker.mouse_filter = Control.MOUSE_FILTER_STOP
 	viewblocker_top_global.visible = true
 	ingame_lobby_ui.toggle_allowed = false
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 	print("global variables disband lobby after exiting main scene: ", GlobalVariables.disband_lobby_after_exiting_main_scene)
 	if !GlobalVariables.mp_debugging && GlobalVariables.disband_lobby_after_exiting_main_scene: 
 		print("exiting game and disbanding current lobby.")
 		ingame_lobby_ui.lobby.leave_lobby()
 	GlobalVariables.running_short_intro_in_lobby_scene = true
 	GlobalVariables.disband_lobby_after_exiting_main_scene = false
-	SceneChanger.change("res://multiplayer/scenes/mp_lobby.tscn")
+	GlobalVariables.tree.change_scene_to_file("res://multiplayer/scenes/mp_lobby.tscn")
 
 func InteractionPipe(alias : String, button_class_main : MP_ButtonClassMain):
 	match alias:

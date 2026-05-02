@@ -77,7 +77,7 @@ func _ready():
 	if GlobalVariables.exiting_to_lobby_after_inactivity:
 		pinging_mouse_pos = true
 		PingMousePosition()
-	await get_tree().create_timer(5, false).timeout
+	await GlobalVariables.tree.create_timer(5, false).timeout
 
 func _process(delta):
 	if GlobalVariables.exiting_to_lobby_after_inactivity:
@@ -97,7 +97,7 @@ var pinging_mouse_pos = false
 func PingMousePosition():
 	while (pinging_mouse_pos):
 		var old = mouse_pos
-		await get_tree().create_timer(.5, false).timeout
+		await GlobalVariables.tree.create_timer(.5, false).timeout
 		var new = mouse_pos
 		if new != old: 
 			counting = false
@@ -311,7 +311,7 @@ func CheckIfItemGrabbingFinishedForAllUsers():
 	if finished:
 		MAIN_item_grabbing_in_progress = false
 		item_grabbing_finished_for_all_users_checked = true
-		await get_tree().create_timer(2, false).timeout
+		await GlobalVariables.tree.create_timer(2, false).timeout
 		round_manager.MainRoutine_LoadShotgun()
 
 func GetSocketsToBeginItemGrabbingOn(inventories_cleared : bool = false):

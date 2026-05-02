@@ -158,7 +158,7 @@ var input_loop_delay = .06
 func LoopInput():
 	while looping_input:
 		OnPress()
-		await get_tree().create_timer(input_loop_delay, false).timeout
+		await GlobalVariables.tree.create_timer(input_loop_delay, false).timeout
 		pass
 	pass
 

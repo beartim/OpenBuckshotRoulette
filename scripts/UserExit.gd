@@ -8,7 +8,7 @@ var exitAllowed = false
 var total = 0
 
 func _ready():
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	exitAllowed = true
 
 func _process(delta):
@@ -45,4 +45,4 @@ func CheckExit():
 
 func ExitGame():
 	print("changing scene to: menu")
-	SceneChanger.change("res://scenes/menu.tscn")
+	GlobalVariables.tree.change_scene_to_file("res://scenes/menu.tscn")

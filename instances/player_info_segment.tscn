@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://cvvo7mfx3kgnv"]
 
-[ext_resource type="Script" uid="uid://dla6y7dmc7do8" path="res://multiplayer/scripts/global scripts/MP_UserInfoSegment.gd" id="1"]
+[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_UserInfoSegment.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://dqanxe6dahcg7" path="res://multiplayer/misc/default pfp.png" id="2"]
 [ext_resource type="FontFile" uid="uid://vhj3kkn6yn8o" path="res://fonts/fake receipt.otf" id="3"]
 [ext_resource type="Theme" uid="uid://byh50rlarrsdb" path="res://misc/button_theme1.tres" id="4"]
-[ext_resource type="Script" uid="uid://dpf4l6f2v8gy3" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="5"]
+[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="5"]
 
 [node name="user info segment" type="Control"]
 layout_mode = 3

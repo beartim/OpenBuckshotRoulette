@@ -19,7 +19,7 @@ func StartGame():
 			if (GlobalSteam.LOBBY_MEMBERS.size() > 1):
 				if (GlobalSteam.HOST_ID == GlobalSteam.STEAM_ID):
 					print("starting game with match customization settings: ", GlobalVariables.active_match_customization_dictionary)
-					#Steam.setLobbyJoinable(GlobalSteam.LOBBY_ID, false)
+					Steam.setLobbyJoinable(GlobalSteam.LOBBY_ID, false)
 					StartGameRoutine_Host()
 					fs = true
 					return
@@ -38,11 +38,16 @@ func StartGameRoutine_Host():
 	}
 	packets.send_p2p_packet(0, packet)
 	StartGameRoutine_Main()
-	await get_tree().create_timer(3.8, false).timeout
+	await GlobalVariables.tree.create_timer(3.8, false).timeout
 	StartGameRoutine_LoadScene()
 
 func StartGameRoutine_Main():
 	lobby_ui.SetupMainSceneLoad()
 
+func StartGameRoutine_Client() -> void:
+	lobby_ui.SetupMainSceneLoad()
+	await GlobalVariables.tree.create_timer(3.8, false).timeout
+	StartGameRoutine_LoadScene()
+
 func StartGameRoutine_LoadScene():
-	SceneChanger.change("res://multiplayer/scenes/mp_main.tscn")
+	GlobalVariables.tree.change_scene_to_file("res://multiplayer/scenes/mp_main.tscn")

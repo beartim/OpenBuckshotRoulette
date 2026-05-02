@@ -11,7 +11,7 @@ var display_instances_act = []
 @export var nocon : Node3D
 @export var lock : Node3D
 var leaderboard_handle
-#var details_max: int = Steam.setLeaderboardDetailsMax(2)
+var details_max: int = Steam.setLeaderboardDetailsMax(2)
 var activeArray = []
 var active_result_array
 var active_entry_count = 0
@@ -19,10 +19,10 @@ var active_entry_count = 0
 func _ready():
 	display_instances_act = display_instances
 	ClearDisplay()
-	# if !GlobalVariables.using_steam: return
-	#Steam.leaderboard_find_result.connect(_on_leaderboard_find_result)
-	#Steam.leaderboard_score_uploaded.connect(_on_leaderboard_score_uploaded)
-	#Steam.leaderboard_scores_downloaded.connect(_on_leaderboard_scores_downloaded)
+	if !GlobalVariables.using_steam: return
+	Steam.leaderboard_find_result.connect(_on_leaderboard_find_result)
+	Steam.leaderboard_score_uploaded.connect(_on_leaderboard_score_uploaded)
+	Steam.leaderboard_scores_downloaded.connect(_on_leaderboard_scores_downloaded)
 	GetLeaderboard()
 
 func _process(delta):
@@ -41,7 +41,7 @@ var active_range2 = 0
 func SetupLeaderboard():
 	if (!initialsetup):
 		GetLeaderboard()
-		#Steam.setLeaderboardDetailsMax(2)
+		Steam.setLeaderboardDetailsMax(2)
 		initialsetup = true
 		return
 	
@@ -57,7 +57,6 @@ func Timeout(s : bool):
 		checking = false
 
 func ClearDisplay():
-	if OpenBRGlobal.is_multiplayer: return
 	display_overview.visible = false
 	text_globalpos.text = ""
 	for disp in display_instances_act:
@@ -97,15 +96,15 @@ func UpdateDisplay():
 			result.global_rank = temp_rank
 	
 	if (checking_overview):
-		#var id = Steam.getSteamID()
+		var id = Steam.getSteamID()
 		var pos_current
 		var pos_max
 		pos_max = active_entry_count
 		display_overview.visible = true
-		#for result in active_result_array:
-			#if (result.steam_id == id): 
-				#pos_current = result.global_rank
-				#break
+		for result in active_result_array:
+			if (result.steam_id == id): 
+				pos_current = result.global_rank
+				break
 		if (pos_current == null):
 			lock.material_override.albedo_color = Color(1, 1, 1, 1)
 			display_overview.visible = false
@@ -137,13 +136,13 @@ func UpdateDisplay():
 		var scoretext : Label3D = display_instances_act[i].get_child(0)
 		var active_id = active_result_array[i].steam_id
 		var active_rank = active_result_array[i].global_rank
-		#var playername = Steam.getFriendPersonaName(active_id)
-		#var mainstring = "#" + str(active_rank) + " " + playername
+		var playername = Steam.getFriendPersonaName(active_id)
+		var mainstring = "#" + str(active_rank) + " " + playername
 		var char_limit = 18
 		
-		#if mainstring.length() > char_limit:
-			#mainstring = mainstring.left(char_limit - 1) + "-"
-		#display_instances_act[i].text = str(mainstring)
+		if mainstring.length() > char_limit:
+			mainstring = mainstring.left(char_limit - 1) + "-"
+		display_instances_act[i].text = str(mainstring)
 		scoretext.text = str(active_score)
 
 var temp_data
@@ -167,20 +166,19 @@ func UpdateStats():
 		stat_totalCash.text = str(temp_data.total_cash)
 
 func GetLeaderboard():
-	#Steam.findLeaderboard("double_or_nothing")
-	pass
+	Steam.findLeaderboard("double_or_nothing")
 
 func UploadScore_Deprecated(rounds_beat, visible_score, initial_score):
 	var ar = PackedInt32Array([initial_score, rounds_beat])
 	var upload = initial_score * rounds_beat
-	#Steam.uploadLeaderboardScore(upload, true, ar, leaderboard_handle)
+	Steam.uploadLeaderboardScore(upload, true, ar, leaderboard_handle)
 
 func UploadScore(rounds_beat, visible_score, initial_score):
 	var ar = PackedInt32Array([initial_score, rounds_beat])
 	var upload = initial_score
 	for s in range(rounds_beat - 1): upload *= 2
 	upload = val2compressed(upload)
-	#Steam.uploadLeaderboardScore(upload, true, ar, leaderboard_handle)
+	Steam.uploadLeaderboardScore(upload, true, ar, leaderboard_handle)
 
 func _on_leaderboard_score_uploaded(success: int, this_handle: int, this_score: Dictionary) -> void:
 	if success == 1: 
@@ -198,20 +196,20 @@ func _on_leaderboard_find_result(handle: int, found: int) -> void:
 var checking_friends = false
 var checking_overview = false
 func DownloadEntries(range1 : int, range2 : int, alias : String):
-	# if !GlobalVariables.using_steam: return
+	if !GlobalVariables.using_steam: return
 	match alias:
 		"top":
 			checking_friends = false
 			checking_overview = false
-			#Steam.downloadLeaderboardEntries(range1, range2, Steam.LEADERBOARD_DATA_REQUEST_GLOBAL)
+			Steam.downloadLeaderboardEntries(range1, range2, Steam.LEADERBOARD_DATA_REQUEST_GLOBAL)
 		"overview":
 			checking_friends = false
 			checking_overview = true
-			#Steam.downloadLeaderboardEntries(-4, 4, Steam.LEADERBOARD_DATA_REQUEST_GLOBAL_AROUND_USER)
+			Steam.downloadLeaderboardEntries(-4, 4, Steam.LEADERBOARD_DATA_REQUEST_GLOBAL_AROUND_USER)
 		"friends":
 			checking_friends = true
 			checking_overview = false
-			#Steam.downloadLeaderboardEntries(range1, range2, Steam.LEADERBOARD_DATA_REQUEST_FRIENDS)
+			Steam.downloadLeaderboardEntries(range1, range2, Steam.LEADERBOARD_DATA_REQUEST_FRIENDS)
 
 var t = 0
 var max = 2
@@ -230,9 +228,9 @@ func _on_leaderboard_scores_downloaded(message: String, this_leaderboard_handle:
 	var leaderboard_handle: int = this_leaderboard_handle
 	
 	active_result_array = result
-	#active_entry_count = Steam.getLeaderboardEntryCount(leaderboard_handle)
+	active_entry_count = Steam.getLeaderboardEntryCount(leaderboard_handle)
 	
-	#for this_result in result: if (print_cur <= print_max): print("leaderboard result (", print_cur, "/", print_max, ")", this_result, Steam.getFriendPersonaName(this_result.steam_id)); print_cur += 1
+	for this_result in result: if (print_cur <= print_max): print("leaderboard result (", print_cur, "/", print_max, ")", this_result, Steam.getFriendPersonaName(this_result.steam_id)); print_cur += 1
 	UpdateDisplay()
 
 func val2compressed(val):

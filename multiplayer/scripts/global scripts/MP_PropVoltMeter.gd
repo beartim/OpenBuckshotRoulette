@@ -24,13 +24,13 @@ func Loop():
 		y_end = randf_range(min_rot_y, max_rot_y)
 		elapsed = 0
 		moving = true
-		await get_tree().create_timer(dur, false).timeout
+		await GlobalVariables.tree.create_timer(dur, false).timeout
 		moving = false
 		y_start = obj.rotation_degrees.y
 		y_end = min_rot_y
 		elapsed = 0
 		moving = true
-		await get_tree().create_timer(dur, false).timeout
+		await GlobalVariables.tree.create_timer(dur, false).timeout
 
 func Lerp():
 	if moving:

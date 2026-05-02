@@ -2,8 +2,8 @@
 
 [ext_resource type="FontFile" uid="uid://hrejemmcbefs" path="res://main player/hydrogen.ttf" id="1"]
 [ext_resource type="Texture2D" uid="uid://dw1sjbgkgwqx6" path="res://main player/yuletide machine logo1.png" id="2"]
-[ext_resource type="Shader" uid="uid://cy0j4o6o711t8" path="res://main player/vignette.gdshader" id="3"]
-[ext_resource type="Shader" uid="uid://ci2t4jjagxk81" path="res://main player/posterization test.gdshader" id="4"]
+[ext_resource type="Shader" path="res://main player/vignette.gdshader" id="3"]
+[ext_resource type="Shader" path="res://main player/posterization test.gdshader" id="4"]
 [ext_resource type="Material" uid="uid://1cc5f0tvkdn5" path="res://main player/mat_color precision.tres" id="5"]
 [ext_resource type="Material" uid="uid://cbt5cvhck0euq" path="res://main player/mat_dithering.tres" id="6"]
 [ext_resource type="Material" uid="uid://cdrlcynkcj7w6" path="res://main player/test shader.tres" id="7"]

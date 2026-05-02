@@ -71,9 +71,9 @@ class_name MP_LobbyUI extends Node
 @export var debug_timeouts_enabled : Control
 
 func _ready():
-	#if Steam.isSteamRunningOnSteamDeck():
-		#for cl in cl_disable_on_steam_deck:
-			#cl.visible = false
+	if Steam.isSteamRunningOnSteamDeck():
+		for cl in cl_disable_on_steam_deck:
+			cl.visible = false
 	
 	GlobalVariables.cursor_state_after_toggle = false
 	cursor.SetCursor(false, false)
@@ -81,9 +81,9 @@ func _ready():
 	
 	if GlobalVariables.running_short_intro_in_lobby_scene:
 		ShortIntro()
-		#if GlobalSteam.LOBBY_ID != 0:
-			#if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
-				#Steam.setLobbyJoinable(GlobalSteam.LOBBY_ID, true)
+		if GlobalSteam.LOBBY_ID != 0:
+			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
+				Steam.setLobbyJoinable(GlobalSteam.LOBBY_ID, true)
 	else:
 		LongIntro()
 	GlobalVariables.running_short_intro_in_lobby_scene = false
@@ -179,26 +179,26 @@ func ExitMatchCustomization():
 	cursor.controller.previousFocus = GetFirstUIFocus()
 
 func ShortIntro():
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	animator_intro.play("short intro")
 	speaker_music.play()
-	await get_tree().create_timer(2.5, false).timeout
+	await GlobalVariables.tree.create_timer(2.5, false).timeout
 	GlobalVariables.cursor_state_after_toggle = true
 	cursor.SetCursor(true, true)
 	if !lobby.viewing_popup:
 		if GlobalVariables.controllerEnabled:
 			GetFirstUIFocus().grab_focus()
 		cursor.controller.previousFocus = GetFirstUIFocus()
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 	if GlobalVariables.lobby_id_found_in_command_line != 0:
 		lobby.join_lobby(GlobalVariables.lobby_id_found_in_command_line)
 
 func LongIntro():
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	animator_intro.play("intro1")
 	speaker_music.play()
 	speaker_intro.play()
-	await get_tree().create_timer(7, false).timeout
+	await GlobalVariables.tree.create_timer(7, false).timeout
 	GlobalVariables.cursor_state_after_toggle = true
 	cursor.SetCursor(true, true)
 	if GlobalVariables.controllerEnabled:
@@ -228,7 +228,7 @@ func UpdatePlayerList():
 	fs = true
 
 func ShowPopupWindow(with_message : String):
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	lobby.viewing_popup = true
 	animator_popup.play("show")
 	ui_label_popup.text = with_message
@@ -243,14 +243,14 @@ func ClosePopupWindow():
 		GlobalVariables.returning_to_main_menu_on_popup_close = false
 	lobby.viewing_popup = false
 	animator_popup.play("hide")
-	await get_tree().create_timer(.26, false).timeout
+	await GlobalVariables.tree.create_timer(.26, false).timeout
 	ui_parent_popup_window.visible = false
 	if GlobalVariables.controllerEnabled or cursor.controller_active:
 		GetFirstUIFocus().grab_focus()
 	cursor.controller.previousFocus = GetFirstUIFocus()
 
 func ExitAfterClosingPopupWindow():
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	ExitToMainMenu()
 
 func OpenDiscordLink():
@@ -329,10 +329,10 @@ func SetupMainSceneLoad():
 	speaker_enter_main.play()
 	animator_intro.play("outro fade in effect")
 	animator_game_start.play("show")
-	await get_tree().create_timer(3, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	speaker_exit.play()
 	animator_intro.play("outro cut out")
-	await get_tree().create_timer(.60, false).timeout
+	await GlobalVariables.tree.create_timer(.60, false).timeout
 	viewblocker_main.visible = true
 
 func ExitToMainMenu():
@@ -343,10 +343,10 @@ func ExitToMainMenu():
 	cursor.SetCursor(false, false)
 	speaker_exit.play()
 	animator_intro.play("outro cut out")
-	await get_tree().create_timer(.60, false).timeout
+	await GlobalVariables.tree.create_timer(.60, false).timeout
 	viewblocker_main.visible = true
-	await get_tree().create_timer(.2, false).timeout
-	SceneChanger.change("res://scenes/menu.tscn")
+	await GlobalVariables.tree.create_timer(.2, false).timeout
+	GlobalVariables.tree.change_scene_to_file("res://scenes/menu.tscn")
 
 func CheckLobbyCopyPaste():
 	if GlobalSteam.LOBBY_ID == 0:

@@ -17,8 +17,8 @@ func Shake():
 		var randx = randf_range(offset1, offset2)
 		var randy = randf_range(offset1, offset2)
 		text.position = Vector2(randx, randy)
-		await get_tree().create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		text.position = origpos
-		await get_tree().create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		pass
 	pass

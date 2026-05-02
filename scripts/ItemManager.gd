@@ -101,17 +101,17 @@ func ItemClear_Remote():
 			break
 	if (requestingItemClear):
 		camera.BeginLerp("home")
-		await get_tree().create_timer(.8, false).timeout
+		await GlobalVariables.tree.create_timer(.8, false).timeout
 		SetupItemClear()
 		comp.animator_compartment.play("clear items")
-		await get_tree().create_timer(1.6).timeout
+		await GlobalVariables.tree.create_timer(1.6).timeout
 		comp.animator_compartment.play("hide items")
-		await get_tree().create_timer(.8, false).timeout
+		await GlobalVariables.tree.create_timer(.8, false).timeout
 	else:
 		camera.BeginLerp("home")
-		await get_tree().create_timer(.8, false).timeout
+		await GlobalVariables.tree.create_timer(.8, false).timeout
 		comp.animator_compartment.play("hide items")
-		await get_tree().create_timer(.8, false).timeout
+		await GlobalVariables.tree.create_timer(.8, false).timeout
 
 var newBatchHasBegun = false
 var requestingItemClear = false
@@ -128,34 +128,34 @@ func BeginItemGrabbing():
 				requestingItemClear = true
 				break
 		if (requestingItemClear):
-			await get_tree().create_timer(.8, false).timeout
+			await GlobalVariables.tree.create_timer(.8, false).timeout
 			SetupItemClear()
 			comp.animator_compartment.play("clear items")
-			await get_tree().create_timer(1.4).timeout
+			await GlobalVariables.tree.create_timer(1.4).timeout
 		newBatchHasBegun = false
 	
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	if (!roundManager.playerData.hasReadItemSwapIntroduction):
 		dialogue.ShowText_ForDuration(tr("MORE INTERESTING"), 3)
-		await get_tree().create_timer(3, false).timeout
+		await GlobalVariables.tree.create_timer(3, false).timeout
 		camera.BeginLerp("home")
-		await get_tree().create_timer(.8, false).timeout
+		await GlobalVariables.tree.create_timer(.8, false).timeout
 		roundManager.playerData.hasReadItemSwapIntroduction = true
 	comp.CycleCompartment("show briefcase")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	if (comp.isHiding_items): comp.CycleCompartment("show items")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	camera.BeginLerp("briefcase")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	
 	if (!roundManager.playerData.hasReadItemDistributionIntro):
 		var stringIndex = roundManager.roundArray[roundManager.currentRound].numberOfItemsToGrab
 		var string = stringNumberArray[stringIndex]
 		string = str(stringIndex)
-		if tr("ITEMS EACH").contains('%s'): dialogue.ShowText_Forever(tr("ITEMS EACH") % string)
-		await get_tree().create_timer(2.5, false).timeout
+		dialogue.ShowText_Forever(tr("ITEMS EACH") % string)
+		await GlobalVariables.tree.create_timer(2.5, false).timeout
 		dialogue.ShowText_Forever(tr("MORE ITEMS"))
-		await get_tree().create_timer(2.5, false).timeout
+		await GlobalVariables.tree.create_timer(2.5, false).timeout
 		dialogue.HideText()
 		roundManager.playerData.hasReadItemDistributionIntro = true
 
@@ -163,8 +163,8 @@ func BeginItemGrabbing():
 		var stringIndex = roundManager.roundArray[roundManager.currentRound].numberOfItemsToGrab
 		var string = stringNumberArray[stringIndex]
 		string = str(stringIndex)
-		if tr("ITEMS EACH").contains('%s'): dialogue.ShowText_Forever(tr("ITEMS EACH") % string)
-		await get_tree().create_timer(2.5, false).timeout
+		dialogue.ShowText_Forever(tr("ITEMS EACH") % string)
+		await GlobalVariables.tree.create_timer(2.5, false).timeout
 		dialogue.HideText()
 		roundManager.playerData.hasReadItemDistributionIntro2 = true
 	#ALLOW ITEM GRAB
@@ -179,11 +179,11 @@ func EndItemGrabbing():
 	interaction_intake.interactionAllowed = false
 	cursor.SetCursor(false, false)
 	ClearIntakeFocus()
-	await get_tree().create_timer(.45, false).timeout
+	await GlobalVariables.tree.create_timer(.45, false).timeout
 	comp.CycleCompartment("hide briefcase")
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	camera.BeginLerp("home")
-	await get_tree().create_timer(.9, false).timeout
+	await GlobalVariables.tree.create_timer(.9, false).timeout
 	moving = false
 	roundManager.ReturnFromItemGrabbing()
 	pass
@@ -196,13 +196,13 @@ func GrabSpook():
 	speakercontroller_musicmain.SnapVolume(false)
 	speaker_god.play()
 	anim_spook.play("grab form")
-	await get_tree().create_timer(2 + .8, false).timeout
+	await GlobalVariables.tree.create_timer(2 + .8, false).timeout
 	anim_spook.play("put back")
 	PlayItemGrabSound()
 	camera.BeginLerp("briefcase")
 	speaker_god.stop()
 	speakercontroller_musicmain.FadeIn()
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	cursor.SetCursor(true, true)
 	SetIntakeFocus(true)
 	interaction_intake.interactionAllowed = true
@@ -223,7 +223,7 @@ func GrabItem():
 	interaction_intake.interactionAllowed = false
 	var selectedResource : ItemResource
 	
-	# 根据最大数量设置玩家可用道具列表
+	#SET PLAYER AVAILABLE ITEMS ACCORDING TO MAX COUNTS
 	var amountArray : Array[AmountResource] = amounts.array_amounts
 	availableItemsToGrabArray_player = []
 	for res in amountArray:
@@ -273,7 +273,7 @@ func GrabItem():
 	rot_next = selectedResource.rot_inHand
 	elapsed = 0
 	moving = true
-	await get_tree().create_timer(lerpDuration - .2, false).timeout
+	await GlobalVariables.tree.create_timer(lerpDuration - .2, false).timeout
 	if (!roundManager.playerData.indicatorShown): grid.ShowGridIndicator()
 	
 	if (numberOfOccupiedGrids != 8):
@@ -288,9 +288,9 @@ func GrabItem():
 				break
 		
 		dialogue.ShowText_Forever(tr("NO SPACE"))
-		await get_tree().create_timer(1.8, false).timeout
+		await GlobalVariables.tree.create_timer(1.8, false).timeout
 		dialogue.ShowText_Forever(tr("UNFORTUNATE"))
-		await get_tree().create_timer(2.2, false).timeout
+		await GlobalVariables.tree.create_timer(2.2, false).timeout
 		dialogue.HideText()
 		pos_current = activeItem.transform.origin
 		rot_current = activeItem.rotation_degrees
@@ -301,7 +301,7 @@ func GrabItem():
 		cursor.SetCursor(false, false)
 		ClearIntakeFocus()
 		PlayItemGrabSound()
-		await get_tree().create_timer(lerpDuration, false).timeout
+		await GlobalVariables.tree.create_timer(lerpDuration, false).timeout
 		moving = false
 		activeItem.queue_free()
 		EndItemGrabbing()
@@ -335,7 +335,7 @@ func PlaceDownItem(gridIndex : int):
 		#GRAB NEXT ITEM
 		GridParents(false)
 		ClearIntakeFocus()
-		await get_tree().create_timer(lerpDuration, false).timeout
+		await GlobalVariables.tree.create_timer(lerpDuration, false).timeout
 		interaction_intake.interactionAllowed = true
 		SetIntakeFocus(true)
 	pass
@@ -417,7 +417,7 @@ func SetupItemSteal():
 			items_dynamicInteractionArray.append(temp_interaction)
 	
 	camera.BeginLerp("enemy items")
-	await get_tree().create_timer(.7, false).timeout
+	await GlobalVariables.tree.create_timer(.7, false).timeout
 	interaction.stealing_fs = true
 	interaction.EnablePermissions()
 	interaction.DisableShotgun()
@@ -448,7 +448,7 @@ func RevertItemSteal_Timeout():
 			var temp_indicator : PickupIndicator = ch[c].get_child(0)
 			temp_indicator.Revert()
 	camera.BeginLerp("home")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	interaction.stealing_fs = false
 	interaction.pos_hand = interaction.pos_hand_main
 	interaction.rot_hand = interaction.rot_hand_main
@@ -574,3 +574,16 @@ func LerpItem():
 		var rot = lerp(rot_current, rot_next, c)
 		activeItem.transform.origin = pos
 		activeItem.rotation_degrees = rot
+
+
+
+
+
+
+
+
+
+
+
+
+

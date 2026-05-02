@@ -17,14 +17,14 @@ var previous_focus_before_entering_ui : Control
 var segment_array = []
 
 func _ready():
-	#Steam.avatar_loaded.connect(_on_loaded_avatar)
+	Steam.avatar_loaded.connect(_on_loaded_avatar)
 	#HideConfirmation()
 	ui_parent.visible = false
 	for instance in instance_array:
 		segment_array.append(instance.get_child(0))
 	for segment in segment_array:
 		segment.get_parent().visible = false
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	UpdateUserList()
 
 var viewing_ui = false
@@ -95,9 +95,9 @@ func UpdateUserList():
 		else:
 			active_index += 1
 			segment_array[active_index].AssignMember(member.steam_id, member.steam_name)
-		#if !GlobalVariables.mp_debugging: 
-			##print("attempting to get avatar for member: ", member)
-			#Steam.getPlayerAvatar(3, member.steam_id)
+		if !GlobalVariables.mp_debugging: 
+			#print("attempting to get avatar for member: ", member)
+			Steam.getPlayerAvatar(3, member.steam_id)
 	for i in range(GlobalSteam.LOBBY_MEMBERS.size()):
 		segment_array[i].get_parent().visible = true
 	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:

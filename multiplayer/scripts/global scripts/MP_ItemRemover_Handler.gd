@@ -16,7 +16,7 @@ func MoveDown():
 
 func MoveUp():
 	animator.play("move up")
-	await get_tree().create_timer(1.38, false).timeout
+	await GlobalVariables.tree.create_timer(1.38, false).timeout
 	root.visible = false
 
 func ResetLights():
@@ -27,11 +27,11 @@ func ResetLights():
 		indicator.visible = false
 
 func LightShow():
-	await get_tree().create_timer(1.65, false).timeout
+	await GlobalVariables.tree.create_timer(1.65, false).timeout
 	Blink()
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	Blink()
-	await get_tree().create_timer(.05, false).timeout
+	await GlobalVariables.tree.create_timer(.05, false).timeout
 	for blinker in blinkers:
 		blinker.StopBlinking()
 		blinker.obj.visible = true
@@ -41,6 +41,6 @@ func LightShow():
 func Blink():
 	for blinker in blinkers:
 		blinker.obj.visible = true
-	await get_tree().create_timer(.05, false).timeout
+	await GlobalVariables.tree.create_timer(.05, false).timeout
 	for blinker in blinkers:
 		blinker.obj.visible = false

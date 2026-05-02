@@ -29,7 +29,7 @@ var lerp_previous = ""
 
 func _ready():
 	dur_original = dur
-	await get_tree().create_timer(3, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	fs2 = true
 
 func _process(delta):

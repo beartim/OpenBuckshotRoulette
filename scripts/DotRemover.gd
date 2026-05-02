@@ -6,7 +6,7 @@ var p
 func _ready():
 	p = get_parent()
 	key = p.text
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	Fix()
 
 func Fix():

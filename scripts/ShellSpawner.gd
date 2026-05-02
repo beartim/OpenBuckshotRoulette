@@ -39,12 +39,12 @@ func MainShellRoutine():
 	#INITIAL CAMERA SOCKET. HEALTH COUNTER FUNCTIONALITY
 	if (roundManager.roundArray[roundManager.currentRound].bootingUpCounter):
 		camera.BeginLerp("health counter")
-		await get_tree().create_timer(.5, false).timeout
+		await GlobalVariables.tree.create_timer(.5, false).timeout
 		healthCounter.Bootup()
-		await get_tree().create_timer(1.4, false).timeout
-	#await get_tree().create_timer(2, false).timeout #NEW
+		await GlobalVariables.tree.create_timer(1.4, false).timeout
+	#await GlobalVariables.tree.create_timer(2, false).timeout #NEW
 	camera.BeginLerp("shell compartment")
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	#SHELL SPAWNING
 	var temp_nr = roundManager.roundArray[roundManager.currentRound].amountBlank + roundManager.roundArray[roundManager.currentRound].amountLive
 	var temp_live = roundManager.roundArray[roundManager.currentRound].amountLive
@@ -55,7 +55,7 @@ func MainShellRoutine():
 	anim_compartment.play("show shells")
 	PlayLatchSound()
 	PlayAudioIndicators()
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	roundManager.ignoring = false
 	#DIALOGUE
 	var text_lives
@@ -77,21 +77,27 @@ func MainShellRoutine():
 		dialogue.ShowText_Forever(tr("DRILL"))
 		maindur = 2.5
 		skipDialoguePresented = true
-	if(!roundManager.playerData.skippingShellDescription): await get_tree().create_timer(2.5, false).timeout
-	else: await get_tree().create_timer(maindur, false).timeout
+	if(!roundManager.playerData.skippingShellDescription): await GlobalVariables.tree.create_timer(2.5, false).timeout
+	else: await GlobalVariables.tree.create_timer(maindur, false).timeout
 	dialogue.HideText()
 	#HIDE SHELLS
 	anim_compartment.play("hide shells")
 	PlayLatchSound()
-	if(roundManager.shellLoadingSpedUp): await get_tree().create_timer(.2, false).timeout
-	else: await get_tree().create_timer(.5, false).timeout
+	if(roundManager.shellLoadingSpedUp): await GlobalVariables.tree.create_timer(.2, false).timeout
+	else: await GlobalVariables.tree.create_timer(.5, false).timeout
 	#CHECK IF INSERTING INTO CHAMBER IN RANDOM ORDER.
 	if (roundManager.roundArray[roundManager.currentRound].insertingInRandomOrder):
 		sequenceArray.shuffle()
 		sequenceArray.shuffle()
+	_push_debug_tools_update()
 	roundManager.LoadShells()
 	return
 	pass
+
+func _push_debug_tools_update() -> void:
+	var debug_tools = get_tree().get_first_node_in_group("debug_tools")
+	if debug_tools != null:
+		debug_tools.sync_from_sequence(sequenceArray)
 
 func CheckBackdropScaling():
 	var curloc = TranslationServer.get_locale()
@@ -147,9 +153,23 @@ func PlayLatchSound():
 
 var seq = []
 func PlayAudioIndicators():
-	await get_tree().create_timer(.37, false).timeout
+	await GlobalVariables.tree.create_timer(.37, false).timeout
 	for i in range(seq.size()):
 		if (seq[i] == "blank"): speaker_audioIndicator.stream = soundArray_indicators[0]
 		else: speaker_audioIndicator.stream = soundArray_indicators[1]
 		speaker_audioIndicator.play()
-		await get_tree().create_timer(.07, false).timeout
+		await GlobalVariables.tree.create_timer(.07, false).timeout
+
+
+
+
+
+
+
+
+
+
+
+
+
+

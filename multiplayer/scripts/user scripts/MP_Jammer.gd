@@ -62,9 +62,9 @@ func Jammer_Disable():
 	properties.is_jammed = false
 	for i in 2:
 		properties.health_counter.EnableDisplay()
-		await get_tree().create_timer(flicker_delay, false).timeout
+		await GlobalVariables.tree.create_timer(flicker_delay, false).timeout
 		properties.health_counter.DisableDisplay()
-		await get_tree().create_timer(flicker_delay, false).timeout
+		await GlobalVariables.tree.create_timer(flicker_delay, false).timeout
 	properties.health_counter.EnableDisplay()
 
 func Jammer_Check():
@@ -72,14 +72,14 @@ func Jammer_Check():
 	PlaySound_RandomError()
 	for i in 3:
 		properties.health_counter.EnableDisplay()
-		await get_tree().create_timer(flicker_delay, false).timeout
+		await GlobalVariables.tree.create_timer(flicker_delay, false).timeout
 		properties.health_counter.DisableDisplay()
-		await get_tree().create_timer(flicker_delay, false).timeout
+		await GlobalVariables.tree.create_timer(flicker_delay, false).timeout
 
 func PlaySound_RandomError():
 	speaker_error.stream = sounds_error[randi_range(0, sounds_error.size() - 1)]
 	speaker_error.play()
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	speaker_error.stream = sounds_error[randi_range(0, sounds_error.size() - 1)]
 	speaker_error.play()
 
@@ -163,13 +163,13 @@ func ConfirmButton():
 		i.interactionAllowed = false
 	properties.permissions.SetMainPermission(false)
 	SetJammerControllerPrompts(false)
-	await get_tree().create_timer(.05, false).timeout
+	await GlobalVariables.tree.create_timer(.05, false).timeout
 	var direction = target_direction_strings[selected_target_index]
 	var instance_property_to_jam : MP_UserInstanceProperties = properties.GetSocketProperties(properties.GetSocketFromDirection(properties.socket_number, direction))
 	var selected_socket_number : int = properties.GetSocketFromDirection(properties.socket_number, direction)
 	looping = true
 	ShowFinalTargetOnScreen(direction)
-	await get_tree().create_timer(1.5, false).timeout
+	await GlobalVariables.tree.create_timer(1.5, false).timeout
 	var secondary_item_interaction_request_dictionary = {
 		"item_id": 3,
 		"item_selected_socket_number": selected_socket_number
@@ -185,7 +185,7 @@ func ShowFinalTargetOnScreen(for_direction : String):
 		"right": screen_active = screen_right
 	for blinker in blinker_array:
 			blinker.set_surface_override_material(0, mat_blinker_green)
-	await get_tree().create_timer(.64, false).timeout
+	await GlobalVariables.tree.create_timer(.64, false).timeout
 	var am =  0
 	while looping:
 		if am < 7: speaker_fp_jammer_beep_single.play()
@@ -193,13 +193,13 @@ func ShowFinalTargetOnScreen(for_direction : String):
 		mat_screen.albedo_texture = screen_idle
 		for blinker in blinker_array:
 			blinker.set_surface_override_material(0, mat_blinker_void)
-		await get_tree().create_timer(.1, false).timeout
+		await GlobalVariables.tree.create_timer(.1, false).timeout
 		if am < 7: speaker_fp_jammer_beep_single.play()
 		am += 1
 		mat_screen.albedo_texture = screen_active
 		for blinker in blinker_array:
 			blinker.set_surface_override_material(0, mat_blinker_green)
-		await get_tree().create_timer(.1, false).timeout
+		await GlobalVariables.tree.create_timer(.1, false).timeout
 		pass
 	pass
 
@@ -244,28 +244,28 @@ func BootupJammer():
 		i.disabled = false
 	for i in button_intbranches:
 		i.interactionAllowed = true
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	mat_screen.albedo_texture = screen_frame
 	speaker_fp_jammer_bootup_idle.play()
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	for i in range(bootup_text_array.size()):
 		bootup_text_array[i].visible = true
 		if i == 8:
 			ui_selected_username.text = empty_text
-			await get_tree().create_timer(.1, false).timeout
+			await GlobalVariables.tree.create_timer(.1, false).timeout
 			ui_selected_username.text = ""
-		await get_tree().create_timer(.02, false).timeout
-	await get_tree().create_timer(.2, false).timeout
+		await GlobalVariables.tree.create_timer(.02, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	for i in bootup_text_array:
 		i.visible = false
 	for blinker in blinker_array:
 		blinker.set_surface_override_material(0, mat_blinker_green)
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	mat_screen.albedo_texture = screen_tracker
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	mat_screen.albedo_texture = screen_gridbootup1
 	ui_selected_username.text = empty_text
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	ui_selected_username.text = ""
 	mat_screen.albedo_texture = screen_idle
 	for blinker in blinker_array:

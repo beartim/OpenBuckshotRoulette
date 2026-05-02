@@ -19,13 +19,11 @@ class_name HealthCounter extends Node
 @export var dialogue : Dialogue
 @export var speaker_truedeath : AudioStreamPlayer2D
 @export var skullSymbols : Array[VisualInstance3D]
-@export var mp: MP
 
 var dialogueEntered_player = false
 var dialogueEntered_dealer = false
 
 func _ready():
-	mp.health_counter = self
 	ClearDisplay()
 	pass
 
@@ -35,35 +33,13 @@ func SetupHealth():
 		if (setting):
 			ui_playername.text = roundManager.playerData.playername.to_upper()
 			var playername_upper = roundManager.playerData.playername.to_upper()
-			if mp: ui_playerwin.text = 'NEXT TURN' # tr("PLAYERWIN") % [mp.oppnent_signature.to_upper()]
-			else: ui_playerwin.text = tr("PLAYERWIN") % [playername_upper]
+			ui_playerwin.text = tr("PLAYERWIN") % [playername_upper] 
 			#ui_playerwin.text = roundManager.playerData.playername.to_upper() + " " + tr("PLAYERWIN")
 			setting = false
-		if !OpenBRGlobal.is_multiplayer and OpenBRGlobal.main.starting_health['enabled']:
-			roundManager.health_player = OpenBRGlobal.main.starting_health['player'][roundManager.currentRound]
-			roundManager.health_opponent = OpenBRGlobal.main.starting_health['dealer'][roundManager.currentRound]
-		else:
-			roundManager.health_player = roundManager.roundArray[roundManager.currentRound].startingHealth
-			roundManager.health_opponent = roundManager.roundArray[roundManager.currentRound].startingHealth
+		roundManager.health_player = roundManager.roundArray[roundManager.currentRound].startingHealth
+		roundManager.health_opponent = roundManager.roundArray[roundManager.currentRound].startingHealth
 		dialogueEntered_player = false
 		dialogueEntered_dealer = false
-		# 多人游戏血量
-		if mp:
-			if mp.is_server():
-				mp.opponent_health_ready = false
-				var random_health = OpenBRGlobal.randi(2, 6)
-				roundManager.health_player = random_health
-				roundManager.health_opponent = random_health
-				mp.setup_health(random_health)
-			else:
-				mp._rpc_reset_health_status()
-				mp.on_response_get_health.connect(func(health):
-					print('GOT HEALTH: ', health)
-					roundManager.health_player = health
-					roundManager.health_opponent = health
-				)
-				mp._rpc_get_health()
-				await mp.on_response_get_health
 
 func UpdateDisplay():
 	for i in range(symbolArray_player.size()):
@@ -95,13 +71,13 @@ func UpdateDisplayRoutine(isRaisingHealth : bool, goingToPreviousSocket : bool, 
 	if (showPlayerWin):
 		#ERROR - FLICKER BOTH HERE
 		camera.BeginLerp("health counter")
-		await get_tree().create_timer(.8, false).timeout
+		await GlobalVariables.tree.create_timer(.8, false).timeout
 		UpdateDisplay()
 		speaker_noise.play()
 		return
 	var previousSocket = camera.activeSocket
 	camera.BeginLerp("health counter")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	UpdateDisplay()
 	if (checkingPlayer && defibCutter.displayBroken_player): 
 		indicating = false
@@ -127,12 +103,12 @@ func UpdateDisplayRoutine(isRaisingHealth : bool, goingToPreviousSocket : bool, 
 			roundManager.requestedWireCut = true
 			roundManager.wireIsCut_player = true
 			roundManager.health_player = 1
-	#if (roundManager.shellSpawner.sequenceArray[0] == null): await get_tree().create_timer(.8, false).timeout
-	await get_tree().create_timer(.7, false).timeout
+	#if (roundManager.shellSpawner.sequenceArray[0] == null): await GlobalVariables.tree.create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.7, false).timeout
 	if (roundManager.health_player == 1 && !dialogueEntered_player && !roundManager.wireIsCut_player && !skipping_careful):
 		if (!roundManager.wireIsCut_player): dialogue.ShowText_ForDuration(tr("CAREFUL"), 3)
 		else: dialogue.ShowText_ForDuration("...", 3)
-		await get_tree().create_timer(3, false).timeout
+		await GlobalVariables.tree.create_timer(3, false).timeout
 		dialogueEntered_player = true
 	if skipping_careful: skipping_careful = false
 	var lerpingCamera = true
@@ -142,7 +118,7 @@ func UpdateDisplayRoutine(isRaisingHealth : bool, goingToPreviousSocket : bool, 
 	if (lerpingCamera):
 		if (goingToPreviousSocket): camera.BeginLerp(previousSocket)
 		else: camera.BeginLerp("home")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 
 #why can I not add functions with arguments into godot animator :sob:
 var overriding_medicine_adding = false
@@ -180,7 +156,7 @@ func UpdateDisplayRoutineCigarette_Main(isChanging : bool, isAddingEnemy : bool)
 	var prevsocket = camera.activeSocket
 	var playingsound = true
 	camera.BeginLerp("health counter")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	if (isAddingEnemy && defibCutter.displayBroken_dealer):
 		defibCutter.BlipError("dealer")
 		playingsound = false
@@ -193,7 +169,7 @@ func UpdateDisplayRoutineCigarette_Main(isChanging : bool, isAddingEnemy : bool)
 	else:
 		if (isChanging && overriding_medicine_adding): speaker_beep.play()
 		else: if(isChanging && !overriding_medicine_adding): speaker_noise.play()
-	await get_tree().create_timer(.7, false).timeout
+	await GlobalVariables.tree.create_timer(.7, false).timeout
 	if (!isAddingEnemy): 
 		camera.BeginLerp("home")
 		animator_playerHands.play("player revert cigarette")
@@ -215,7 +191,7 @@ func Bootup():
 	ClearDisplay()
 	for i in range(uiArray.size()):
 		uiArray[i].visible = true
-	await get_tree().create_timer(.85, false).timeout
+	await GlobalVariables.tree.create_timer(.85, false).timeout
 	if (roundManager.playerData.currentBatchIndex == 2 && !settingUpBroken && !roundManager.endless):
 		speaker_beep.pitch_scale = .09
 		SwapSkullSymbols()

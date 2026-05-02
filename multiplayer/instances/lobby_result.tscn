@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://usnf24a4snwg"]
 
-[ext_resource type="Script" uid="uid://bqdg16e7amc44" path="res://multiplayer/scripts/global scripts/MP_Matchmaking_Result.gd" id="1"]
+[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_Matchmaking_Result.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://cylsdupptnccs" path="res://multiplayer/textures/green1.png" id="2"]
 [ext_resource type="FontFile" uid="uid://vhj3kkn6yn8o" path="res://fonts/fake receipt.otf" id="3"]
 [ext_resource type="Theme" uid="uid://byh50rlarrsdb" path="res://misc/button_theme1.tres" id="4"]
-[ext_resource type="Script" uid="uid://dpf4l6f2v8gy3" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="5"]
+[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="5"]
 
 [node name="lobby result" type="TextureRect"]
 custom_minimum_size = Vector2(5, 41.34)

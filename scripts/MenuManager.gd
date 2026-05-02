@@ -190,8 +190,6 @@ func ResetButtons():
 	cursor.SetCursorImage("point")
 
 func Start():
-	print("Start")
-	OpenBRGlobal.is_multiplayer = false
 	Buttons(false)
 	ResetButtons()
 	for screen in screens: screen.visible = false
@@ -203,17 +201,16 @@ func Start():
 	speaker_start.play()
 	cursor.SetCursor(false, false)
 	savefile.ClearSave()
-	if !OpenBRGlobal.WATCH_ONLY: await get_tree().create_timer(4, false).timeout
-	SceneChanger.change("res://scenes/main.tscn")
+	await GlobalVariables.tree.create_timer(4, false).timeout
+	print("changing scene to: main")
+	GlobalVariables.tree.change_scene_to_file("res://scenes/main.tscn")
 
 func StartMultiplayer():
-	OS.alert(tr('MULTIPLAYER_IN_BETA'))
-	# OpenBRGlobal.is_multiplayer = true
-	# if !GlobalSteam.ONLINE:
-	# 	GlobalVariables.message_to_forward = tr("MP_UI LOBBY NO CONNECTION")
-	# 	GlobalVariables.returning_to_main_menu_on_popup_close = true
-	# 	GlobalVariables.running_short_intro_in_lobby_scene = true
-	print("StartMultiplayer")
+	if !GlobalSteam.ONLINE:
+		GlobalVariables.message_to_forward = tr("MP_UI LOBBY NO CONNECTION")
+		GlobalVariables.returning_to_main_menu_on_popup_close = true
+		GlobalVariables.running_short_intro_in_lobby_scene = true
+	
 	Buttons(false)
 	ResetButtons()
 	for screen in screens: screen.visible = false
@@ -225,8 +222,9 @@ func StartMultiplayer():
 	speaker_start.play()
 	cursor.SetCursor(false, false)
 	savefile.ClearSave()
-	await get_tree().create_timer(4, false).timeout
-	SceneChanger.change("res://scenes/main_multiplayer.tscn")
+	await GlobalVariables.tree.create_timer(4, false).timeout
+	print("changing scene to: lobby")
+	GlobalVariables.tree.change_scene_to_file("res://multiplayer/scenes/mp_lobby.tscn")
 
 func Credits():
 	Show("credits")
@@ -238,8 +236,8 @@ func Exit():
 	speaker_music.stop()
 	animator_intro.play("snap2")
 	cursor.SetCursor(false, false)
-	await get_tree().create_timer(.5, false).timeout
-	get_tree().quit()
+	await GlobalVariables.tree.create_timer(.5, false).timeout
+	GlobalVariables.tree.quit()
 
 func DisableMenu():
 	Buttons(false)

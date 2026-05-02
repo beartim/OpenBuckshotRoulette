@@ -7,7 +7,7 @@ class_name MusicManager extends Node
 @export var roundManager : RoundManager
 
 func _ready():
-	LoadTrack()
+	#LoadTrack()
 	pass
 
 func EndTrack():

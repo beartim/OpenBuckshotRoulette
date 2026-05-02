@@ -23,13 +23,13 @@ func Press():
 	next = y_down
 	elapsed = 0
 	moving = true
-	await get_tree().create_timer(.06, false).timeout
+	await GlobalVariables.tree.create_timer(.06, false).timeout
 	moving = false
 	cur = y_down
 	next = y_up
 	elapsed = 0
 	moving = true
-	await get_tree().create_timer(.06, false).timeout
+	await GlobalVariables.tree.create_timer(.06, false).timeout
 	moving = false
 	intbranch.interactionAllowed = true
 

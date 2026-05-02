@@ -1,21 +1,30 @@
 extends Node
 
-var currentVersion_nr = "v0.3.3"
+var currentVersion_nr = "v2.2.0"
 var currentVersion_hotfix = 6
 var using_steam = false
 
 var currentVersion = ""
 var versuffix_steam = " (STEAM)"
 var versuffix_itch = " (ITCH.IO)"
-var versuffix_community = ' (COMMUNITY)'
 
 var discord_link = "https://discord.gg/UdjMNaKkQe"
-var github_link = "https://github.com/1503Dev/OpenBuckshotRoulette"
 
 var using_gl = false
 var controllerEnabled = false
 var music_enabled = true
 var current_button_hovered_over : Control
+
+var base_time_scale := 1.0
+var debug_time_scale_multiplier := 1.0
+
+func ApplyTimeScale(base: float) -> void:
+	base_time_scale = base
+	Engine.time_scale = base_time_scale * debug_time_scale_multiplier
+
+func SetDebugTimeScaleMultiplier(mult: float) -> void:
+	debug_time_scale_multiplier = mult
+	Engine.time_scale = base_time_scale * debug_time_scale_multiplier
 
 var colorblind = false
 var colorblind_color = Color(1, 1, 0)
@@ -29,7 +38,7 @@ var default_color_blank = Color(0.29, 0.5, 1)
 var colorblind_color_live = Color(1, 1, 1)
 var colorblind_color_blank = Color(0.34, 0.34, 0.34)
 
-var mp_debugging = true #mp debugging with temporary bots
+var mp_debugging = false #mp debugging with temporary bots
 var mp_printing_to_console = true #whether or not disconnect messages, etc are printed to console
 var mp_debug_keys_enabled = false #whether or not the debug keys are enabled
 var printing_packets = true #whether or not packets get logged
@@ -52,7 +61,7 @@ var returning_to_main_menu_on_popup_close : bool #whether or not closing the pop
 var active_match_customization_dictionary : Dictionary #match customization dictionary that will be used in the game. gets cleared on game end etc
 var stashed_match_customization_dictionary : Dictionary #match customization dictionary that will be stored in the current game session
 var previous_match_customization_differences : Dictionary #previously active match customization differences that were received by the host
-var steam_id_version_checked_ayeahrray:Node
+var steam_id_version_checked_ayeahrray : Array
 
 var debug_match_customization = {
 	"number_of_rounds": 3,
@@ -274,9 +283,10 @@ var debug_match_customization = {
 }
 
 func _ready():
-	steam_id_version_checked_ayeahrray = Node.new()
+	set_tree(self)
+	ApplyTimeScale(1.0)
 	if using_steam: currentVersion = currentVersion_nr + versuffix_steam
-	else: currentVersion = currentVersion_nr + versuffix_community
+	else: currentVersion = currentVersion_nr + versuffix_itch
 	debug_round_index_to_end_game_at = 2
 	original_volume_linear_interaction = db_to_linear(AudioServer.get_bus_volume_db(3))
 	original_volume_linear_music = db_to_linear(AudioServer.get_bus_volume_db(1))
@@ -293,13 +303,13 @@ func _unhandled_input(event):
 		if event.is_action_pressed("debug_e"):
 			SwapLanguage(true)
 		if event.is_action_pressed("-"):
-			Engine.time_scale = .05
+			ApplyTimeScale(.05)
 		if event.is_action_pressed(","):
-			Engine.time_scale = 1
+			ApplyTimeScale(1)
 		if event.is_action_pressed("."):
-			Engine.time_scale = 10
+			ApplyTimeScale(10)
 		if event.is_action_pressed("end"):
-			Engine.time_scale = 0
+			ApplyTimeScale(0)
 
 var language_array = ["EN", "EE", "RU", "ES LATAM", "ES", "FR", "IT", "JA", "KO", "PL", "PT", "DE", "TR", "UA", "ZHS", "ZHT"]
 var index = 0
@@ -316,3 +326,13 @@ func SwapLanguage(dir : bool):
 			index -= 1
 	TranslationServer.set_locale(language_array[index])
 	print("setting locale to: ", language_array[index])
+
+var tree: SceneTree
+
+func set_tree(node: Node):
+	var new_tree := node.get_tree()
+	if (new_tree):
+		tree = new_tree
+		print('使用新的场景树')
+	else:
+		printerr('场景树设置失败: 场景树不存在')

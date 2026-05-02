@@ -43,7 +43,6 @@ var mainBatchIndex : int
 @export var intbranch_yes : InteractionBranch
 @export var intbranch_no : InteractionBranch
 @export var speaker_slot : AudioStreamPlayer2D
-@export var mp: MP
 
 var endless = false
 var shellLoadingSpedUp = false
@@ -59,17 +58,33 @@ var barrelSawedOff = false
 var defibCutterReady = false
 var trueDeathActive = false
 var playerCurrentTurnItemArray = []
+var _debug_prev_health_player := -999999
+var _debug_prev_health_dealer := -999999
 
 func _ready():
-	OpenBRGlobal.round_manager = self
-	Engine.time_scale = 1
+	GlobalVariables.ApplyTimeScale(1)
+	add_to_group("round_manager")
+	_push_debug_tools_health_update()
 	HideDealer()
-	#await get_tree().create_timer(.2, false).timeout
+	#await GlobalVariables.tree.create_timer(.2, false).timeout
 	pass
 
 func _process(delta):
 	LerpScore()
 	InitialTimer()
+	_sync_debug_tools_health_if_changed()
+
+func _sync_debug_tools_health_if_changed() -> void:
+	if health_player == _debug_prev_health_player and health_opponent == _debug_prev_health_dealer:
+		return
+	_debug_prev_health_player = health_player
+	_debug_prev_health_dealer = health_opponent
+	_push_debug_tools_health_update()
+
+func _push_debug_tools_health_update() -> void:
+	var debug_tools = get_tree().get_first_node_in_group("debug_tools")
+	if debug_tools != null:
+		debug_tools.sync_health(health_player, health_opponent)
 
 var counting = false
 var initial_time = 0
@@ -91,15 +106,15 @@ func MainBatchSetup(dealerEnterAtStart : bool):
 		if (lerping): camera.BeginLerp("enemy")
 		currentRound = 0
 		if (!dealerAtTable && dealerEnterAtStart):
-			await get_tree().create_timer(.5, false).timeout
+			await GlobalVariables.tree.create_timer(.5, false).timeout
 			if (!dealerCuffed): animator_dealerHands.play("dealer hands on table")
 			else: animator_dealerHands.play("dealer hands on table cuffed")
 			animator_dealer.play("dealer return to table")
-			await get_tree().create_timer(2, false).timeout
+			await GlobalVariables.tree.create_timer(2, false).timeout
 			var greeting = true
 			if (!playerData.hasSignedWaiver):
 				shellLoader.dialogue.ShowText_Forever(tr("WAIVER"))
-				await get_tree().create_timer(2.3, false).timeout
+				await GlobalVariables.tree.create_timer(2.3, false).timeout
 				shellLoader.dialogue.HideText()
 				camera.BeginLerp("home")
 				sign.AwaitPickup()
@@ -112,12 +127,12 @@ func MainBatchSetup(dealerEnterAtStart : bool):
 					tempstring = "..."
 				if (!playerData.playerEnteringFromDeath):
 					shellLoader.dialogue.ShowText_Forever("...")
-					await get_tree().create_timer(2.3, false).timeout
+					await GlobalVariables.tree.create_timer(2.3, false).timeout
 					shellLoader.dialogue.HideText()
 					dealerHasGreeted = true
 				else:
 					shellLoader.dialogue.ShowText_Forever(tempstring)
-					await get_tree().create_timer(2.3, false).timeout
+					await GlobalVariables.tree.create_timer(2.3, false).timeout
 					shellLoader.dialogue.HideText()
 					dealerHasGreeted = true
 			dealerAtTable = true
@@ -126,14 +141,18 @@ func MainBatchSetup(dealerEnterAtStart : bool):
 	mainBatchIndex = playerData.currentBatchIndex
 	healthCounter.DisableCounter()
 	SetupRoundArray()
+	if (roundArray.size() <= 0):
+		healthCounter.SetupHealth()
+		lerping = true
+		if (!endless): ParseMainGameAmounts()
+		StartRound(false)
+		return
 	if (playerData.hasReadIntroduction): roundArray[0].hasIntroductoryText = false
 	else: roundArray[0].hasIntroductoryText = true
 	if (roundArray[0].showingIndicator): await(RoundIndicator())
-	if healthCounter.mp and !healthCounter.mp.is_server():
-		await healthCounter.SetupHealth()
-	else: healthCounter.SetupHealth()
+	healthCounter.SetupHealth()
 	lerping = true
-	#await get_tree().create_timer(1.5, false).timeout
+	#await GlobalVariables.tree.create_timer(1.5, false).timeout
 	if (!endless): ParseMainGameAmounts()
 	StartRound(false)
 
@@ -166,7 +185,7 @@ func SetupRoundArray():
 	roundArray = []
 	for i in range(batchArray.size()):
 		if (batchArray[i].batchIndex == mainBatchIndex):
-			var matched:= batchArray[i]
+			var matched = batchArray[i]
 			for z in range(matched.roundArray.size()):
 				roundArray.append(matched.roundArray[z])
 				pass
@@ -176,20 +195,20 @@ func SetupRoundArray():
 #SHOW ROUND INDICATOR
 func RoundIndicator():
 	roundIndicator.visible = false
-	#await get_tree().create_timer(1.5, false).timeout
+	#await GlobalVariables.tree.create_timer(1.5, false).timeout
 	animator_roundIndicator.play("RESET")
 	camera.BeginLerp("health counter")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	statue.CheckStatus()
-	var activePos:= roundIndicatorPositions[roundArray[0].indicatorNumber]
+	var activePos = roundIndicatorPositions[roundArray[0].indicatorNumber]
 	roundIndicator.transform.origin = activePos
 	roundIndicatorParent.visible = true
 	speaker_roundHum.play()
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	roundIndicator.visible = true
 	brief.ending.endless_roundsbeat += 1
 	animator_roundIndicator.play("round blinking")
-	await get_tree().create_timer(2, false).timeout
+	await GlobalVariables.tree.create_timer(2, false).timeout
 	roundIndicatorParent.visible = false
 	speaker_roundHum.stop()
 	speaker_roundShutDown.play()
@@ -206,30 +225,30 @@ func StartRound(gettingNext : bool):
 	if (playerData.currentBatchIndex == 2 && !defibCutterReady && !endless):
 		shellLoader.dialogue.dealerLowPitched = true
 		camera.BeginLerp("enemy") 
-		await get_tree().create_timer(.6, false).timeout
+		await GlobalVariables.tree.create_timer(.6, false).timeout
 		#var origdelay = shellLoader.dialogue.incrementDelay
 		#shellLoader.dialogue.incrementDelay = .1
 		if (!playerData.cutterDialogueRead):
 			shellLoader.dialogue.scaling = true
 			shellLoader.dialogue.ShowText_Forever(tr("FINAL SHOW1"))
-			await get_tree().create_timer(4, false).timeout
+			await GlobalVariables.tree.create_timer(4, false).timeout
 			shellLoader.dialogue.scaling = true
 			shellLoader.dialogue.ShowText_Forever(tr("FINAL SHOW2"))
-			await get_tree().create_timer(4, false).timeout
+			await GlobalVariables.tree.create_timer(4, false).timeout
 			shellLoader.dialogue.scaling = true
 			shellLoader.dialogue.ShowText_Forever(tr("FINAL SHOW3"))
-			await get_tree().create_timer(4.8, false).timeout
+			await GlobalVariables.tree.create_timer(4.8, false).timeout
 			shellLoader.dialogue.scaling = false
 			shellLoader.dialogue.HideText()
 			playerData.cutterDialogueRead = true
 		else:
 			shellLoader.dialogue.ShowText_Forever(tr("BETTER NOT"))
-			await get_tree().create_timer(3, false).timeout
+			await GlobalVariables.tree.create_timer(3, false).timeout
 			shellLoader.dialogue.HideText()
 		await(deficutter.InitialSetup())
 		defibCutterReady = true
 		trueDeathActive = true
-		#await get_tree().create_timer(100, false).timeout
+		#await GlobalVariables.tree.create_timer(100, false).timeout
 	#USINGITEMS: SHARE ITEMS TO PLAYERS HERE
 	if (roundArray[currentRound].usingItems):
 		itemManager.BeginItemGrabbing()
@@ -248,32 +267,31 @@ func LoadShells():
 
 func CheckIfOutOfHealth():
 	#CHECK IF OUT OF HEALTH
-	var outOfHealth_player:= health_player == 0
-	var outOfHealth_enemy:= health_opponent == 0
-	var outOfHealth:= outOfHealth_player or outOfHealth_enemy
+	var outOfHealth_player = health_player == 0
+	var outOfHealth_enemy = health_opponent == 0
+	var outOfHealth = outOfHealth_player or outOfHealth_enemy
 	if (outOfHealth):
 		if (outOfHealth_player): OutOfHealth("player")
 		if (outOfHealth_enemy):  OutOfHealth("dealer")
 		return outOfHealth
 
-var waitingForReturn:= false
-var waitingForHealthCheck:= false
-var waitingForHealthCheck2:= false
-var requestedWireCut:= false
-var wireToCut:= ""
-var wireIsCut_dealer:= false
-var wireIsCut_player:= false
+var waitingForReturn = false
+var waitingForHealthCheck = false
+var waitingForHealthCheck2 = false
+var requestedWireCut = false
+var wireToCut = ""
+var wireIsCut_dealer = false
+var wireIsCut_player = false
 
-var ignoring:= false
+var ignoring = false
 func EndTurn(playerCanGoAgain : bool):
-	print("EndTurn: ", playerCanGoAgain)
 	#USINGITEMS: ASSIGN PLAYER CAN GO AGAIN FROM ITEMS HERE
 	#USINGITEMS: MAKE SHOTGUN GROW NEW BARREL
 	#var isOutOfHealth = CheckIfOutOfHealth()
 	#if (isOutOfHealth): return
 	if (barrelSawedOff):
-		await get_tree().create_timer(.6, false).timeout
-		if (waitingForHealthCheck2): await get_tree().create_timer(2, false).timeout
+		await GlobalVariables.tree.create_timer(.6, false).timeout
+		if (waitingForHealthCheck2): await GlobalVariables.tree.create_timer(2, false).timeout
 		waitingForHealthCheck2 = false
 		await(segmentManager.GrowBarrel())
 	if (shellSpawner.sequenceArray.size() != 0):
@@ -286,10 +304,10 @@ func EndTurn(playerCanGoAgain : bool):
 				dealerAI.BeginDealerTurn()
 			else:
 				if (waitingForReturn):
-					await get_tree().create_timer(1.4, false).timeout
+					await GlobalVariables.tree.create_timer(1.4, false).timeout
 					waitingForReturn = false
 				if (waitingForHealthCheck): 
-					await get_tree().create_timer(1.8, false).timeout
+					await GlobalVariables.tree.create_timer(1.8, false).timeout
 					waitingForHealthCheck = false
 				dealerAI.DealerCheckHandCuffs()
 	else:
@@ -301,7 +319,7 @@ func EndTurn(playerCanGoAgain : bool):
 
 func ReturnFromCuffCheck(brokeFree : bool):
 	if (brokeFree):
-		await get_tree().create_timer(.8, false).timeout
+		await GlobalVariables.tree.create_timer(.8, false).timeout
 		camera.BeginLerp("enemy")
 		dealerAI.BeginDealerTurn()
 		pass
@@ -312,17 +330,17 @@ func ReturnFromCuffCheck(brokeFree : bool):
 
 func BeginPlayerTurn():
 	if (playerCuffed):
-		var returning:= false
+		var returning = false
 		if (playerAboutToBreakFree == false):
 			handcuffs.CheckPlayerHandCuffs(false)
-			await get_tree().create_timer(1.4, false).timeout
+			await GlobalVariables.tree.create_timer(1.4, false).timeout
 			camera.BeginLerp("enemy")
 			dealerAI.BeginDealerTurn()
 			returning = true
 			playerAboutToBreakFree = true
 		else:
 			handcuffs.BreakPlayerHandCuffs(false)
-			await get_tree().create_timer(1.4, false).timeout
+			await GlobalVariables.tree.create_timer(1.4, false).timeout
 			camera.BeginLerp("home")
 			playerCuffed = false
 			playerAboutToBreakFree = false
@@ -330,7 +348,7 @@ func BeginPlayerTurn():
 		if (returning): return
 	if (requestedWireCut):
 		await(defibCutter.CutWire(wireToCut))
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	playerCurrentTurnItemArray = []
 	perm.SetStackInvalidIndicators()
 	cursor.SetCursor(true, true)
@@ -360,27 +378,25 @@ func ClearDeskUI(includingParent : bool):
 	pass
 
 func OutOfHealth(who : String):
-	if mp: mp.shell_spawner.sequenceArray = []
-	print('OutOfHealth: ', who)
 	if (who == "player"): 
 		death.MainDeathRoutine()
 	else:
-		await get_tree().create_timer(1, false).timeout
+		await GlobalVariables.tree.create_timer(1, false).timeout
 		EndMainBatch()
 
-var doubling:= false
-var prevscore:= 0
-var mainscore:= 0
-var elapsed:= 0
-var dur:= 3
-var double_or_nothing_rounds_beat:= 0
-var double_or_nothing_score:= 0
-var double_or_nothing_initial_score:= 0
-var doubled:= false
+var doubling = false
+var prevscore = 0
+var mainscore = 0
+var elapsed = 0
+var dur = 3
+var double_or_nothing_rounds_beat = 0
+var double_or_nothing_score = 0
+var double_or_nothing_initial_score = 0
+var doubled = false
 
-var lerpingscore:= false
+var lerpingscore = false
 var startscore
-var endscore:= 0
+var endscore = 0
 @export var ui_score : Label3D
 @export var ui_doubleornothing : Label3D
 @export var speaker_key : AudioStreamPlayer2D
@@ -410,20 +426,20 @@ func BeginScoreLerp():
 	doubling = true
 	speaker_slot.play()
 	camera.BeginLerp("yes no")
-	await get_tree().create_timer(1.1, false).timeout
+	await GlobalVariables.tree.create_timer(1.1, false).timeout
 	ui_score.visible = true
 	ui_score.text = str(startscore)
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	elapsed = 0
 	lerpingscore = true
-	await get_tree().create_timer(3.08, false).timeout
-	await get_tree().create_timer(.46, false).timeout
+	await GlobalVariables.tree.create_timer(3.08, false).timeout
+	await GlobalVariables.tree.create_timer(.46, false).timeout
 	ui_score.visible = false
 	ui_doubleornothing.visible = true
 	anim_doubleor.play("show")
 	speaker_show.play()
-	await get_tree().create_timer(.5, false).timeout
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	cursor.SetCursor(true, true)
 	intbranch_no.interactionAllowed = true
 	intbranch_yes.interactionAllowed = true
@@ -445,20 +461,20 @@ func Response(rep : bool):
 	if (rep): anim_yes.play("press")
 	else: anim_no.play("press")
 	speaker_key.play()
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	anim_doubleor.play("hide")
 	speaker_hide.play()
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	if (!rep):
 		speaker_slot.stop()
-		await get_tree().create_timer(.7, false).timeout
+		await GlobalVariables.tree.create_timer(.7, false).timeout
 		brief.ending.endless_score = endscore
 		brief.ending.endless_overwriting = true
 		camera.BeginLerp("enemy")
 		brief.MainRoutine()
 	else:
 		speaker_slot.stop()
-		await get_tree().create_timer(.7, false).timeout
+		await GlobalVariables.tree.create_timer(.7, false).timeout
 		#camera.BeginLerp("enemy")
 		RestartBatch()
 		pass
@@ -473,7 +489,7 @@ func LerpScore():
 func RestartBatch():
 	playerData.currentBatchIndex = 0
 	if (barrelSawedOff):
-		await get_tree().create_timer(.6, false).timeout
+		await GlobalVariables.tree.create_timer(.6, false).timeout
 		await(segmentManager.GrowBarrel())
 	MainBatchSetup(false)
 	if (!dealerAtTable): 
@@ -483,7 +499,7 @@ func RestartBatch():
 	for i in range(ejectManagers.size()):
 		ejectManagers[i].FadeOutShell()
 	#TRACK MANAGER
-	await get_tree().create_timer(2, false).timeout
+	await GlobalVariables.tree.create_timer(2, false).timeout
 	musicManager.LoadTrack_FadeIn()
 
 func EndMainBatch():
@@ -491,36 +507,36 @@ func EndMainBatch():
 	ignoring = true
 	playerData.currentBatchIndex += 1
 	#PLAY WINNING SHIT
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	if (playerData.currentBatchIndex == 3): 
 		healthCounter.speaker_truedeath.stop()
 		healthCounter.DisableCounter()
 		defibCutter.BlipError_Both()
 		if (endless): musicManager.EndTrack()
-		await get_tree().create_timer(.4, false).timeout
+		await GlobalVariables.tree.create_timer(.4, false).timeout
 		if (endless):
 			counting = false
 			BeginScoreLerp()
 			return
 		#gameover.PlayerWon()
 		camera.BeginLerp("enemy")
-		await get_tree().create_timer(.7, false).timeout
+		await GlobalVariables.tree.create_timer(.7, false).timeout
 		brief.MainRoutine()
 		return
 	healthCounter.DisableCounter()
 	speaker_roundShutDown.play()
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	speaker_winner.play()
 	ui_winner.visible = true
 	itemManager.newBatchHasBegun = true
-	await get_tree().create_timer(2.33, false).timeout
+	await GlobalVariables.tree.create_timer(2.33, false).timeout
 	speaker_roundShutDown.play()
 	speaker_winner.stop()
 	musicManager.EndTrack()
 	ui_winner.visible = false
 	#REGROW BARREL IF MISSING
 	if (barrelSawedOff):
-		await get_tree().create_timer(.6, false).timeout
+		await GlobalVariables.tree.create_timer(.6, false).timeout
 		await(segmentManager.GrowBarrel())
 	#MAIN BATCH LOOP
 	MainBatchSetup(false)
@@ -531,9 +547,5 @@ func EndMainBatch():
 	for i in range(ejectManagers.size()):
 		ejectManagers[i].FadeOutShell()
 	#TRACK MANAGER
-	await get_tree().create_timer(2, false).timeout
+	await GlobalVariables.tree.create_timer(2, false).timeout
 	musicManager.LoadTrack_FadeIn()
-
-func set_shells(sequence_array: Array):
-	shellSpawner.sequenceArray = sequence_array
-	pass

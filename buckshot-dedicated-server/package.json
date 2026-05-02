@@ -1,0 +1,12 @@
+{
+  "name": "buckshot-dedicated-server",
+  "version": "1.0.0",
+  "description": "Dedicated server for Buckshot Roulette multiplayer",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  }
+}

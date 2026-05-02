@@ -40,36 +40,36 @@ func _ready():
 
 func BootupDisplay_ShowCurrentRound():
 	cam.BeginLerp("health counter")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	var current_round = intermed.game_state.MAIN_active_round_index
 	if current_round <= 2:
 		ui_round_indicator_selector.transform.origin = pos_array_rounds[current_round].transform.origin
 	ClearDisplay()
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	if properties.is_active: speaker_round_indicator_hum.play()
 	ui_round_indicator_base.visible = true
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	if properties.is_active: 
 		animator_selector.play("loop")
 		if intermed.game_state.MAIN_active_round_index != 0:
 			intermed.music_manager.LoadTrack(intermed.game_state.MAIN_active_round_index, false, true)
 	ui_round_indicator_selector.visible = true
-	await get_tree().create_timer(1.4, false).timeout
+	await GlobalVariables.tree.create_timer(1.4, false).timeout
 	if properties.is_active: speaker_round_indicator_hum.stop()
 	ClearDisplay()
 	if properties.is_active: speaker_space.play()
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 
 func BootupDisplay_Health():
 	cam.BeginLerp("health counter")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	if properties.is_active: speaker_space.stop()
 	if properties.is_active: speaker_horizontal_line_bootup.play()
 	ui_led_parent.visible = true
-	#await get_tree().create_timer(.4, false).timeout
+	#await GlobalVariables.tree.create_timer(.4, false).timeout
 	ui_divider1.visible = true; ui_divider2.visible = true
 	animator_dividers.play("show")
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	if properties.is_active: speaker_horizontal_line_bootup.stop()
 	var starting_health = intermed.game_state.MAIN_active_round_dict.starting_health
 	properties.health_current = starting_health
@@ -80,9 +80,9 @@ func BootupDisplay_Health():
 		ui_charge_array[i].visible = true
 		ui_charge_array_temp[i].visible = true
 	if properties.is_active: speaker_health_bootup.play()
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	intermed.game_state.turn_order.StartIndicator(intermed.game_state.MAIN_active_turn_order)
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 
 var blinking_last_charge = false
 func BlinkLastCharge():
@@ -90,11 +90,11 @@ func BlinkLastCharge():
 		if blinking_last_charge:
 			charge_to_blink_horizontal.visible = true
 			charge_to_blink_vertical.visible = true
-		await get_tree().create_timer(charge_blink_delay, false).timeout
+		await GlobalVariables.tree.create_timer(charge_blink_delay, false).timeout
 		if blinking_last_charge:
 			charge_to_blink_horizontal.visible = false
 			charge_to_blink_vertical.visible = false
-		await get_tree().create_timer(charge_blink_delay, false).timeout
+		await GlobalVariables.tree.create_timer(charge_blink_delay, false).timeout
 		pass
 	pass
 

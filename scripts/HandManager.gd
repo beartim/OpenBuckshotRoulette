@@ -80,7 +80,7 @@ func PickupItemFromTable(itemName : String):
 		for res in amountArray:
 			if res.itemName == itemName: res.amount_player -= 1
 			break
-	await get_tree().create_timer(lerpDuration -.4, false).timeout
+	await GlobalVariables.tree.create_timer(lerpDuration -.4, false).timeout
 	if (whichHandToGrabWith == "right"): hand_defaultR.visible = false
 	else: hand_defaultL.visible = false
 	dealerAI.Speaker_HandCrack()
@@ -105,19 +105,18 @@ func PickupItemFromTable(itemName : String):
 		"adrenaline":
 			hand_adrenaline.visible = true
 	itemManager.itemArray_instances_dealer.remove_at(matchIndex)
-	if activeInstance == null: return
 	var tempindicator = activeInstance.get_child(0)
 	var gridname = tempindicator.dealerGridName
 	if (!stealing): itemManager.gridParentArray_enemy_available.append(gridname)
 	if (stealing): inter.RemovePlayerItemFromGrid(activeInstance)
 	activeInstance.queue_free()
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	ReturnHand()
 	if (stealing):
 		cam.BeginLerp("enemy")
 	if (whichGridSide == "right"): animator_dealerHeadLook.play("dealer look forward from right")
 	else: animator_dealerHeadLook.play("dealer look forward from left")
-	await get_tree().create_timer(lerpDuration + .01, false).timeout
+	await GlobalVariables.tree.create_timer(lerpDuration + .01, false).timeout
 	HandFailsafe()
 	var animationName = "dealer use " + itemName
 	PlaySound(itemName)
@@ -125,7 +124,7 @@ func PickupItemFromTable(itemName : String):
 	animator_hands.play(animationName)
 	var length = animator_hands.get_animation(animationName).get_length()
 	moving = false
-	await get_tree().create_timer(length, false).timeout
+	await GlobalVariables.tree.create_timer(length, false).timeout
 	stealing = false
 	pass
 
@@ -221,3 +220,27 @@ func LerpHandMovement():
 			handParent_R.transform.origin = pos
 			handParent_R.rotation_degrees = rot
 		pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

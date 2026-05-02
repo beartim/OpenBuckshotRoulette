@@ -5,7 +5,7 @@ class_name MP_ItemStealing extends Node
 func BeginItemStealing():
 	properties.intermediary.filter.PanLowPass_Out()
 	properties.cam.BeginLerp("steal item view")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	properties.permissions.SetMainPermission_Stealing()
 
 func AdrenalineBrightness():

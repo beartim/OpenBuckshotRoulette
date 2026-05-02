@@ -45,11 +45,10 @@ class_name IntroManager extends Node
 
 var allowingPills = false
 func _ready():
-	if OpenBRGlobal.is_multiplayer: return
 	parent_pills.visible = false
 	allowingPills = false
 	SetControllerState()
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	if (roundManager.playerData.playerEnteringFromDeath && !roundManager.playerData.enteringFromTrueDeath):
 		RevivalBathroomStart()
 	else:
@@ -82,28 +81,26 @@ func SetControllerState():
 
 func MainBathroomStart():
 	RestRoomIdle()
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	viewblocker.visible = false
 	MainTrackLoad()
-	await get_tree().create_timer(3, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	Hint()
 	cursor.SetCursor(true, true)
 	intbranch_bathroomdoor.interactionAllowed = true
 	if (allowingPills): 
 		intbranch_pillbottle.interactionAllowed = true
-		# if (GlobalVariables.using_steam):
-		intbranch_crt.interactionAllowed = true
+		if (GlobalVariables.using_steam): intbranch_crt.interactionAllowed = true
 	if (cursor.controller_active): btn_bathroomdoor.grab_focus()
 	controller.previousFocus = btn_bathroomdoor
 	if (allowingPills): 
 		btn_pills.visible = true
-		# if (GlobalVariables.using_steam):
-		btn_screen.visible = true
+		if (GlobalVariables.using_steam): btn_screen.visible = true
 	btn_bathroomdoor.visible = true
 	anim_pillflicker.play("flicker pill")
 
 func Hint():
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	if (!roundManager.playerData.seenHint):
 		animator_hint.play("show")
 		roundManager.playerData.seenHint = true
@@ -113,16 +110,16 @@ func RevivalBathroomStart():
 	cameraParent.rotation_degrees = rot_floor
 	#animator_smokerdude.stop(true)
 	smokerdude_revival.visible = true
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	speaker_defib.play()
-	await get_tree().create_timer(.85, false).timeout
+	await GlobalVariables.tree.create_timer(.85, false).timeout
 	dia.speaker_click.stream = dia.soundArray_clicks[0]
 	animator_smokerdude.play("revive player")
 	cameraShaker.Shake()
 	animator_pp.play("revival brightness")
 	viewblocker.visible = false
 	MainTrackLoad()
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	animator_smokerdude.play("revive player")
 	dia.ShowText_Forever(tr("YOURE LUCKY"))
 	var n = roundManager.playerData.playername
@@ -130,23 +127,23 @@ func RevivalBathroomStart():
 	#tr("GAME_STATUS_%d" % status_index)
 	var secondpart = "\n"+tr("THE NIGHT")
 	var full = firstpart + secondpart
-	await get_tree().create_timer(4, false).timeout
+	await GlobalVariables.tree.create_timer(4, false).timeout
 	dia.ShowText_Forever(full)
-	await get_tree().create_timer(4, false).timeout
+	await GlobalVariables.tree.create_timer(4, false).timeout
 	dia.HideText()
 	animator_pp.play("brightness fade out")
-	await get_tree().create_timer(2.05, false).timeout
+	await GlobalVariables.tree.create_timer(2.05, false).timeout
 	smokerdude_revival.visible = false
 	RestRoomIdle()
 	animator_pp.play("brightness fade in")
 	dia.speaker_click.stream = dia.soundArray_clicks[3]
-	await get_tree().create_timer(3, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	cursor.SetCursor(true, true)
 	if (allowingPills): 
 		intbranch_pillbottle.interactionAllowed = true
-		# if (GlobalVariables.using_steam):
-		intbranch_crt.interactionAllowed = true
-		btn_screen.visible = true
+		if (GlobalVariables.using_steam):
+			intbranch_crt.interactionAllowed = true
+			btn_screen.visible = true
 		btn_pills.visible = true
 		anim_pillflicker.play("flicker pill")
 	if (cursor.controller_active): btn_bathroomdoor.grab_focus()
@@ -172,11 +169,11 @@ func Interaction_PillBottle():
 	btn_screen.visible = false
 	btn_bathroomdoor.visible = false
 	animator_camera.play("camera check pills")
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	speaker_pillchoice.play()
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 	animator_pillchoice.play("show")
-	await get_tree().create_timer(.7, false).timeout
+	await GlobalVariables.tree.create_timer(.7, false).timeout
 	cursor.SetCursor(true, true)
 	
 	if (cursor.controller_active): btn_pillsNo.grab_focus()
@@ -199,13 +196,13 @@ func Interaction_CRT():
 	btn_bathroomdoor.visible = false
 	btn_screen.visible = false
 	animator_camera.play("camera check crt")
-	await get_tree().create_timer(2.6, false).timeout
+	await GlobalVariables.tree.create_timer(2.6, false).timeout
 	crtManager.Bootup()
-	await get_tree().create_timer(0.54, false).timeout
+	await GlobalVariables.tree.create_timer(0.54, false).timeout
 
 func StartSound():
 	crtManager.speaker_playerwalk.play()
-	await get_tree().create_timer(2.04, false).timeout
+	await GlobalVariables.tree.create_timer(2.04, false).timeout
 	crtManager.speaker_bootuploop.play()
 
 func EnabledInteractionCRT():
@@ -233,14 +230,14 @@ func SelectedPill(selected : bool):
 	btn_pillsNo.visible = false
 	intbranch_pillyes.interactionAllowed = false
 	intbranch_pillno.interactionAllowed = false
-	await get_tree().create_timer(2.05, false).timeout
+	await GlobalVariables.tree.create_timer(2.05, false).timeout
 	if(selected): 
 		parent_pills.visible = false
 		endlessmode.SetupEndless()
 	RestRoomIdle()
 	if selected: crtManager.SetCRT(false)
 	animator_pp.play("brightness fade in")
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	cursor.SetCursor(true, true)
 	if (selected): ach.UnlockAchievement("ach3")
 	intbranch_bathroomdoor.interactionAllowed = true
@@ -262,11 +259,11 @@ func RevertCRT():
 	btn_pillsNo.visible = false
 	intbranch_pillyes.interactionAllowed = false
 	intbranch_pillno.interactionAllowed = false
-	await get_tree().create_timer(2.05, false).timeout
+	await GlobalVariables.tree.create_timer(2.05, false).timeout
 	RestRoomIdle()
 	animator_pp.play("brightness fade in")
 	anim_pillflicker.play("flicker pill")
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	cursor.SetCursor(true, true)
 	intbranch_bathroomdoor.interactionAllowed = true
 	btn_bathroomdoor.visible = true
@@ -294,13 +291,12 @@ func Interaction_BathroomDoor():
 	btn_screen.visible = false
 	btn_bathroomdoor.visible = false
 	animator_camera.play("camera exit bathroom")
-	await get_tree().create_timer(5, false).timeout
+	await GlobalVariables.tree.create_timer(5, false).timeout
 	cursor.SetCursor(true, true)
 	if (cursor.controller_active): btn_backroom.grab_focus()
 	controller.previousFocus = btn_backroom
 	btn_backroom.visible = true
 	intbranch_backroomdoor.interactionAllowed = true
-	if OpenBRGlobal.is_multiplayer: return
 	intbranch_pillbottle.interactionAllowed = false
 	intbranch_crt.interactionAllowed = false
 	counting = true
@@ -320,7 +316,7 @@ func KickDoorBackroom():
 
 func KickDoorLobby():
 	roundManager.playerData.stat_doorsKicked += 1
-	await get_tree().create_timer(.25, false).timeout
+	await GlobalVariables.tree.create_timer(.25, false).timeout
 	filter.BeginPan(filter.lowPassDefaultValue, filter.lowPassMaxValue)
 	speaker_amb_restroom.stop()
 

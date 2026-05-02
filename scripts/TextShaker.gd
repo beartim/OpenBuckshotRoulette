@@ -13,14 +13,12 @@ func _ready():
 	Shake()
 
 func Shake():
-	var tree:= get_tree()
-	if tree == null: tree = OpenBRGlobal.fetch_tree()
 	while(looping):
 		var randx = randf_range(offset1, offset2)
 		var randy = randf_range(offset1, offset2)
 		text.position = Vector2(randx, randy)
-		await tree.create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		text.position = origpos
-		await tree.create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		pass
 	pass

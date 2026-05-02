@@ -16,6 +16,6 @@ func Flicker():
 	while flickering:
 		var energy = randf_range(energy_r1, energy_r2)
 		light.light_energy = energy
-		await get_tree().create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		pass
 	pass

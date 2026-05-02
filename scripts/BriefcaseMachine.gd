@@ -25,15 +25,15 @@ var latchRaisedR = false
 
 func MainRoutine():
 	speaker_machine.play()
-	await get_tree().create_timer(.42, false).timeout
+	await GlobalVariables.tree.create_timer(.42, false).timeout
 	parent_eyes.visible = true
-	await get_tree().create_timer(1.28, false).timeout
+	await GlobalVariables.tree.create_timer(1.28, false).timeout
 	parent_eyes.visible = false
 	anim_machine.play("move to table")
 	parent_machine.visible = true
-	await get_tree().create_timer(5.14, false).timeout
+	await GlobalVariables.tree.create_timer(5.14, false).timeout
 	cam.BeginLerp("cash briefcase")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	cursor.SetCursor(true, true)
 	intbranch_L.interactionAllowed = true
 	intbranch_R.interactionAllowed = true
@@ -43,7 +43,7 @@ func MainRoutine():
 
 func CheckLatches():
 	if (latchRaisedL == true && latchRaisedR == true):
-		await get_tree().create_timer(.3, false).timeout
+		await GlobalVariables.tree.create_timer(.3, false).timeout
 		intbranch_lid.interactionAllowed = true
 
 func OpenLatch(alias : String):

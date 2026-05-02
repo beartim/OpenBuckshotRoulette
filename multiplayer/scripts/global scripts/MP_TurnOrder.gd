@@ -12,7 +12,7 @@ func _ready():
 
 func StartIndicator(direction : String):
 	animator_indicator.speed_scale = 0
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	speaker_turn_order_bootup.play()
 	parent.visible = true
 	animator_indicator.speed_scale = default_animation_speed

@@ -84,14 +84,14 @@ func PickupItemFromTable(itemParent : Node3D, passedItemName : String):
 	rot_next = rot_hand
 	elapsed = 0
 	moving = true
-	await get_tree().create_timer(lerpDuration -.1, false).timeout
+	await GlobalVariables.tree.create_timer(lerpDuration -.1, false).timeout
 	moving = false
 	if (!stealing): RemovePlayerItemFromGrid(temp_itemParent)
 	temp_itemParent.queue_free() #check where player grid index is given, and remove item from player item array, unoccupy given grid
 	if (stealing):
 		camera.BeginLerp("home")
 		stealing_fs = false
-		await get_tree().create_timer(.4, false).timeout
+		await GlobalVariables.tree.create_timer(.4, false).timeout
 		pos_hand = pos_hand_main
 		rot_hand = rot_hand_main
 		var amountArray : Array[AmountResource] = amounts.array_amounts
@@ -117,24 +117,24 @@ func InteractWith(itemName : String):
 	match (itemName):
 		"handcuffs":
 			animator_dealerHands.play("dealer get handcuffed")
-			await get_tree().create_timer(1, false).timeout
+			await GlobalVariables.tree.create_timer(1, false).timeout
 			camera.BeginLerp("enemy")
-			await get_tree().create_timer(1.3, false).timeout
+			await GlobalVariables.tree.create_timer(1.3, false).timeout
 			camera.BeginLerp("dealer handcuffs")
 			roundManager.dealerCuffed = true
 			dealerIntelligence.dealerAboutToBreakFree = false
-			await get_tree().create_timer(1.3, false).timeout
+			await GlobalVariables.tree.create_timer(1.3, false).timeout
 			camera.BeginLerp("home")
-			await get_tree().create_timer(.6, false).timeout
+			await GlobalVariables.tree.create_timer(.6, false).timeout
 			EnablePermissions()
 		"beer":
 			roundManager.playerData.stat_beerDrank += 330
 			var isFinalShell = false
 			if (roundManager.shellSpawner.sequenceArray.size() == 1): isFinalShell = true
 			animator_playerHands.play("player use beer")
-			await get_tree().create_timer(1.4, false).timeout
+			await GlobalVariables.tree.create_timer(1.4, false).timeout
 			shellEject_player.FadeOutShell()
-			await get_tree().create_timer(4.2, false).timeout
+			await GlobalVariables.tree.create_timer(4.2, false).timeout
 			#check if ejected last shell
 			if (!isFinalShell): EnablePermissions()
 			else:
@@ -142,42 +142,43 @@ func InteractWith(itemName : String):
 		"magnifying glass":
 			animator_playerHands.play("player use magnifier")
 			var length = animator_playerHands.get_animation("player use magnifier").get_length()
-			await get_tree().create_timer(length + .2, false).timeout
+			await GlobalVariables.tree.create_timer(length + .2, false).timeout
 			EnablePermissions()
 		"cigarettes":
 			roundManager.playerData.stat_cigSmoked += 1
 			animator_playerHands.play("player use cigarettes")
-			await get_tree().create_timer(5, false).timeout
+			await GlobalVariables.tree.create_timer(5, false).timeout
 			itemManager.numberOfCigs_player -= 1
 			EnablePermissions()
 		"handsaw":
 			animator_playerHands.play("player use handsaw")
 			roundManager.barrelSawedOff = true
 			roundManager.currentShotgunDamage = 2
-			await get_tree().create_timer(4.28 + .2, false).timeout
+			await GlobalVariables.tree.create_timer(4.28 + .2, false).timeout
 			EnablePermissions()
 		"expired medicine":
 			PlaySound(sound_use_medicine)
 			animator_playerHands.play("player use expired pills")
 			medicine.UseMedicine()
-			#await get_tree().create_timer(4.28 +.2 + 4.3, false).timeout
+			#await GlobalVariables.tree.create_timer(4.28 +.2 + 4.3, false).timeout
 			#EnablePermissions()
 		"inverter":
 			PlaySound(sound_use_inverter)
 			animator_playerHands.play("player use inverter")
 			if (roundManager.shellSpawner.sequenceArray[0] == "live"): roundManager.shellSpawner.sequenceArray[0] = "blank"
 			else: roundManager.shellSpawner.sequenceArray[0] = "live"
-			await get_tree().create_timer(3.2, false).timeout
+			_push_debug_tools_update()
+			await GlobalVariables.tree.create_timer(3.2, false).timeout
 			EnablePermissions()
 		"burner phone":
 			PlaySound(sound_use_burnerphone)
 			animator_playerHands.play("player use burner phone")
-			await get_tree().create_timer(7.9, false).timeout
+			await GlobalVariables.tree.create_timer(7.9, false).timeout
 			EnablePermissions()
 		"adrenaline":
 			PlaySound(sound_use_adrenaline)
 			animator_playerHands.play("player use adrenaline")
-			await get_tree().create_timer(5.3 + .2, false).timeout
+			await GlobalVariables.tree.create_timer(5.3 + .2, false).timeout
 			items.SetupItemSteal()
 			#EnablePermissions()
 	CheckAchievement_koni()
@@ -197,7 +198,7 @@ func CheckAchievement_full():
 func AdrenalineHit():
 	anim_pp.play("adrenaline brightness")
 	filter.BeginPan(filter.lowPassDefaultValue, filter.lowPassMaxValue)
-	await get_tree().create_timer(6, false).timeout
+	await GlobalVariables.tree.create_timer(6, false).timeout
 	filter.BeginPan(filter.effect_lowPass.cutoff_hz, filter.lowPassDefaultValue)
 
 func PlaySound(clip : AudioStream):
@@ -224,6 +225,11 @@ func DisablePermissions():
 
 func PlaySound_BreakHandcuffs():
 	speaker_breakcuffs.play()
+
+func _push_debug_tools_update() -> void:
+	var debug_tools = get_tree().get_first_node_in_group("debug_tools")
+	if debug_tools != null:
+		debug_tools.sync_from_sequence(roundManager.shellSpawner.sequenceArray)
 
 func RemovePlayerItemFromGrid(parent : Node3D):
 	var indic = parent.get_child(0)

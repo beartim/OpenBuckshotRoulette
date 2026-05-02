@@ -19,9 +19,9 @@ func UseMedicine():
 	var dying = GetFlip()
 	if (dying):Perms(8.78)
 	else: Perms(6.78)
-	await get_tree().create_timer(3.05, false).timeout
+	await GlobalVariables.tree.create_timer(3.05, false).timeout
 	death.DisableSpeakers()
-	await get_tree().create_timer(1.25 + .1, false).timeout
+	await GlobalVariables.tree.create_timer(1.25 + .1, false).timeout
 	if (dying):
 		counter.skipping_careful = true
 		rm.health_player -= 1
@@ -40,33 +40,33 @@ func UseMedicine():
 func UseMedicine_Dealer():
 	var dying = dealerDying
 	if (dying):
-		await get_tree().create_timer(5, false).timeout
+		await GlobalVariables.tree.create_timer(5, false).timeout
 		speaker_medicine.stream = death_dealer
 		speaker_medicine.play()
 		anim_dealerhands.play("dealer death medicine")
-		await get_tree().create_timer(.41, false).timeout
+		await GlobalVariables.tree.create_timer(.41, false).timeout
 		death.cameraShaker.Shake()
-		await get_tree().create_timer(.6, false).timeout
+		await GlobalVariables.tree.create_timer(.6, false).timeout
 		#rm.health_opponent -= 1
 		counter.overriding_medicine = true
 		counter.overriding_medicine_adding = false
 		counter.UpdateDisplayRoutineCigarette_Enemy()
-		await get_tree().create_timer(.5, false).timeout
+		await GlobalVariables.tree.create_timer(.5, false).timeout
 		anim_dealerhands.play("RESET")
-		await get_tree().create_timer(2, false).timeout
+		await GlobalVariables.tree.create_timer(2, false).timeout
 		dealerDying = false
 		dealerai.DealerChoice()
 	else:
-		await get_tree().create_timer(4.07, false).timeout
+		await GlobalVariables.tree.create_timer(4.07, false).timeout
 		counter.overriding_medicine = true
 		counter.overriding_medicine_adding = true
 		counter.UpdateDisplayRoutineCigarette_Enemy()
-		await get_tree().create_timer(2, false).timeout
+		await GlobalVariables.tree.create_timer(2, false).timeout
 		dealerDying = false
 		dealerai.DealerChoice()
 
 func Perms(d : float):
-	await get_tree().create_timer(d, false).timeout
+	await GlobalVariables.tree.create_timer(d, false).timeout
 	interaction.EnablePermissions()
 
 func GetFlip():

@@ -25,7 +25,7 @@ func _ready():
 		get_parent().connect("mouse_exited", OnExit)
 		get_parent().connect("pressed", OnPress)
 		if (isDynamic): ui.modulate.a = ui_opacity_inactive
-		await get_tree().create_timer(3, false).timeout
+		await GlobalVariables.tree.create_timer(3, false).timeout
 	print("properties is active: ", properties.is_active)
 
 func _process(delta):

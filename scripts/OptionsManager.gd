@@ -2,7 +2,7 @@ class_name OptionsManager extends Node
 
 @export var controller : ControllerManager
 
-@export var defaultOption_language : String = "ZHS"
+@export var defaultOption_language : String = "EN"
 @export var defaultOption_windowed : bool
 @export var defaultOption_controllerActive : bool
 var defaultOption_inputmap_keyboard = {
@@ -53,7 +53,6 @@ var setting_greyscale_death = true
 var setting_music_enabled = true
 
 func _ready():
-	OpenBRGlobal.options_manager = self
 	LoadSettings()
 	if (!receivedFile):
 		setting_windowed = defaultOption_windowed
@@ -61,7 +60,7 @@ func _ready():
 		setting_language = defaultOption_language
 		setting_inputmap_keyboard = defaultOption_inputmap_keyboard
 		setting_inputmap_controller = defaultOption_inputmap_controller
-		#ApplySettings_window()
+		ApplySettings_window()
 		ApplySettings_controller()
 		ApplySettings_language()
 		ApplySettings_inputmap()
@@ -139,10 +138,8 @@ func ApplySettings_music():
 func UpdateDisplay():
 	ui_volume.text = str(snapped(setting_volume * 100, .01)) + "%"
 
-func ApplySettings_window(is_windowed = setting_windowed):
-	if OpenBRGlobal.is_android(): return
-	OpenBRGlobal.is_fullscreen = !is_windowed
-	if (!is_windowed): 
+func ApplySettings_window():
+	if (!setting_windowed): 
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 		ui_fullscreen.modulate.a = 1
 		ui_windowed.modulate.a = .5

@@ -29,7 +29,7 @@ func LoopPartitions():
 		p.text = str(nums[0]) + " ' " + str(nums[1]) + " ' " + str(nums[2])  + " ' " + str(nums[3]) + " ' " + str(nums[4]) + " ' " + str(nums[5]) + " ' " + str(nums[6]) + " ' " + str(nums[7])
 		sp.pitch_scale = randf_range(.9, 1.1)
 		sp.play()
-		await get_tree().create_timer(d, false).timeout
+		await GlobalVariables.tree.create_timer(d, false).timeout
 		for num in nums:
 			if num != 0: finished = false; break
 			finished = true

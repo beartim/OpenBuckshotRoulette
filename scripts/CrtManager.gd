@@ -36,7 +36,6 @@ var selection_range1 = 1
 var selection_range2 = 12
 
 func _ready():
-	if OpenBRGlobal.is_multiplayer: return
 	screenparent_stats.visible = true
 	screenparent_leaderboard.visible = false
 
@@ -56,7 +55,7 @@ func DisableCRT():
 	SetCRT(false)
 	
 func SetCRT(state : bool):
-	if (state):
+	if (state && GlobalVariables.using_steam):
 		bathroom_normal.set_layer_mask_value(1, false)
 		bathroom_broken.visible = true
 		for obj in objarray_normal: obj.visible = false
@@ -93,15 +92,14 @@ func Interaction(alias : String):
 				if (window_index == 0): board.DownloadEntries(selection_range1, selection_range2, "top")
 		"window":
 			branch_window.get_parent().get_child(1).Press()
-			# CycleWindow()
-			pass
+			CycleWindow()
 		"exit":
 			has_exited = true
 			branch_exit.get_parent().get_child(1).Press()
 			viewing = false
 			board.TurnOffDisplay()
 			intro.DisableInteractionCrt()
-			await get_tree().create_timer(.3, false).timeout
+			await GlobalVariables.tree.create_timer(.3, false).timeout
 			intro.RevertCRT()
 			exit.exitAllowed = true
 
@@ -121,11 +119,11 @@ func CycleWindow():
 		screenparent_leaderboard.visible = true
 		screenparent_stats.visible = false
 		board.nocon.visible = true
-	# if (window_index == 0): board.PassLeaderboard(selection_range1, selection_range2, "top")
-	# if (window_index == 1): 
-	# 	board.lock.visible = true
-	# 	board.PassLeaderboard(selection_range1, selection_range2, "overview")
-	# if (window_index == 2): board.PassLeaderboard(1, 49, "friends") #range ignored
+	if (window_index == 0): board.PassLeaderboard(selection_range1, selection_range2, "top")
+	if (window_index == 1): 
+		board.lock.visible = true
+		board.PassLeaderboard(selection_range1, selection_range2, "overview")
+	if (window_index == 2): board.PassLeaderboard(1, 49, "friends") #range ignored
 
 func Bootup():
 	has_exited = false
@@ -136,38 +134,38 @@ func Bootup():
 	for icon in iconbranches: icon.CheckState(window_index)
 	for line in array_bootup:
 		line.visible = true
-		await get_tree().create_timer(.07, false).timeout
+		await GlobalVariables.tree.create_timer(.07, false).timeout
 		speaker_navbeep.pitch_scale = randf_range(1, 1)
 		speaker_navbeep.play()
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	for part in array_partbranch: 
 		part.Loop(true)
-		await get_tree().create_timer(.04, false).timeout
+		await GlobalVariables.tree.create_timer(.04, false).timeout
 		speaker_navbeep.pitch_scale = randf_range(.1, .1)
 		speaker_navbeep.play()
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	for part in array_partbranch: part.Loop(false)
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	for line in array_bootup: line.visible = false
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	speaker_melody.pitch_scale = 2
 	speaker_melody.play()
 	for line in array_bootuplogo: 
 		line.visible = true
-		await get_tree().create_timer(.07, false).timeout
-	await get_tree().create_timer(2, false).timeout
+		await GlobalVariables.tree.create_timer(.07, false).timeout
+	await GlobalVariables.tree.create_timer(2, false).timeout
 	for line in array_bootuplogo: line.visible = false
 	speaker_melody.stop()
 	speaker_melodyhide.play()
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	anim_iconfade.play("fade in")
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	for i in array_stats: 
 		i.visible = true
-		await get_tree().create_timer(.07, false).timeout
+		await GlobalVariables.tree.create_timer(.07, false).timeout
 		speaker_navbeep.pitch_scale = randf_range(.5, .5)
 		speaker_navbeep.play()
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 	intro.EnabledInteractionCRT()
 	exit.exitAllowed = false
 	viewing = true

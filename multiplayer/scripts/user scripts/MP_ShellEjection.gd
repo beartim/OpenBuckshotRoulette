@@ -13,7 +13,7 @@ func EjectShell():
 	shell_branch.SetState(shell_to_eject)
 	animator_fade_out.play("set visible")
 	animator_eject.play("eject shell")
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	speaker_shell_drop.pitch_scale = randf_range(.9, 1)
 	speaker_shell_drop.stream = sounds_shelldrop[randi_range(0, sounds_shelldrop.size() - 1)]
 	speaker_shell_drop.play()

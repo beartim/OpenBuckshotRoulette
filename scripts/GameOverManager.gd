@@ -1,4 +1,4 @@
 class_name GameOverManager extends Node
 
 func PlayerWon():
-	SceneChanger.change("res://scenes/win.tscn")
+	GlobalVariables.tree.change_scene_to_file("res://scenes/win.tscn")

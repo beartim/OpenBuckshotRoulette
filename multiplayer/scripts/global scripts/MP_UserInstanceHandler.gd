@@ -142,7 +142,7 @@ func RemoveInstancesFromGame(instances_to_delete_array : Array):
 				property.ResetLastAliveProperty()
 				winning_socket = property.socket_number
 				break
-		await get_tree().create_timer(3.8, false).timeout
+		await GlobalVariables.tree.create_timer(3.8, false).timeout
 		if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
 			print("a user disconnected, and there are not enough players behind the table to continue. attempting to run win routine for the remaining player")
 			if !intermediary.game_state.MAIN_running_win_routine:
@@ -156,7 +156,7 @@ func CheckToPassTurnAfterUserDisconnect(socket_number_that_disconnected : int):
 	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID: return
 	if (socket_number_that_disconnected == intermediary.game_state.MAIN_active_current_turn_socket) && !intermediary.game_state.MAIN_shotgun_loading_in_progress && !intermediary.game_state.MAIN_running_win_routine:
 		print("the active turn user has disconnected. passing turn to next user ...")
-		await get_tree().create_timer(1, false).timeout
+		await GlobalVariables.tree.create_timer(1, false).timeout
 		round.MainRoutine_PassTurn(round.GetNextTurn_Socket(round.game_state.MAIN_active_current_turn_socket))
 
 func PacketSort(dict : Dictionary):
@@ -170,8 +170,8 @@ func PacketSort(dict : Dictionary):
 			ExitGameWithLobby()
 
 func GetRoot():
-	var root_children = get_tree().root.get_children()
-	for i in get_tree().root.get_children(): if i.name == "mp_main": scene_root = i
+	var root_children = GlobalVariables.tree.root.get_children()
+	for i in GlobalVariables.tree.root.get_children(): if i.name == "mp_main": scene_root = i
 
 func StartMainGame():
 	if (GlobalSteam.HOST_ID == GlobalSteam.STEAM_ID) or (GlobalVariables.mp_debugging): 
@@ -182,7 +182,7 @@ func StartMainGame():
 		else:
 			InitialInstanceSetup_Host()
 		print("waiting 2 seconds for initial instance setup ...")
-		await get_tree().create_timer(2, false).timeout
+		await GlobalVariables.tree.create_timer(2, false).timeout
 		if intermediary.game_state.MAIN_active_environmental_event == "ice machine":
 			intermediary.environmental_event.ShowIceMachine()
 		round.MainRoutine_StartRound()
@@ -245,7 +245,7 @@ func SetupInstances(dictionary_array):
 		
 		properties.socket_number = user.socket_number
 		properties.user_id = user.user_id
-		#properties.user_name = Steam.getFriendPersonaName(user.user_id)
+		properties.user_name = Steam.getFriendPersonaName(user.user_id)
 		properties.cpu_enabled = user.cpu_enabled
 		properties.is_active = setting_active
 

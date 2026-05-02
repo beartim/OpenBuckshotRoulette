@@ -19,6 +19,6 @@ func check_command_line() -> void:
 func JoinGameOutsideLobby(lobby_id):
 	GlobalVariables.lobby_id_found_in_command_line = lobby_id
 	GlobalVariables.running_short_intro_in_lobby_scene = true
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	GlobalVariables.command_line_checked = true
-	SceneChanger.change("res://multiplayer/scenes/mp_lobby.tscn")
+	GlobalVariables.tree.change_scene_to_file("res://multiplayer/scenes/mp_lobby.tscn")

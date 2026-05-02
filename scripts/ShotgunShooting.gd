@@ -27,7 +27,6 @@ class_name ShotgunShooting extends Node
 @export var speaker_splatter : AudioStreamPlayer2D
 @export var anim_splatter : AnimationPlayer
 @export var ach : Achievement
-@export var mp: MP
 
 var playerCanGoAgain
 
@@ -46,14 +45,13 @@ func GrabShotgun():
 	btnParent_shootingChoice.visible = true
 	if (cursorManager.controller_active): btn_you.grab_focus()
 	controller.previousFocus = btn_you
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 
 var disablingDelayShit = false
 var dealerShotTrue = false
 
 func MainSlowDownRoutine(whoCopy : String, fromDealer : bool):
 	var who = whoCopy
-	if shellSpawner.sequenceArray.size() <= 0: return
 	var currentRoundInChamber = shellSpawner.sequenceArray[0]
 	var healthAfterShot = 1
 	if (!fromDealer):
@@ -73,16 +71,16 @@ func MainSlowDownRoutine(whoCopy : String, fromDealer : bool):
 
 
 func BloodSplatter():
-	await get_tree().create_timer(.17, false).timeout
+	await GlobalVariables.tree.create_timer(.17, false).timeout
 	speaker_splatter.pitch_scale = randf_range(.3, .5)
 	speaker_splatter.play()
 	anim_splatter.play("fade out")
 	mat_splatter.material_override.set("albedo_texture", splatters[0])
-	await get_tree().create_timer(.08, false).timeout
+	await GlobalVariables.tree.create_timer(.08, false).timeout
 	mat_splatter.material_override.set("albedo_texture", splatters[1])
-	await get_tree().create_timer(.08, false).timeout
+	await GlobalVariables.tree.create_timer(.08, false).timeout
 	mat_splatter.material_override.set("albedo_texture", splatters[2])
-	await get_tree().create_timer(.08, false).timeout
+	await GlobalVariables.tree.create_timer(.08, false).timeout
 	mat_splatter.material_override.set("albedo_texture", splatters[3])
 	pass
 
@@ -97,17 +95,17 @@ func Shoot(who : String):
 	#CAMERA CONTROLS & ANIMATION DEPENDING ON WHO IS SHOT
 	match(who):
 		"self":
-			await get_tree().create_timer(.25, false).timeout
+			await GlobalVariables.tree.create_timer(.25, false).timeout
 			animator_shotgun.play("player shoot self")
-			await get_tree().create_timer(.5, false).timeout
+			await GlobalVariables.tree.create_timer(.5, false).timeout
 			camera.BeginLerp("enemy")
 		"dealer":
-			await get_tree().create_timer(.25, false).timeout
+			await GlobalVariables.tree.create_timer(.25, false).timeout
 			animator_shotgun.play("player shoot dealer")
-			await get_tree().create_timer(.5, false).timeout
+			await GlobalVariables.tree.create_timer(.5, false).timeout
 			camera.BeginLerp("enemy")
 	#PLAY CORRECT SOUND. ASSIGN CURRENT ROUND IN CHAMBER
-	await get_tree().create_timer(2, false).timeout
+	await GlobalVariables.tree.create_timer(2, false).timeout
 	var currentRoundInChamber = shellSpawner.sequenceArray[0]	
 	MainSlowDownRoutine(who, false)
 	if (who == "self"): whoshot = "player"
@@ -145,13 +143,13 @@ func Shoot(who : String):
 		await(death.Kill("dealer", false, false))
 	if (playerDied): return
 	if (dealerShot): return
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 	#EJECTING SHELLS
 	if (currentRoundInChamber == "blank" && who == "self"):
 		animator_shotgun.play("player eject shell")
-		await get_tree().create_timer(.85, false).timeout
+		await GlobalVariables.tree.create_timer(.85, false).timeout
 		camera.BeginLerp("home")
-		await get_tree().create_timer(1.35, false).timeout
+		await GlobalVariables.tree.create_timer(1.35, false).timeout
 		FinalizeShooting(playerCanGoAgain, true, false, false)
 		return
 	if (currentRoundInChamber == "blank" && who == "dealer"): disablingDelayShit = true
@@ -160,8 +158,8 @@ func Shoot(who : String):
 func ShootingDealerEjection(currentRoundInChamberCopy : String, whoCopy : String, hasDelay : bool):
 	if ((currentRoundInChamberCopy == "blank" or currentRoundInChamberCopy == "live") && whoCopy == "dealer"):
 		animator_shotgun.play("player eject shell2")
-		await get_tree().create_timer(2, false).timeout
-	if (hasDelay): await get_tree().create_timer(2.5, false).timeout
+		await GlobalVariables.tree.create_timer(2, false).timeout
+	if (hasDelay): await GlobalVariables.tree.create_timer(2.5, false).timeout
 	if (!disablingDelayShit): 
 		FinalizeShooting(playerCanGoAgain, true, true, false)
 	else: 
@@ -172,26 +170,25 @@ var delaying = false
 var isPlayerSide = false
 func FinalizeShooting(playerCanGoAgain : bool, placeShotgunOnTable : bool, waitForRevival : bool, addDelay : bool):
 	if(placeShotgunOnTable): animator_shotgun.play("player place on table after eject")
-	if mp: mp._rpc_put_down_shotgun()
 	shotgunshaker.StopShaking()
 	#shellSpawner.sequenceArray.remove_at(0)
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	shotgunIndicator.Revert()
 	ShotgunCollider(true)
-	if (death.shitIsFuckedUp): await get_tree().create_timer(3, false).timeout
-	if (waitForRevival): await get_tree().create_timer(2, false).timeout
-	if (addDelay): await get_tree().create_timer(3, false).timeout
-	if (delaying): await get_tree().create_timer(4, false).timeout
-	if (whatTheFuck): await get_tree().create_timer(2, false).timeout
+	if (death.shitIsFuckedUp): await GlobalVariables.tree.create_timer(3, false).timeout
+	if (waitForRevival): await GlobalVariables.tree.create_timer(2, false).timeout
+	if (addDelay): await GlobalVariables.tree.create_timer(3, false).timeout
+	if (delaying): await GlobalVariables.tree.create_timer(4, false).timeout
+	if (whatTheFuck): await GlobalVariables.tree.create_timer(2, false).timeout
 	whatTheFuck = false
 	#delaying = false
-	if (roundManager.shellSpawner.sequenceArray.size() == 0 && dealerShotTrue): await get_tree().create_timer(2, false).timeout
+	if (roundManager.shellSpawner.sequenceArray.size() == 0 && dealerShotTrue): await GlobalVariables.tree.create_timer(2, false).timeout
 	#abc
 	if ((roundManager.health_opponent <= 2 or roundManager.health_player <= 2) && roundManager.playerData.currentBatchIndex == 2 && !roundManager.endless):
 		if (roundManager.health_opponent <= 2 && !roundManager.wireIsCut_dealer):
-			await get_tree().create_timer(2, false).timeout
+			await GlobalVariables.tree.create_timer(2, false).timeout
 		if (roundManager.health_player <= 2 && !roundManager.wireIsCut_player):
-			await get_tree().create_timer(2, false).timeout
+			await GlobalVariables.tree.create_timer(2, false).timeout
 	if(roundManager.health_opponent != 0): roundManager.EndTurn(playerCanGoAgain)
 
 func CheckAchievement_coinflip():
@@ -206,9 +203,6 @@ func CheckAchievement_style():
 	if ("handsaw" in roundManager.playerCurrentTurnItemArray): ach.UnlockAchievement("ach15")
 
 func PlayShootingSound():
-	if shellSpawner.sequenceArray.size() <= 0:
-		speaker_blank.play()
-		return
 	var currentRoundInChamber = shellSpawner.sequenceArray[0]
 	if (currentRoundInChamber == "live"):
 		CheckIfFinalShot()

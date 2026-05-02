@@ -23,7 +23,6 @@ class_name DeathManager extends Node
 @export var animator_pp : AnimationPlayer
 @export var speaker_heartbeat : AudioStreamPlayer2D
 @export var rm : RoundManager
-@export var mp: MP
 
 func _ready():
 	defibParent.visible = false
@@ -37,26 +36,24 @@ func Kill(who : String, trueDeath : bool, returningShotgun : bool):
 			if (trueDeath):
 				pass
 			else:
-				await get_tree().create_timer(.08, false).timeout
+				await GlobalVariables.tree.create_timer(.08, false).timeout
 				viewblocker.visible = true
 				if (returningShotgun):
 					var addingDelay = false
 					animator_shotgun.play("RESET")
 					ejectManager_player.DeathEjection()
-					await get_tree().create_timer(2)
+					await GlobalVariables.tree.create_timer(2)
 					if (shotgunShooting.roundManager.health_opponent == 1 or shotgunShooting.roundManager.health_player == 1): addingDelay = true
 					#if (shellLoader.roundManager.shellSpawner.sequenceArray.size() != 0): shotgunShooting.delaying = true
 					if (shotgunShooting.roundManager.health_player == 1): shitIsFuckedUp = true
 					if (shotgunShooting.roundManager.health_player != 0): shotgunShooting.FinalizeShooting(shotgunShooting.playerCanGoAgain, false, true, addingDelay)
 				DisableSpeakers()
-				if shotgunShooting.roundManager.health_player == 0:
-					if mp == null: shotgunShooting.roundManager.OutOfHealth("player")
-					else:
-						shotgunShooting.roundManager.EndMainBatch()
+				if (shotgunShooting.roundManager.health_player == 0):
+					shotgunShooting.roundManager.OutOfHealth("player")
 					return
-				await get_tree().create_timer(.4, false).timeout
+				await GlobalVariables.tree.create_timer(.4, false).timeout
 				speaker_playerDefib.play()
-				await get_tree().create_timer(.85, false).timeout
+				await GlobalVariables.tree.create_timer(.85, false).timeout
 				speaker_heartbeat.play()
 				animator_pp.play("revival brightness")
 				defibParent.visible = true
@@ -65,9 +62,9 @@ func Kill(who : String, trueDeath : bool, returningShotgun : bool):
 				filter.BeginPan(filter.lowPassMaxValue, filter.lowPassDefaultValue)
 				FadeInSpeakers()
 				cameraShaker.Shake()
-				await get_tree().create_timer(.6, false).timeout
+				await GlobalVariables.tree.create_timer(.6, false).timeout
 				animator_playerDefib.play("remove defib device")
-				await get_tree().create_timer(.4, false).timeout
+				await GlobalVariables.tree.create_timer(.4, false).timeout
 				await(healthCounter.UpdateDisplayRoutine(false, !shotgunShooting.playerCanGoAgain, false))
 				defibParent.visible = false
 				pass
@@ -87,13 +84,13 @@ func Kill(who : String, trueDeath : bool, returningShotgun : bool):
 				shellLoader.shotgunHand_L.visible = false
 				shellLoader.shotgunHand_R.visible = false
 				shotgunShooting.roundManager.dealerAtTable = false
-				await get_tree().create_timer(.4, false).timeout
+				await GlobalVariables.tree.create_timer(.4, false).timeout
 				speaker_crash.play()
 				if (!dealerKilledSelf):
 					#player shot dealer. eject shell and end turn here.
 					shotgunShooting.ShootingDealerEjection(shotgunShooting.shellSpawner.sequenceArray[0], "dealer", false)
 					pass
-				await get_tree().create_timer(1.8, false).timeout
+				await GlobalVariables.tree.create_timer(1.8, false).timeout
 				if(shotgunShooting.roundManager.health_opponent == 0):
 					shotgunShooting.roundManager.OutOfHealth("dealer")
 					healthCounter.UpdateDisplayRoutine(false, false, true)
@@ -111,7 +108,7 @@ func Kill(who : String, trueDeath : bool, returningShotgun : bool):
 					animator_dealerHands.play("dealer hands on table cuffed")
 					shotgunShooting.roundManager.waitingForReturn = true
 				animator_dealer.play("dealer return to table")
-				await get_tree().create_timer(2, false).timeout
+				await GlobalVariables.tree.create_timer(2, false).timeout
 				if (dealerKilledSelf): dealerAI.EndDealerTurn(dealerAI.dealerCanGoAgain)
 
 func MedicineDeath():
@@ -121,9 +118,9 @@ func MedicineDeath():
 	if (shotgunShooting.roundManager.health_player == 0):
 		shotgunShooting.roundManager.OutOfHealth("player")
 		return
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	speaker_playerDefib.play()
-	await get_tree().create_timer(.85, false).timeout
+	await GlobalVariables.tree.create_timer(.85, false).timeout
 	speaker_heartbeat.play()
 	animator_pp.play("revival brightness")
 	defibParent.visible = true
@@ -132,32 +129,34 @@ func MedicineDeath():
 	filter.BeginPan(filter.lowPassMaxValue, filter.lowPassDefaultValue)
 	FadeInSpeakers()
 	cameraShaker.Shake()
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	animator_playerDefib.play("remove defib device")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	#await(healthCounter.UpdateDisplayRoutine(false, !shotgunShooting.playerCanGoAgain, false))
 	defibParent.visible = false
 
 @export var ach : Achievement
 func MainDeathRoutine():
-	if mp: return
 	var loadingHeaven = false
 	if (shotgunShooting.roundManager.endless):
 		if (rm.endscore != null):
 			if (rm.endscore > 1000000): ach.UnlockAchievement("ach10")
-		await get_tree().create_timer(.5, false).timeout
-		SceneChanger.change("res://scenes/main.tscn")
+		await GlobalVariables.tree.create_timer(.5, false).timeout
+		print("changing scene to: death")
+		GlobalVariables.tree.change_scene_to_file("res://scenes/death.tscn")
 		return
 	if (shotgunShooting.roundManager.wireIsCut_player): 
 		shotgunShooting.roundManager.playerData.enteringFromTrueDeath = true
 		loadingHeaven = true
 	shotgunShooting.roundManager.playerData.playerEnteringFromDeath = true
-	if mp == null: await(savefile.SaveGame())
-	await get_tree().create_timer(.5, false).timeout
+	await(savefile.SaveGame())
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	if (!loadingHeaven): 
-		SceneChanger.change("res://scenes/main.tscn")
+		print("changing scene to: death")
+		GlobalVariables.tree.change_scene_to_file("res://scenes/death.tscn")
 	else: 
-		SceneChanger.change("res://scenes/heaven.tscn")
+		print("changing scene to: heaven")
+		GlobalVariables.tree.change_scene_to_file("res://scenes/heaven.tscn")
 	pass
 
 func DisableSpeakers():

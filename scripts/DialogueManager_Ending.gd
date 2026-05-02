@@ -35,6 +35,6 @@ func TickText():
 		speaker_click.play()
 		if (dialogueUI.visible_ratio >= 1):
 			looping = false
-		await get_tree().create_timer(incrementDelay, false).timeout
+		await GlobalVariables.tree.create_timer(incrementDelay, false).timeout
 		pass
 	pass

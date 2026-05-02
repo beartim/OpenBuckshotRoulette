@@ -308,7 +308,7 @@ func ResetLastAliveProperty():
 	SetAdrenalineControllerPrompts(false)
 	shotgun.SetTargetControllerPrompts(false)
 	jammer_manager.SetJammerControllerPrompts(false)
-	await get_tree().create_timer(3.8, false).timeout
+	await GlobalVariables.tree.create_timer(3.8, false).timeout
 	if is_grabbing_items:
 		item_manager.EndItemGrabbingDefault()
 	if is_stealing_item:
@@ -373,5 +373,5 @@ func ReceivePacket_TimeoutExceeded(packet : Dictionary):
 			if socket_number == packet.socket_number:
 				permissions.SetMainPermission(false)
 				shotgun.DropShotgun()
-				await get_tree().create_timer(.39, false).timeout
+				await GlobalVariables.tree.create_timer(.39, false).timeout
 				intermediary.roundManager.PassTurn(packet.next_turn_socket)

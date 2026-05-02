@@ -38,7 +38,7 @@ func AdjustSettings(scene : String):
 				for i in main_array_hide: i.visible = false
 				main_light_tabletop.visible = false
 				for i in main_array_toggle: i.visible = false
-				await get_tree().create_timer(.1, false).timeout
+				await GlobalVariables.tree.create_timer(.1, false).timeout
 				for i in main_array_toggle: i.visible = true
 				main_light_tabletop2.light_energy = -3.54
 				for i in main_array_lights: i.light_energy /= 2

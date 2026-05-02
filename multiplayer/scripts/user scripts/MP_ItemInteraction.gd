@@ -162,7 +162,7 @@ func InteractWithItem_FirstPerson(packet : Dictionary):
 	var animation_name = "use item id " + str(active_id) + " first person"
 	animator_items_firstperson.play(animation_name)
 	if active_item_has_secondary_interaction: return
-	await get_tree().create_timer(animator_items_firstperson.get_animation(animation_name).length, false).timeout
+	await GlobalVariables.tree.create_timer(animator_items_firstperson.get_animation(animation_name).length, false).timeout
 	match active_id:
 		1:	#hand saw
 			shotgun.SetShotgunVisible_Global(true)
@@ -173,7 +173,7 @@ func InteractWithItem_FirstPerson(packet : Dictionary):
 		5:	#beer
 			shotgun.SetShotgunVisible_Global(true)
 			shotgun.SetShotgunVisible_Local(false)
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	EndItemInteraction(packet)
 
 func InteractWithItem_ThirdPerson(packet : Dictionary):
@@ -212,11 +212,11 @@ func InteractWithItem_ThirdPerson(packet : Dictionary):
 	var animation_name = "use item id " + str(active_id) + " third person"
 	animator_items_thirdperson.play(animation_name)
 	if active_item_has_secondary_interaction && packet.item_id != 8:
-		await get_tree().create_timer(animator_items_thirdperson.get_animation(animation_name).length, false).timeout
+		await GlobalVariables.tree.create_timer(animator_items_thirdperson.get_animation(animation_name).length, false).timeout
 		var animation_name_idle = "use item id " + str(active_id) + " third person_secondary idle"
 		animator_items_thirdperson.play(animation_name_idle)
 		return
-	await get_tree().create_timer(animator_items_thirdperson.get_animation(animation_name).length, false).timeout
+	await GlobalVariables.tree.create_timer(animator_items_thirdperson.get_animation(animation_name).length, false).timeout
 	match active_id:
 		1:	#hand saw
 			shotgun.SetShotgunVisible_Global(true)
@@ -224,7 +224,7 @@ func InteractWithItem_ThirdPerson(packet : Dictionary):
 		5:	#beer
 			shotgun.SetShotgunVisible_Global(true)
 			shotgun.SetShotgunVisible_Local(false)
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	EndItemInteraction(packet)
 
 func InteractWithItem_FirstPerson_Secondary(packet : Dictionary):
@@ -241,9 +241,9 @@ func InteractWithItem_FirstPerson_Secondary(packet : Dictionary):
 				var direction = properties.GetDirection(properties.socket_number, packet.item_selected_socket_number)
 				jammer.speaker_fp_jammer_bootup_idle.stop()
 				properties.cam.BeginLerp("opponent " + direction)
-				await get_tree().create_timer(.4, false).timeout
+				await GlobalVariables.tree.create_timer(.4, false).timeout
 				property_to_jam.jammer_manager.Jammer_Enable()
-				await get_tree().create_timer(.4, false).timeout
+				await GlobalVariables.tree.create_timer(.4, false).timeout
 				if !packet.ending_turn_after_item_use:
 					properties.cam.BeginLerp(previous_camerw_socket)
 				properties.jammer_manager.looping = false
@@ -270,9 +270,9 @@ func InteractWithItem_ThirdPerson_Secondary(packet : Dictionary):
 			if property_to_jam != null:
 				var direction = properties.GetDirection(active_property.socket_number, packet.item_selected_socket_number)
 				active_property.cam.BeginLerp("opponent " + direction)
-				await get_tree().create_timer(.4, false).timeout
+				await GlobalVariables.tree.create_timer(.4, false).timeout
 				property_to_jam.jammer_manager.Jammer_Enable()
-				await get_tree().create_timer(.4, false).timeout
+				await GlobalVariables.tree.create_timer(.4, false).timeout
 				if !packet.ending_turn_after_item_use:
 					active_property.cam.BeginLerp(previous_camera_socket)
 			EndItemInteraction(packet)
@@ -322,14 +322,14 @@ func ChangeGameStateWithItem(item_id : int, packet : Dictionary = {}):
 			if properties.health_current < properties.health_on_round_start:
 				print("health before heal: ", properties.health_current)
 				properties.health_current += 1
-				await get_tree().create_timer(3.8, false).timeout
+				await GlobalVariables.tree.create_timer(3.8, false).timeout
 				properties.health_counter.healing_health = true
 				properties.health_counter.UpdateDisplay()
 				print("health after heal: ", properties.health_current)
 		5:	#beer
 			shotgun.RemoveFirstShellFromSequence()
 		8:	#adrenaline
-			await get_tree().create_timer(1.2, false).timeout
+			await GlobalVariables.tree.create_timer(1.2, false).timeout
 			properties.is_stealing_item = true
 			properties.is_on_secondary_interaction = true
 			properties.intermediary.game_state.BeginTimeoutForSocket("adrenaline", properties.intermediary.game_state.MAIN_timeout_duration_adrenaline, properties.socket_number)
@@ -371,7 +371,7 @@ func PickupItem(item_object_parent : Node3D):
 	pos_pickup_item.get_parent().add_child(item_object_parent)
 	item_object_parent.global_transform = original_transform
 	active_separate_lerp.StartLerp(item_object_parent.transform.origin, pos_pickup_item.transform.origin, item_object_parent.rotation_degrees, pos_pickup_item.rotation_degrees, -2, pickup_duration)
-	await get_tree().create_timer(pickup_duration, false).timeout
+	await GlobalVariables.tree.create_timer(pickup_duration, false).timeout
 	active_item_parent.queue_free()
 
 func GetItemVariables(item_object_parent : Node3D):
@@ -388,11 +388,11 @@ func TurnOrderSwapVisuals():
 			print("running")
 			var previous_socket = user_property.cam.activeSocket
 			user_property.cam.BeginLerp("tabletop centerpiece", true)
-			await get_tree().create_timer(.6, false).timeout
+			await GlobalVariables.tree.create_timer(.6, false).timeout
 			user_property.intermediary.game_state.turn_order.StartIndicator(user_property.intermediary.game_state.MAIN_active_turn_order)
-			await get_tree().create_timer(1.2, false).timeout
+			await GlobalVariables.tree.create_timer(1.2, false).timeout
 			user_property.cam.BeginLerp(previous_socket, true)
 
 func PanCameraBack():
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	properties.cam.BeginLerp("home")

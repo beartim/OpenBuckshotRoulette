@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://vvopcnu6yb8s"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://vvopcnu6yb8s"]
 
 [ext_resource type="Texture2D" uid="uid://iatv2ue4agsk" path="res://misc/display round indicator.png" id="1"]
 

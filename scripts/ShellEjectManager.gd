@@ -21,7 +21,7 @@ func _ready():
 func EjectShell():
 	shellSpawner.roundManager.playerData.stat_shellsEjected += 1
 	animator_fader.play("RESET")
-	if (shellSpawner.sequenceArray.size() > 0 and shellSpawner.sequenceArray[0] == "live"): mesh.set_surface_override_material(1, mat_live)
+	if (shellSpawner.sequenceArray[0] == "live"): mesh.set_surface_override_material(1, mat_live)
 	else: mesh.set_surface_override_material(1, mat_blank)
 	mesh.visible = true
 	if(!isDealerSide): animator.play("ejecting shell_player1")
@@ -30,6 +30,7 @@ func EjectShell():
 		smoke.SpawnSmoke("chamber")
 	shellSpawner.sequenceArray.remove_at(0)
 	ai.sequenceArray_knownShell.remove_at(0)
+	_push_debug_tools_update()
 	hasFaded = false
 	pass
 
@@ -42,6 +43,7 @@ func BeerEjection_player():
 	animator.play("ejecting shell_player1")
 	shellSpawner.sequenceArray.remove_at(0)
 	ai.sequenceArray_knownShell.remove_at(0)
+	_push_debug_tools_update()
 	hasFaded = false
 	pass
 
@@ -54,12 +56,12 @@ func BeerEjection_dealer():
 	animator.play("eject shell beer")
 	shellSpawner.sequenceArray.remove_at(0)
 	ai.sequenceArray_knownShell.remove_at(0)
+	_push_debug_tools_update()
 	hasFaded = false
 	pass
 
 func DeathEjection():
 	animator_fader.play("RESET")
-	if shellSpawner.sequenceArray.size() <= 0: return
 	if (shellSpawner.sequenceArray[0] == "live"): mesh.set_surface_override_material(1, mat_live)
 	else: mesh.set_surface_override_material(1, mat_blank)
 	mesh.visible = true
@@ -69,6 +71,7 @@ func DeathEjection():
 		smoke.SpawnSmoke("chamber")
 	shellSpawner.sequenceArray.remove_at(0)
 	ai.sequenceArray_knownShell.remove_at(0)
+	_push_debug_tools_update()
 	hasFaded = false
 	pass
 
@@ -76,3 +79,8 @@ func FadeOutShell():
 	if(!hasFaded):
 		animator_fader.play("fade out shell")
 		hasFaded = true
+
+func _push_debug_tools_update() -> void:
+	var debug_tools = get_tree().get_first_node_in_group("debug_tools")
+	if debug_tools != null:
+		debug_tools.sync_from_sequence(shellSpawner.sequenceArray)

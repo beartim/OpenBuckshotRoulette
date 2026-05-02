@@ -36,9 +36,6 @@ var waitingForInput = false
 #			ExitGame()
 #			waitingForInput = false
 
-func _ready() -> void:
-	OpenBRGlobal.ending_manager = self
-
 func _unhandled_input(event):
 	if (event.is_pressed()):
 		if (waitingForInput): 
@@ -51,7 +48,7 @@ func BeginEnding():
 	animator_pan.play("pan to brief")
 	music_ending.play()
 	AmbienceFade()
-	await get_tree().create_timer(10.67, false).timeout
+	await GlobalVariables.tree.create_timer(10.67, false).timeout
 	viewblocker.visible = true
 	animator_viewblocker.play("snap")
 	animator_pan.stop()
@@ -59,39 +56,39 @@ func BeginEnding():
 	FinalScore()
 	for l in label_array: l.visible = false
 	label_congrats.visible = false
-	await get_tree().create_timer(1.2, false).timeout
+	await GlobalVariables.tree.create_timer(1.2, false).timeout
 	animator_viewblocker.play("fade out")
-	await get_tree().create_timer(3, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	ach.UnlockAchievement("ach1")
 	if (roundManager.endless):
 		if (!roundManager.doubled): ach.UnlockAchievement("ach5")
 		if (roundManager.doubled): ach.UnlockAchievement("ach6")
 		if (roundManager.endscore > 1000000): ach.UnlockAchievement("ach7")
-	await get_tree().create_timer(3, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	#SHOW UI
 	label_congrats.visible = true
 	animator_congrats.play("wobble it")
 	animator_cash.play("wobble it")
 	dia.ShowText_Forever(glob_text_congratulations)
-	await get_tree().create_timer(2, false).timeout
+	await GlobalVariables.tree.create_timer(2, false).timeout
 	for i in fireArray:
 		speaker_load.pitch_scale = randf_range(.95, 1)
 		speaker_load.play()
-		await get_tree().create_timer(.15, false).timeout
-	await get_tree().create_timer(.5, false).timeout
+		await GlobalVariables.tree.create_timer(.15, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	for i in range(fireArray.size()):
 		if (i == 5): 
-			await get_tree().create_timer(.4, false).timeout
+			await GlobalVariables.tree.create_timer(.4, false).timeout
 			fireArray[i].changed = true
 			fireArray[i].speaker.pitch_scale = .15
 		fireArray[i].Fire()
-		await get_tree().create_timer(.33, false).timeout
-	await get_tree().create_timer(3, false).timeout
+		await GlobalVariables.tree.create_timer(.33, false).timeout
+	await GlobalVariables.tree.create_timer(3, false).timeout
 	GetInput()
 
 func GetInput():
 	animator_anykey.play("flicker")
-	await get_tree().create_timer(.8, false).timeout
+	await GlobalVariables.tree.create_timer(.8, false).timeout
 	waitingForInput = true
 
 func ExitGame():
@@ -100,25 +97,25 @@ func ExitGame():
 	cntrl_ambience.fadeDuration = 3
 	cntrl_ambience.FadeOut()
 	isActive = false
-	await get_tree().create_timer(4, false).timeout
+	await GlobalVariables.tree.create_timer(4, false).timeout
 	var unlocked = FileAccess.file_exists(unlocker.savepath)
 	if (unlocked): 
 		print("changing scene to: menu")
-		SceneChanger.change("res://scenes/menu.tscn")
+		GlobalVariables.tree.change_scene_to_file("res://scenes/menu.tscn")
 		return
 	else:
 		unlocker.UnlockRoutine()
 
 var isActive = true
 func AmbienceFade():
-	await get_tree().create_timer(55, false).timeout
+	await GlobalVariables.tree.create_timer(55, false).timeout
 	if (isActive):
 		cntrl_ambience.SnapVolume(false)
 		speaker_ambience.play()
 		cntrl_ambience.FadeIn()
 
 func SetupEnding():
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	uiparent.visible = true
 	for b in blockout: b.visible = true
 	pp.environment.adjustment_brightness = 5.68
@@ -233,25 +230,3 @@ func LoadPlayerData():
 		statPREV_ml_drank = temp_data.ml_drank
 		file.close()
 	pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

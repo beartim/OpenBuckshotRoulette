@@ -24,12 +24,12 @@ func SetState():
 	for i in array_inside_obj: i.visible = properties.is_active
 	for i in array_inside_ui: i.visible = properties.is_active
 	var visible_name = ""
-	#if nametag != null: 
-		#if !GlobalVariables.mp_debugging:
-			#visible_name = Steam.getFriendPersonaName(properties.user_id)
-		#else:
-			#visible_name = properties.user_name
-		#nametag.text = visible_name.left(19)
+	if nametag != null: 
+		if !GlobalVariables.mp_debugging:
+			visible_name = Steam.getFriendPersonaName(properties.user_id)
+		else:
+			visible_name = properties.user_name
+		nametag.text = visible_name.left(19)
 	#cam.current = properties.is_active
 
 func SetCameraAsCurrent():

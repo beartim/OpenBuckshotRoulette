@@ -6,8 +6,8 @@ class_name Debug extends Node
 func _unhandled_input(event):
 	if GlobalVariables.mp_debugging:
 		if (event.is_action_pressed(",")):
-			Engine.time_scale = 1
+			GlobalVariables.ApplyTimeScale(1)
 			timescale.moving = false
 		if (event.is_action_pressed(".")):
-			Engine.time_scale = 10
+			GlobalVariables.ApplyTimeScale(10)
 			timescale.moving = false

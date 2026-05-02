@@ -96,9 +96,9 @@ func _unhandled_input(event):
 			"sent_from_socket": properties.socket_number,
 			}
 			intermediary.packets.PipeData(packet)
-			await get_tree().create_timer(4, false).timeout
+			await GlobalVariables.tree.create_timer(4, false).timeout
 			look_manager.LookAtDirection(GetDirection(properties.socket_number, socket_to_shoot))
-			await get_tree().create_timer(.1, false).timeout
+			await GlobalVariables.tree.create_timer(.1, false).timeout
 			Shoot(null, socket_to_shoot)
 
 func PickupShotgun():
@@ -127,14 +127,14 @@ func DropShotgun():
 		look_manager.checking = false
 		for i in range(intermediary.instance_handler.instance_property_array.size()):
 			intermediary.instance_handler.instance_property_array[i].hover_pan.Disable()
-		await get_tree().create_timer(.39, false).timeout
+		await GlobalVariables.tree.create_timer(.39, false).timeout
 		SetShotgunVisible_Local(false)
 		SetShotgunVisible_Global(true)
 	else:
 		animator_shotgun_thirdperson.play("drop shotgun thirdperson")
 		properties.oscillator_manager.LerpToOriginal("hands")
 		PlaySound_ShotgunFoley(false, "drop")
-		await get_tree().create_timer(.39, false).timeout
+		await GlobalVariables.tree.create_timer(.39, false).timeout
 		SetShotgunVisible_Local(false)
 		SetShotgunVisible_Global(true)
 
@@ -154,9 +154,9 @@ func PickupShotgun_FirstPerson():
 	SetShotgunVisible_Global(false)
 	PlaySound_ShotgunFoley(true, "pickup")
 	animator_shotgun.play("pick up shotgun")
-	await get_tree().create_timer(1.15, false).timeout
+	await GlobalVariables.tree.create_timer(1.15, false).timeout
 	cam.BeginLerp("select opponent")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	ui_you.get_child(0).play("show")
 	GlobalVariables.cursor_state_after_toggle = true
 	cursor.SetCursor(true, true)
@@ -240,22 +240,22 @@ func Shoot_FirstPerson(packet_dictionary : Dictionary = {}):
 	PlaySound_ShotgunFoley(false, active_shooter_socket_target_direction)
 	var time = 3.6
 	cam.moving = false
-	await get_tree().create_timer(time, false).timeout
+	await GlobalVariables.tree.create_timer(time, false).timeout
 	properties.is_holding_shotgun = false
 	SetShotgunVisible_Global(true)
 	SetShotgunVisible_Local(false)
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	CheckIfEndingTurn(packet_dictionary)
 
 func Shoot_ThirdPerson(packet_dictionary : Dictionary = {}):
 	look_manager.LookAtDirection(active_shooter_socket_target_direction)
 	animator_shotgun_thirdperson.play("user shoot " + active_shooter_socket_target_direction + " thirdperson")
 	PlaySound_ShotgunFoley(false, active_shooter_socket_target_direction)
-	await get_tree().create_timer(.25, false).timeout
+	await GlobalVariables.tree.create_timer(.25, false).timeout
 	LookAtShooting()
-	await get_tree().create_timer(1.9, false).timeout
+	await GlobalVariables.tree.create_timer(1.9, false).timeout
 	ReturnFromLookAtShooting()
-	await get_tree().create_timer(1.65, false).timeout
+	await GlobalVariables.tree.create_timer(1.65, false).timeout
 	properties.is_holding_shotgun = false
 	SetShotgunVisible_Global(true)
 	SetShotgunVisible_Local(false)
@@ -377,7 +377,7 @@ func CheckIfEndingTurn(packet_dictionary : Dictionary):
 			intermediary.roundManager.UserEndTurn_Packet(active_shooter_socket_self, handing_turn_over, sequence_empty, user_has_won_with_socket)
 
 func ShootingOutcome():
-	await get_tree().create_timer(.1, false).timeout
+	await GlobalVariables.tree.create_timer(.1, false).timeout
 	var current_shell = intermediary.game_state.MAIN_shooter_shell
 	if intermediary.game_state.MAIN_sequence_length_on_outcome == 1: for property in intermediary.instance_handler.instance_property_array: property.running_fast_revival = true
 	
@@ -470,11 +470,11 @@ func PlaySound_LiveFire():
 
 func MuzzleFlashPlane():
 	muzzle_flash_plane.visible = true
-	await get_tree().create_timer(0.05, false).timeout
+	await GlobalVariables.tree.create_timer(0.05, false).timeout
 	muzzle_flash_plane.visible = false
 
 func FailsafeAfterSelfShot():
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	SetShotgunTransparency_Global(1, true)
 	SetShotgunVisible_Global(true)
 	SetShotgunVisible_Local(false)
@@ -544,7 +544,7 @@ func FadeInShotgun_Global():
 	end_transparency = 0
 	elapsed_transparency = 0
 	lerping_transparency = true
-	await get_tree().create_timer(dur_transparency, false).timeout
+	await GlobalVariables.tree.create_timer(dur_transparency, false).timeout
 	lerping_transparency = false
 	SetShotgunTransparency_Global(0, true)
 

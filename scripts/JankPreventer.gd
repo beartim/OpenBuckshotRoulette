@@ -4,13 +4,13 @@ extends Node
 @export var text_dealer : Label3D
 
 func _ready():
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	Prevent()
 
 func Prevent():
 	var loc = TranslationServer.get_locale()
 	if (!isHeaven):
-		await get_tree().create_timer(1, false).timeout
+		await GlobalVariables.tree.create_timer(1, false).timeout
 		if (loc == "ES" or loc == "JA"): self.get_parent().visible = false
 		if (loc == "JA"): text_dealer.scale = Vector3(1.409, 2.466, 1.752)
 	else:

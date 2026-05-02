@@ -11,7 +11,7 @@ var looping = false
 func Loop():
 	while looping:
 		SetSegments()
-		await get_tree().create_timer(.2, false).timeout
+		await GlobalVariables.tree.create_timer(.2, false).timeout
 	pass
 
 func SetSegments():

@@ -47,7 +47,7 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 	#lerp cameras
 	for property in game_state.instance_handler.instance_property_array:
 		property.cam.BeginLerp("home")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	blinker_lower.StartBlinking()
 	sockets_to_remove_items_at.sort()
 	#move tabletop padding covers down
@@ -67,18 +67,18 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 			if handler.assigned_socket_number == sockets_to_remove_items_at[remover_socket_index]:
 				handler.LightShow()
 	#move item removers down
-	await get_tree().create_timer(socket_cover_lerp_duration, false).timeout
+	await GlobalVariables.tree.create_timer(socket_cover_lerp_duration, false).timeout
 	for remover_socket_index in range(sockets_to_remove_items_at.size()):
 		for item_remover in instance_handler_array:
 			if sockets_to_remove_items_at[remover_socket_index] == item_remover.assigned_socket_number:
 				instance_handler_array[item_remover.assigned_socket_number].MoveDown()
 				break
 	#shake camera on item remover impact
-	await get_tree().create_timer(.23, false).timeout
+	await GlobalVariables.tree.create_timer(.23, false).timeout
 	for property in game_state.instance_handler.instance_property_array:
 		property.cam_shaker.Shake()
 	#get property etc
-	await get_tree().create_timer(1.2, false).timeout
+	await GlobalVariables.tree.create_timer(1.2, false).timeout
 	for remover_socket_index in range(sockets_to_remove_items_at.size()):
 		var instance_array_to_reparent = []
 		for local_grid_index in game_state.MAIN_inventory_by_socket[sockets_to_remove_items_at[remover_socket_index]]:
@@ -98,7 +98,7 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 			var pos_end = Vector3(item_instance.transform.origin.x, item_y_offset_from_carriage, item_instance.transform.origin.z)
 			var rot = item_instance.rotation_degrees
 			item_lerp.StartLerp(pos_start, pos_end, rot, rot, carriage_magnet_lerp_curve, carriage_magnet_lerp_duration)
-	await get_tree().create_timer(carriage_magnet_lerp_duration, false).timeout
+	await GlobalVariables.tree.create_timer(carriage_magnet_lerp_duration, false).timeout
 	#parent items to carrier
 	for remover_socket_index in range(sockets_to_remove_items_at.size()):
 		var instance_array_to_reparent = []
@@ -117,7 +117,7 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 			if sockets_to_remove_items_at[remover_socket_index] == item_remover.assigned_socket_number:
 				instance_handler_array[item_remover.assigned_socket_number].MoveUp()
 				break
-	await get_tree().create_timer(.6, false).timeout
+	await GlobalVariables.tree.create_timer(.6, false).timeout
 	#move tabletop padding covers up
 	for remover_socket_index in range(sockets_to_remove_items_at.size()):
 		for item_remover in instance_handler_array:
@@ -127,7 +127,7 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 				var rot = Vector3(socket_cover_lerp_array[item_remover.assigned_socket_number].obj.rotation_degrees.x, socket_cover_lerp_array[item_remover.assigned_socket_number].obj.rotation_degrees.y, socket_cover_lerp_array[item_remover.assigned_socket_number].obj.rotation_degrees.z)
 				socket_cover_lerp_array[item_remover.assigned_socket_number].StartLerp(pos_start, pos_end, rot, rot, socket_cover_lerp_curve, socket_cover_lerp_duration)
 				break
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	#clear game state main inventory for all sockets
 	game_state.SetupInventory()
 	#delete instances that were added to array for deletion

@@ -14,6 +14,6 @@ func _ready():
 func Loop():
 	while looping:
 		obj.visible = false
-		await get_tree().create_timer(randf_range(r1, r2), false).timeout
+		await GlobalVariables.tree.create_timer(randf_range(r1, r2), false).timeout
 		obj.visible = true
-		await get_tree().create_timer(randf_range(r1, r2), false).timeout
+		await GlobalVariables.tree.create_timer(randf_range(r1, r2), false).timeout

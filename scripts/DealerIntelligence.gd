@@ -40,16 +40,16 @@ func DealerCheckHandCuffs():
 	var brokeFree = false
 	camera.BeginLerp("enemy cuffs close")
 	if (!dealerAboutToBreakFree):
-		await get_tree().create_timer(.3, false).timeout
+		await GlobalVariables.tree.create_timer(.3, false).timeout
 		speaker_checkHandcuffs.play()
 		animator_dealerHands.play("dealer check handcuffs")
-		await get_tree().create_timer(.7, false).timeout
+		await GlobalVariables.tree.create_timer(.7, false).timeout
 		brokeFree = false
 	else:
-		await get_tree().create_timer(.3, false).timeout
+		await GlobalVariables.tree.create_timer(.3, false).timeout
 		animator_dealerHands.play("dealer break cuffs") #replace with broke free anim
 		speaker_breakHandcuffs.play()
-		#await get_tree().create_timer(.7, false).timeout
+		#await GlobalVariables.tree.create_timer(.7, false).timeout
 		brokeFree = true
 		roundManager.dealerCuffed = false
 		dealerAboutToBreakFree = false
@@ -197,6 +197,7 @@ func DealerChoice():
 			knownShell = "live"
 			dealerKnowsShell = true
 			roundManager.shellSpawner.sequenceArray[0] = "live"
+			_push_debug_tools_update()
 			dealerTarget = "player"
 			break
 	
@@ -219,10 +220,10 @@ func DealerChoice():
 			animator_shotgun.play("enemy put down shotgun")
 			shellLoader.DealerHandsDropShotgun()
 			dealerHoldingShotgun = false
-			await get_tree().create_timer(.45, false).timeout
+			await GlobalVariables.tree.create_timer(.45, false).timeout
 		dealerUsedItem = true
 		if (roundManager.waitingForDealerReturn):
-			await get_tree().create_timer(1.8, false).timeout
+			await GlobalVariables.tree.create_timer(1.8, false).timeout
 			roundManager.waitingForDealerReturn = false
 
 		var returning = false
@@ -256,8 +257,8 @@ func DealerChoice():
 		
 		if (temp_stealing): hands.stealing = true
 		await(hands.PickupItemFromTable(dealerWantsToUse))
-		#if (dealerWantsToUse == "handcuffs"): await get_tree().create_timer(.8, false).timeout #additional delay for initial player handcuff check (continues outside animation)
-		if (dealerWantsToUse == "cigarettes"): await get_tree().create_timer(1.1, false).timeout #additional delay for health update routine (called in aninator. continues outside animation)
+		#if (dealerWantsToUse == "handcuffs"): await GlobalVariables.tree.create_timer(.8, false).timeout #additional delay for initial player handcuff check (continues outside animation)
+		if (dealerWantsToUse == "cigarettes"): await GlobalVariables.tree.create_timer(1.1, false).timeout #additional delay for health update routine (called in aninator. continues outside animation)
 		itemManager.itemArray_dealer.erase(dealerWantsToUse)
 		if (subtracting): itemManager.numberOfItemsGrabbed_enemy -= 1
 		
@@ -267,11 +268,11 @@ func DealerChoice():
 		return
 	if (dealerWantsToUse == ""): dealerFinishedUsingItems = true
 	if (roundManager.waitingForDealerReturn):
-		await get_tree().create_timer(1.8, false).timeout
+		await GlobalVariables.tree.create_timer(1.8, false).timeout
 	if (!dealerHoldingShotgun && dealerFinishedUsingItems):
 		GrabShotgun()
-		await get_tree().create_timer(1.4 + .5 - 1, false).timeout
-	await get_tree().create_timer(1, false).timeout
+		await GlobalVariables.tree.create_timer(1.4 + .5 - 1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	if (dealerTarget == ""): ChooseWhoToShootRandomly()
 	else: Shoot(dealerTarget)
 	dealerTarget = ""
@@ -329,17 +330,17 @@ func ChooseWhoToShootRandomly():
 	else: Shoot("player")
 
 func GrabShotgun():
-	#await get_tree().create_timer(1, false).timeout
+	#await GlobalVariables.tree.create_timer(1, false).timeout
 	#camera.BeginLerp("enemy")
-	#await get_tree().create_timer(.8, false).timeout
+	#await GlobalVariables.tree.create_timer(.8, false).timeout
 	await(shellLoader.DealerHandsGrabShotgun())
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	animator_shotgun.play("grab shotgun_pointing enemy")
 	dealerHoldingShotgun = true
 	pass
 
 func EndTurnMain():
-	await get_tree().create_timer(.5, false).timeout
+	await GlobalVariables.tree.create_timer(.5, false).timeout
 	camera.BeginLerp("home")
 	if (dealerHoldingShotgun): 
 		animator_shotgun.play("enemy put down shotgun")
@@ -348,7 +349,6 @@ func EndTurnMain():
 	roundManager.EndTurn(true)
 
 func Shoot(who : String):
-	print('Shooting ', who)
 	var currentRoundInChamber = shellSpawner.sequenceArray[0]
 	dealerCanGoAgain = false
 	var playerDied = false
@@ -357,15 +357,15 @@ func Shoot(who : String):
 	#ANIMATION DEPENDING ON WHO IS SHOT
 	match(who):
 		"self":
-			await get_tree().create_timer(.2, false).timeout
+			await GlobalVariables.tree.create_timer(.2, false).timeout
 			animator_shotgun.play("enemy shoot self")
-			await get_tree().create_timer(2, false).timeout
+			await GlobalVariables.tree.create_timer(2, false).timeout
 			shotgunShooting.whoshot = "dealer"
 			shotgunShooting.PlayShootingSound()
 			pass
 		"player":
 			animator_shotgun.play("enemy shoot player")
-			await get_tree().create_timer(2, false).timeout
+			await GlobalVariables.tree.create_timer(2, false).timeout
 			shotgunShooting.whoshot = "player"
 			shotgunShooting.PlayShootingSound()
 			pass
@@ -387,10 +387,10 @@ func Shoot(who : String):
 		playerDied = true
 	if (currentRoundInChamber == "blank" && who == "self"): dealerCanGoAgain = true
 	#EJECTING SHELLS
-	await OpenBRGlobal.fetch_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	if (who == "player"): animator_shotgun.play("enemy eject shell_from player")
 	if (who == "self"): animator_shotgun.play("enemy eject shell_from self")
-	await OpenBRGlobal.fetch_tree().create_timer(1.7, false).timeout
+	await GlobalVariables.tree.create_timer(1.7, false).timeout
 	#shellSpawner.sequenceArray.remove_at(0)
 	EndDealerTurn(dealerCanGoAgain)
 
@@ -427,6 +427,11 @@ func CoinFlip():
 		var c_live = shellSpawner.sequenceArray.count("live")
 		var c_blank = shellSpawner.sequenceArray.count("blank")
 		if (c_live == c_blank): result = randi_range(0, 1)
-		elif (c_live > c_blank): result = 1
-		elif (c_live < c_blank): result = 0
+		if (c_live > c_blank): result = 1
+		if (c_live < c_blank): result = 0
 	return result
+
+func _push_debug_tools_update() -> void:
+	var debug_tools = get_tree().get_first_node_in_group("debug_tools")
+	if debug_tools != null:
+		debug_tools.sync_from_sequence(roundManager.shellSpawner.sequenceArray)

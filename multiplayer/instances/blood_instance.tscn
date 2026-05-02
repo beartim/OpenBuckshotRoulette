@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bin4sd3hfi1fu" path="res://multiplayer/textures/mp_blood splatter2.png" id="2"]
 
 [sub_resource type="Curve" id="Curve_57j0k"]
-_limits = [0.0, 10.0, 0.0, 1.0]
+max_value = 10.0
 _data = [Vector2(0, 0.747332), 0.0, 0.0, 0, 0, Vector2(0.0623472, 1.03203), 0.0, 0.0, 0, 0]
 point_count = 2
 
@@ -14,13 +14,13 @@ curve = SubResource("Curve_57j0k")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_quqmr"]
 emission_shape = 1
 emission_sphere_radius = 0.15
-angle_min = -588.2
-angle_max = 1.0
 spread = 12.7
+gravity = Vector3(0, -9.61, 0)
 initial_velocity_min = 10.0
 initial_velocity_max = 56.1
 angular_velocity_min = -493.81
-gravity = Vector3(0, -9.61, 0)
+angle_min = -588.2
+angle_max = 1.0
 scale_min = 0.0
 scale_max = 10.0
 scale_curve = SubResource("CurveTexture_gtltl")

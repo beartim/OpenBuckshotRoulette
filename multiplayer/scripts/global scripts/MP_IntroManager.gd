@@ -28,26 +28,26 @@ func SetupDancers():
 	var anim_array = ["dance2", "dance1"]
 	var anim_index = -1
 	for i in range(dancer_array.size()):
-		await get_tree().create_timer(.1, false).timeout
+		await GlobalVariables.tree.create_timer(.1, false).timeout
 		anim_index += 1
 		if anim_index == 2: anim_index = 0
 		var animator : AnimationPlayer = dancer_array[i].get_child(1)
 		animator.play(anim_array[anim_index])
 
 func MainIntro_Skip():
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	music.LoadTrack(0, true, false)
 	SwapCamera()
 	filter.PanLowPass_In()
 	debug.SetViewblockerVis(false)
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 
 func MainIntroSetup():
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	StartIntroSequence()
-	await get_tree().create_timer(16.73, false).timeout
+	await GlobalVariables.tree.create_timer(16.73, false).timeout
 	SwapCamera()
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 
 func SwapCamera():
 	camera_intro.current = false
@@ -58,7 +58,7 @@ func StartIntroSequence():
 	intermed.intermed_properties.cam.cam.current = false
 	animator_intro.play("RESET")
 	speaker_wind.play()
-	await get_tree().create_timer(1.23, false).timeout
+	await GlobalVariables.tree.create_timer(1.23, false).timeout
 	hitting = true
 	BpmHit()
 	cam_shaker.Shake()
@@ -80,16 +80,16 @@ func BpmHit():
 		am += 1
 		if am < 7:
 			cam_shaker.Shake()
-		await get_tree().create_timer(.39, false).timeout
+		await GlobalVariables.tree.create_timer(.39, false).timeout
 		pass
 	pass
 
 func StartLowPass():
-	await get_tree().create_timer(9.42, false).timeout
+	await GlobalVariables.tree.create_timer(9.42, false).timeout
 	ctrl_exterior_wind.FadeOut()
 	ctrl_van.FadeOut()
 	filter.PanLowPass_In()
 
 func StartHustlerAnimation():
-	await get_tree().create_timer(2.5, false).timeout
+	await GlobalVariables.tree.create_timer(2.5, false).timeout
 	animator_hustler.play("hustler inspect vehicle loop")

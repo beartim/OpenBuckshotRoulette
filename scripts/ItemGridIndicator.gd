@@ -8,5 +8,5 @@ func ShowGridIndicator():
 	parent.visible = true
 	animator.play("show")
 	roundManager.playerData.indicatorShown = true
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	parent.visible = false

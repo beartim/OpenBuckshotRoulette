@@ -1,16 +1,16 @@
 [gd_scene load_steps=18 format=3 uid="uid://b7k75i600v4ac"]
 
-[ext_resource type="Script" uid="uid://b4nb40l32d4s1" path="res://multiplayer/scripts/user scripts/MP_UserInstanceProperties.gd" id="1"]
-[ext_resource type="Script" uid="uid://pvoypjxfsycs" path="res://multiplayer/scripts/MP_CursorManager.gd" id="2"]
+[ext_resource type="Script" path="res://multiplayer/scripts/user scripts/MP_UserInstanceProperties.gd" id="1"]
+[ext_resource type="Script" path="res://multiplayer/scripts/MP_CursorManager.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://dedtwku3flpwn" path="res://misc/cursor xp_point.png" id="3"]
 [ext_resource type="Texture2D" uid="uid://c3bbirq6hrrbg" path="res://misc/cursor xp_hover.png" id="4"]
 [ext_resource type="Texture2D" uid="uid://b2c5cqp35jayo" path="res://misc/cursor xp_invalid bigger.png" id="5"]
-[ext_resource type="Script" uid="uid://bp3sw7i0p00bo" path="res://multiplayer/scripts/user scripts/MP_CameraManager.gd" id="6"]
-[ext_resource type="Script" uid="uid://b2ufjqaw3aosr" path="res://multiplayer/scripts/user scripts/MP_CameraSocket.gd" id="7"]
+[ext_resource type="Script" path="res://multiplayer/scripts/user scripts/MP_CameraManager.gd" id="6"]
+[ext_resource type="Script" path="res://multiplayer/scripts/user scripts/MP_CameraSocket.gd" id="7"]
 [ext_resource type="AudioStream" uid="uid://c4wea7spoym1a" path="res://audio/camera pan test.ogg" id="8"]
 [ext_resource type="AudioStream" uid="uid://bjdi7iwcps58" path="res://audio/show cursor.ogg" id="9"]
-[ext_resource type="Script" uid="uid://cp2p1ceu8xu88" path="res://multiplayer/scripts/user scripts/MP_MouseRaycast.gd" id="10"]
-[ext_resource type="Shader" uid="uid://ci2t4jjagxk81" path="res://main player/posterization test.gdshader" id="11"]
+[ext_resource type="Script" path="res://multiplayer/scripts/user scripts/MP_MouseRaycast.gd" id="10"]
+[ext_resource type="Shader" path="res://main player/posterization test.gdshader" id="11"]
 
 [sub_resource type="Resource" id="Resource_qf0ir"]
 script = ExtResource("7")

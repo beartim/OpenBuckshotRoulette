@@ -20,6 +20,6 @@ func SendConsoleMessage(message : String):
 	if !is_first: console.append_text("\n")
 	is_first = false
 	console.add_text(message)
-	await get_tree().create_timer(line_deletion_delay, false).timeout
+	await GlobalVariables.tree.create_timer(line_deletion_delay, false).timeout
 	console.remove_paragraph(0)
 	is_first = console.text == ""

@@ -146,9 +146,9 @@ func GameConclusion_Packet():
 
 func GameConclusion(packet : Dictionary):
 	game_state.MAIN_active_match_result_statistics = packet.match_result_statistics
-	await get_tree().create_timer(1.5, false).timeout
+	await GlobalVariables.tree.create_timer(1.5, false).timeout
 	intermed.intermed_properties.viewblocker.FadeIn(6, -1.8)
-	await get_tree().create_timer(7, false).timeout
+	await GlobalVariables.tree.create_timer(7, false).timeout
 	outro.Outro()
 
 func MainRoutine_BeginItemGrab():
@@ -237,17 +237,17 @@ func ReviveAllDeadUsers():
 		if instance_property.health_current == 0:
 			instance_property.death.UserDeath_Revive(true)
 			reviving = true
-	if reviving: await get_tree().create_timer(2, false).timeout
+	if reviving: await GlobalVariables.tree.create_timer(2, false).timeout
 
 func SetupRoundIndicators():
 	print("setting up round indicators ...")
 	for instance_property in instance_handler.instance_property_array: instance_property.health_counter.BootupDisplay_ShowCurrentRound()
-	await get_tree().create_timer(2.9, false).timeout
+	await GlobalVariables.tree.create_timer(2.9, false).timeout
 
 func SetupHealthIndicators():
 	print("setting up health indicators ...")
 	for instance_property in instance_handler.instance_property_array: instance_property.health_counter.BootupDisplay_Health()
-	await get_tree().create_timer(1.9, false).timeout
+	await GlobalVariables.tree.create_timer(1.9, false).timeout
 
 func LoadShotgun():
 	print("loading shotgun ...")
@@ -255,17 +255,17 @@ func LoadShotgun():
 	animator_shell_sequence_machine.play("RESET")
 	centerpiece.MoveToLoadingDock()
 	intermed.intermed_properties.cam.BeginLerp("sequence socket_" + str(intermed.intermed_properties.socket_number), true)
-	await get_tree().create_timer(.7, false).timeout
+	await GlobalVariables.tree.create_timer(.7, false).timeout
 	shell_loader.SpawnShells()
 	animator_shell_sequence_machine.play("move up")
 	speaker_sequence_machine.stream = sound_show
 	speaker_sequence_machine.play()
-	await get_tree().create_timer(game_state.MAIN_sequence_visible_duration, false).timeout
+	await GlobalVariables.tree.create_timer(game_state.MAIN_sequence_visible_duration, false).timeout
 	speaker_sequence_machine.stream = sound_hide
 	speaker_sequence_machine.play()
 	animator_shell_sequence_machine.play_backwards("move up")
-	await get_tree().create_timer(1.3, false).timeout
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(1.3, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	passing_turn_from_dock = true
 	PassTurn(game_state.MAIN_active_first_turn_socket)
 	game_state.MAIN_shotgun_loading_in_progress = false
@@ -277,7 +277,7 @@ func ClearUserInventories():
 	if game_state.MAIN_active_socket_inventories_to_clear == []: return
 	print("clearing user inventories on sockets: ", game_state.MAIN_active_socket_inventories_to_clear)
 	item_remover.RemoveItemsFromSockets(game_state.MAIN_active_socket_inventories_to_clear)
-	await get_tree().create_timer(3.5, false).timeout
+	await GlobalVariables.tree.create_timer(3.5, false).timeout
 
 func BeginItemGrabbingForAllUsers():
 	print("beginning item grabbing for all users ...")
@@ -347,16 +347,16 @@ func PassTurn(to_socket : int):
 	else: direction_string = "opponent " + direction_string
 	if previous_socket != to_socket or passing_turn_from_dock: centerpiece.MoveToSocket(to_socket)
 	passing_turn_from_dock = false
-	await get_tree().create_timer(.2, false).timeout
+	await GlobalVariables.tree.create_timer(.2, false).timeout
 	intermed.intermed_properties.cam.BeginLerp(direction_string, true)
-	await get_tree().create_timer(.7, false).timeout
+	await GlobalVariables.tree.create_timer(.7, false).timeout
 	if active_properties.is_jammed:
 		print(active_properties.user_name, " is jammed.")
 		if !active_properties.jammer_checked:
 			print(active_properties.user_name, " jam isn't checked - checking and skipping turn")
 			var next_turn_socket = GetNextTurn_Socket(game_state.MAIN_active_current_turn_socket)
 			active_properties.jammer_manager.Jammer_Check()
-			await get_tree().create_timer(.7, false).timeout
+			await GlobalVariables.tree.create_timer(.7, false).timeout
 			PassTurn(next_turn_socket)
 		else:
 			print(active_properties.user_name, " jam is checked - disabling jammer and granting perms")
@@ -371,7 +371,7 @@ func PassTurn(to_socket : int):
 		game_state.BeginTimeoutForSocket("turn", game_state.MAIN_timeout_duration_turn, to_socket)
 
 func GiveTurnPermissions(properties : MP_UserInstanceProperties):
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 	if properties.is_active:
 		properties.SetTurnControllerPrompts(true)
 		properties.permissions.SetMainPermission(true)

@@ -6,10 +6,9 @@ const savePath_stats := "user://buckshotroulette_playerstats.shell"
 var data = {}
 @export var roundManager : RoundManager
 @export var isMainMenu : bool
-@export var mp: MP
 
 func _ready():
-	if !isMainMenu and mp == null: LoadGame()
+	if (!isMainMenu): LoadGame()
 
 func SaveGame():
 	print("attempting to save game")

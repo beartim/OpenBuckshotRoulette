@@ -1,35 +1,34 @@
-[gd_scene load_steps=106 format=4 uid="uid://durgqahjmtjxr"]
+[gd_scene format=4 uid="uid://durgqahjmtjxr"]
 
-[ext_resource type="Script" uid="uid://71ykd25qgqom" path="res://scripts/HeavenManager.gd" id="1"]
-[ext_resource type="Script" uid="uid://c566n8nq5ihug" path="res://scripts/heaven.gd" id="1_01rup"]
-[ext_resource type="Script" uid="uid://bxa2xb4se6h6a" path="res://scripts/InteractionManager.gd" id="2"]
-[ext_resource type="Script" uid="uid://bi30sfyp6471y" path="res://scripts/CursorManager.gd" id="3"]
+[ext_resource type="Script" uid="uid://ctnaw1pprn1m4" path="res://scripts/HeavenManager.gd" id="1"]
+[ext_resource type="Script" uid="uid://c1fpva5av8rt8" path="res://scripts/heaven.gd" id="1_01rup"]
+[ext_resource type="Script" uid="uid://cnw6edscwvwse" path="res://scripts/InteractionManager.gd" id="2"]
+[ext_resource type="Script" uid="uid://dglat3djy1v83" path="res://scripts/CursorManager.gd" id="3"]
 [ext_resource type="Texture2D" uid="uid://dedtwku3flpwn" path="res://misc/cursor xp_point.png" id="4"]
 [ext_resource type="Texture2D" uid="uid://c3bbirq6hrrbg" path="res://misc/cursor xp_hover.png" id="5"]
 [ext_resource type="Texture2D" uid="uid://b2c5cqp35jayo" path="res://misc/cursor xp_invalid bigger.png" id="6"]
-[ext_resource type="Script" uid="uid://cumgpi086mgea" path="res://scripts/ControllerManager.gd" id="7"]
-[ext_resource type="Script" uid="uid://mskst2myvunj" path="res://scripts/Debugging.gd" id="8"]
-[ext_resource type="Script" uid="uid://ocvketctl2k0" path="res://scripts/AchievementManager.gd" id="9"]
-[ext_resource type="Script" uid="uid://cxylnr2y0fpg2" path="res://scripts/PipelineManager.gd" id="10"]
-[ext_resource type="Script" uid="uid://c0m1ajkg7tvl3" path="res://scripts/SceneChangeNotification.gd" id="11"]
+[ext_resource type="Script" uid="uid://cu5p8k2qgl37d" path="res://scripts/ControllerManager.gd" id="7"]
+[ext_resource type="Script" uid="uid://dybqd4gs3cu0a" path="res://scripts/Debugging.gd" id="8"]
+[ext_resource type="Script" uid="uid://d3p75jadrdjyc" path="res://scripts/AchievementManager.gd" id="9"]
+[ext_resource type="Script" uid="uid://bge6xtdbcbd4m" path="res://scripts/PipelineManager.gd" id="10"]
+[ext_resource type="Script" uid="uid://p4ahkvhn880f" path="res://scripts/SceneChangeNotification.gd" id="11"]
 [ext_resource type="AudioStream" uid="uid://u1lviwhw0s68" path="res://audio/music/music main_you are presented.ogg" id="12"]
 [ext_resource type="AudioStream" uid="uid://bryxkf515hxci" path="res://audio/button death new.ogg" id="13"]
 [ext_resource type="AudioStream" uid="uid://bjdi7iwcps58" path="res://audio/show cursor.ogg" id="14"]
-[ext_resource type="Script" uid="uid://bq1bifooc55ll" path="res://scripts/MouseRaycast.gd" id="15"]
-[ext_resource type="Shader" uid="uid://cy0j4o6o711t8" path="res://main player/vignette.gdshader" id="16"]
-[ext_resource type="Shader" uid="uid://ci2t4jjagxk81" path="res://main player/posterization test.gdshader" id="17"]
+[ext_resource type="Script" uid="uid://brj6migmml2nb" path="res://scripts/MouseRaycast.gd" id="15"]
+[ext_resource type="Shader" uid="uid://biv0yaosseb2a" path="res://main player/vignette.gdshader" id="16"]
+[ext_resource type="Shader" uid="uid://dkjefugsrp3b8" path="res://main player/posterization test.gdshader" id="17"]
 [ext_resource type="Material" uid="uid://1cc5f0tvkdn5" path="res://main player/mat_color precision.tres" id="18"]
 [ext_resource type="Material" uid="uid://cbt5cvhck0euq" path="res://main player/mat_dithering.tres" id="19"]
 [ext_resource type="Material" uid="uid://cdrlcynkcj7w6" path="res://main player/test shader.tres" id="20"]
-[ext_resource type="Script" uid="uid://3ysm2lja2mfj" path="res://scripts/TextShaker.gd" id="21"]
+[ext_resource type="Script" uid="uid://br54mxh5n6c73" path="res://scripts/TextShaker.gd" id="21"]
 [ext_resource type="FontFile" uid="uid://vhj3kkn6yn8o" path="res://fonts/fake receipt.otf" id="22"]
+[ext_resource type="FontFile" uid="uid://057oayryyaua" path="res://fonts/OLDSSCH_.TTF" id="23"]
 [ext_resource type="Texture2D" uid="uid://b542a1s2p6h3h" path="res://misc/you are dead.png" id="24"]
-[ext_resource type="FontVariation" uid="uid://ctc3qjdnc687e" path="res://resources/font_variation_OLDSTYLE.tres" id="24_01rup"]
-[ext_resource type="Script" uid="uid://bcil5orxnqjlb" path="res://scripts/ButtonClass.gd" id="25"]
-[ext_resource type="Script" uid="uid://bxtpnf4ky70qe" path="res://scripts/JankPreventer.gd" id="26"]
-[ext_resource type="FontVariation" uid="uid://cb5nxwm0sb4pu" path="res://resources/font_variation_global.tres" id="26_8g5uk"]
-[ext_resource type="Script" uid="uid://dbjqitnvfe5u7" path="res://scripts/ButtonClass_Main.gd" id="27"]
-[ext_resource type="Script" uid="uid://elkk5k38u0yb" path="res://scripts/InteractionBranch.gd" id="28"]
+[ext_resource type="Script" uid="uid://8xr3c14ik276" path="res://scripts/ButtonClass.gd" id="25"]
+[ext_resource type="Script" uid="uid://kt5vm11a6xgj" path="res://scripts/JankPreventer.gd" id="26"]
+[ext_resource type="Script" uid="uid://24ojlwy2cu7w" path="res://scripts/ButtonClass_Main.gd" id="27"]
+[ext_resource type="Script" uid="uid://bta13ppiyg5xm" path="res://scripts/InteractionBranch.gd" id="28"]
 [ext_resource type="Texture2D" uid="uid://cbthxfddj8u5h" path="res://misc/bracket selection_square2.png" id="29"]
 [ext_resource type="Texture2D" uid="uid://cvsfsv2cqyi4p" path="res://models/heaven door1/heaven door1_TexturesCom_Rust_Heavy_MediumRust_512_albedo.png" id="30"]
 [ext_resource type="Texture2D" uid="uid://dx8sxfx06wjab" path="res://models/heaven door1/heaven door1_TexturesCom_Rust_Heavy_MediumRust_512_normal.png" id="31"]
@@ -1426,12 +1425,12 @@ _data = {
 &"flying loop": SubResource("Animation_q67l2")
 }
 
-[node name="heaven" type="Node3D"]
+[node name="heaven" type="Node3D" unique_id=55675900]
 script = ExtResource("1_01rup")
 
-[node name="standalone managers" type="Node" parent="."]
+[node name="standalone managers" type="Node" parent="." unique_id=1021242205]
 
-[node name="heaven manager" type="Node" parent="standalone managers" node_paths=PackedStringArray("controller", "cursor", "viewblocker", "speaker_music", "animator", "intbranch_heavendoor", "interactionManager", "buttonArray", "speaker_button", "ui", "ach", "bracket_door", "btn_door", "btn_retry", "btn_exit")]
+[node name="heaven manager" type="Node" parent="standalone managers" unique_id=1391119205 node_paths=PackedStringArray("controller", "cursor", "viewblocker", "speaker_music", "animator", "intbranch_heavendoor", "interactionManager", "buttonArray", "speaker_button", "ui", "ach", "bracket_door", "btn_door", "btn_retry", "btn_exit")]
 script = ExtResource("1")
 controller = NodePath("../controller manager")
 cursor = NodePath("../cursor manager")
@@ -1449,20 +1448,20 @@ btn_door = NodePath("../../Camera/dialogue UI/m button_heaven door")
 btn_retry = NodePath("../../Camera/dialogue UI/death ui/text_retry/retry")
 btn_exit = NodePath("../../Camera/dialogue UI/death ui/text_exit/exit")
 
-[node name="interaction manager" type="Node" parent="standalone managers" node_paths=PackedStringArray("heaven", "cursor", "mouseRay")]
+[node name="interaction manager" type="Node" parent="standalone managers" unique_id=101894761 node_paths=PackedStringArray("heaven", "cursor", "mouseRay")]
 script = ExtResource("2")
 heaven = NodePath("../heaven manager")
 cursor = NodePath("../cursor manager")
 mouseRay = NodePath("../../Camera")
 
-[node name="cursor manager" type="Node" parent="standalone managers" node_paths=PackedStringArray("speaker")]
+[node name="cursor manager" type="Node" parent="standalone managers" unique_id=2074548486 node_paths=PackedStringArray("speaker")]
 script = ExtResource("3")
 speaker = NodePath("../../show cursor")
 cursor_point = ExtResource("4")
 cursor_hover = ExtResource("5")
 cursor_invalid = ExtResource("6")
 
-[node name="controller manager" type="Node" parent="standalone managers" node_paths=PackedStringArray("buttons", "brackets_3d", "cursor")]
+[node name="controller manager" type="Node" parent="standalone managers" unique_id=221335570 node_paths=PackedStringArray("buttons", "brackets_3d", "cursor")]
 script = ExtResource("7")
 dynamicallySwappingDevice = true
 buttons = [NodePath("../../Camera/dialogue UI/death ui/text_retry/retry/button_retry"), NodePath("../../Camera/dialogue UI/death ui/text_exit/exit/button_exit")]
@@ -1472,75 +1471,68 @@ exitingButtons = true
 settingVisibility = true
 stoppingOverride = false
 
-[node name="debugging" type="Node" parent="standalone managers"]
+[node name="debugging" type="Node" parent="standalone managers" unique_id=1875503745]
 script = ExtResource("8")
 
-[node name="achievement manager" type="Node" parent="standalone managers"]
+[node name="achievement manager" type="Node" parent="standalone managers" unique_id=652027397]
 script = ExtResource("9")
 
-[node name="pipeline manager" type="Node" parent="standalone managers" node_paths=PackedStringArray("env", "overlay")]
+[node name="pipeline manager" type="Node" parent="standalone managers" unique_id=692724886 node_paths=PackedStringArray("env", "overlay")]
 script = ExtResource("10")
 env = NodePath("../../WorldEnvironment")
 scene = "heaven"
 overlay = NodePath("../../Camera/post processing/opengl post processing")
 
-[node name="scene change notification" type="Node" parent="standalone managers"]
+[node name="scene change notification" type="Node" parent="standalone managers" unique_id=1141876992]
 script = ExtResource("11")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1062660538]
 environment = SubResource("Environment_fmxu8")
 
-[node name="animator_pp" type="AnimationPlayer" parent="WorldEnvironment"]
-libraries = {
-&"": SubResource("AnimationLibrary_hryg6")
-}
+[node name="animator_pp" type="AnimationPlayer" parent="WorldEnvironment" unique_id=165236251]
+libraries/ = SubResource("AnimationLibrary_hryg6")
 
-[node name="speaker_music" type="AudioStreamPlayer2D" parent="."]
+[node name="speaker_music" type="AudioStreamPlayer2D" parent="." unique_id=653435296]
 stream = ExtResource("12")
 volume_db = 5.005
 max_polyphony = 60
 panning_strength = 0.0
 bus = &"music_secondary"
-parameters/looping = true
 
-[node name="speaker_button" type="AudioStreamPlayer2D" parent="."]
+[node name="speaker_button" type="AudioStreamPlayer2D" parent="." unique_id=984389216]
 stream = ExtResource("13")
 volume_db = 5.005
 max_polyphony = 60
 panning_strength = 0.0
 
-[node name="show cursor" type="AudioStreamPlayer2D" parent="."]
+[node name="show cursor" type="AudioStreamPlayer2D" parent="." unique_id=1623244025]
 stream = ExtResource("14")
 volume_db = 1.5
 max_polyphony = 60
 panning_strength = 0.0
 
-[node name="show cursor2" type="AudioStreamPlayer2D" parent="."]
+[node name="show cursor2" type="AudioStreamPlayer2D" parent="." unique_id=506000279]
 volume_db = 1.5
 max_polyphony = 60
 panning_strength = 0.0
 
-[node name="animation parent" type="Node3D" parent="."]
+[node name="animation parent" type="Node3D" parent="." unique_id=1580965932]
 
-[node name="animator_camera" type="AnimationPlayer" parent="animation parent"]
-libraries = {
-&"": SubResource("AnimationLibrary_xfjgt")
-}
+[node name="animator_camera" type="AnimationPlayer" parent="animation parent" unique_id=1472413302]
+libraries/ = SubResource("AnimationLibrary_xfjgt")
 
-[node name="animator_birds" type="AnimationPlayer" parent="animation parent"]
-libraries = {
-&"": SubResource("AnimationLibrary_vvkk5")
-}
-autoplay = "bird fly"
+[node name="animator_birds" type="AnimationPlayer" parent="animation parent" unique_id=985416449]
+libraries/ = SubResource("AnimationLibrary_vvkk5")
+autoplay = &"bird fly"
 
-[node name="Camera" type="Camera3D" parent="."]
-transform = Transform3D(0.0391181, 0.931403, 0.361884, -0.169161, 0.363107, -0.916263, -0.984812, -0.0253742, 0.171761, 3.47932, 1.009, 2.00394)
+[node name="Camera" type="Camera3D" parent="." unique_id=910328149]
+transform = Transform3D(0.039118085, 0.931403, 0.36188388, -0.16916099, 0.36310688, -0.91626304, -0.98481196, -0.025374169, 0.1717609, 3.47932, 1.009, 2.00394)
 fov = 65.5
 script = ExtResource("15")
 
-[node name="post processing" type="Node" parent="Camera"]
+[node name="post processing" type="Node" parent="Camera" unique_id=164508381]
 
-[node name="opengl post processing" type="Control" parent="Camera/post processing"]
+[node name="opengl post processing" type="Control" parent="Camera/post processing" unique_id=43577075]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -1549,12 +1541,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/opengl post processing"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/opengl post processing" unique_id=528460181]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/opengl post processing/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/opengl post processing/BackBufferCopy" unique_id=1594346386]
 material = SubResource("ShaderMaterial_etd52")
 offset_left = -99.0
 offset_top = -98.0
@@ -1563,34 +1555,27 @@ offset_bottom = 138.0
 rotation = 0.00159616
 mouse_filter = 2
 
-[node name="posterization test" type="Control" parent="Camera/post processing"]
+[node name="posterization test" type="Control" parent="Camera/post processing" unique_id=804005399]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/posterization test"]
-position = Vector2(2358.5, 993)
-scale = Vector2(24.585, 10.93)
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/posterization test" unique_id=1490315685]
+position = Vector2(482, 270)
+scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/posterization test/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/posterization test/BackBufferCopy" unique_id=1709891163]
 material = SubResource("ShaderMaterial_q0uip")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -100.0
-offset_top = -100.0
-offset_right = -100.0
-offset_bottom = -100.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = -99.0
+offset_top = -98.0
+offset_right = 140.0
+offset_bottom = 139.0
 mouse_filter = 2
 
-[node name="color precision" type="Control" parent="Camera/post processing"]
+[node name="color precision" type="Control" parent="Camera/post processing" unique_id=100558003]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -1598,12 +1583,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/color precision"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/color precision" unique_id=1196257248]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/color precision/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/color precision/BackBufferCopy" unique_id=1994531006]
 material = ExtResource("18")
 offset_left = -98.9733
 offset_top = -98.1818
@@ -1611,7 +1596,7 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="dithering" type="Control" parent="Camera/post processing"]
+[node name="dithering" type="Control" parent="Camera/post processing" unique_id=166559825]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -1619,13 +1604,13 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/dithering"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/dithering" unique_id=1737014615]
 visible = false
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/dithering/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/dithering/BackBufferCopy" unique_id=1929225051]
 visible = false
 material = ExtResource("19")
 offset_left = -98.9733
@@ -1634,7 +1619,7 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="test" type="Control" parent="Camera/post processing"]
+[node name="test" type="Control" parent="Camera/post processing" unique_id=155891937]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -1642,12 +1627,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/test"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/test" unique_id=1421712152]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="Camera/post processing/test/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="Camera/post processing/test/BackBufferCopy" unique_id=1113018286]
 material = ExtResource("20")
 offset_left = -98.9733
 offset_top = -98.1818
@@ -1655,9 +1640,9 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="dialogue UI" type="Node" parent="Camera"]
+[node name="dialogue UI" type="Node" parent="Camera" unique_id=1062067076]
 
-[node name="main dialogue" type="Control" parent="Camera/dialogue UI"]
+[node name="main dialogue" type="Control" parent="Camera/dialogue UI" unique_id=995997112]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1666,13 +1651,13 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="text shaker" type="Node" parent="Camera/dialogue UI/main dialogue" node_paths=PackedStringArray("text")]
+[node name="text shaker" type="Node" parent="Camera/dialogue UI/main dialogue" unique_id=1909975958 node_paths=PackedStringArray("text")]
 script = ExtResource("21")
 delay = 0.03
 offset2 = 1.0
 text = NodePath("..")
 
-[node name="dialogue backdrop" type="ColorRect" parent="Camera/dialogue UI/main dialogue"]
+[node name="dialogue backdrop" type="ColorRect" parent="Camera/dialogue UI/main dialogue" unique_id=1414457319]
 visible = false
 layout_mode = 0
 offset_left = 468.0
@@ -1683,7 +1668,7 @@ scale = Vector2(13.969, 1.748)
 pivot_offset = Vector2(20, 0)
 color = Color(0, 0, 0, 1)
 
-[node name="dialogue text" type="Label" parent="Camera/dialogue UI/main dialogue"]
+[node name="dialogue text" type="Label" parent="Camera/dialogue UI/main dialogue" unique_id=11569197]
 visible = false
 layout_mode = 0
 offset_top = 431.0
@@ -1699,7 +1684,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 visible_characters_behavior = 1
 
-[node name="item description" type="Control" parent="Camera/dialogue UI"]
+[node name="item description" type="Control" parent="Camera/dialogue UI" unique_id=1647325979]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -1709,7 +1694,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="item name_shadow" type="Label" parent="Camera/dialogue UI/item description"]
+[node name="item name_shadow" type="Label" parent="Camera/dialogue UI/item description" unique_id=824273572]
 layout_mode = 0
 offset_left = -1.0
 offset_top = 391.0
@@ -1726,7 +1711,7 @@ vertical_alignment = 1
 visible_characters_behavior = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="item name" type="Label" parent="Camera/dialogue UI/item description"]
+[node name="item name" type="Label" parent="Camera/dialogue UI/item description" unique_id=190519360]
 layout_mode = 0
 offset_top = 390.0
 offset_right = 960.0
@@ -1742,7 +1727,7 @@ vertical_alignment = 1
 visible_characters_behavior = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="item description_shadow" type="Label" parent="Camera/dialogue UI/item description"]
+[node name="item description_shadow" type="Label" parent="Camera/dialogue UI/item description" unique_id=912414629]
 layout_mode = 0
 offset_left = -2.0
 offset_top = 440.0
@@ -1759,7 +1744,7 @@ horizontal_alignment = 1
 visible_characters_behavior = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="item description" type="Label" parent="Camera/dialogue UI/item description"]
+[node name="item description" type="Label" parent="Camera/dialogue UI/item description" unique_id=2052937820]
 layout_mode = 0
 offset_top = 438.0
 offset_right = 960.0
@@ -1775,7 +1760,7 @@ horizontal_alignment = 1
 visible_characters_behavior = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="shootgin selection" type="Control" parent="Camera/dialogue UI"]
+[node name="shootgin selection" type="Control" parent="Camera/dialogue UI" unique_id=584387241]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -1784,7 +1769,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="item name_shadow" type="Label" parent="Camera/dialogue UI/shootgin selection"]
+[node name="item name_shadow" type="Label" parent="Camera/dialogue UI/shootgin selection" unique_id=542275331]
 layout_mode = 0
 offset_left = -1.0
 offset_top = 391.0
@@ -1800,7 +1785,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 visible_characters_behavior = 1
 
-[node name="item name" type="Label" parent="Camera/dialogue UI/shootgin selection"]
+[node name="item name" type="Label" parent="Camera/dialogue UI/shootgin selection" unique_id=1415267086]
 layout_mode = 0
 offset_top = 390.0
 offset_right = 960.0
@@ -1815,7 +1800,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 visible_characters_behavior = 1
 
-[node name="item name_shadow2" type="Label" parent="Camera/dialogue UI/shootgin selection"]
+[node name="item name_shadow2" type="Label" parent="Camera/dialogue UI/shootgin selection" unique_id=1823779362]
 layout_mode = 0
 offset_left = -1.0
 offset_top = 418.0
@@ -1831,7 +1816,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 visible_characters_behavior = 1
 
-[node name="item name2" type="Label" parent="Camera/dialogue UI/shootgin selection"]
+[node name="item name2" type="Label" parent="Camera/dialogue UI/shootgin selection" unique_id=80331777]
 layout_mode = 0
 offset_top = 417.0
 offset_right = 960.0
@@ -1846,7 +1831,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 visible_characters_behavior = 1
 
-[node name="death ui" type="Control" parent="Camera/dialogue UI"]
+[node name="death ui" type="Control" parent="Camera/dialogue UI" unique_id=1956587148]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1854,69 +1839,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="you are dead label" type="Label" parent="Camera/dialogue UI/death ui"]
+[node name="you are dead label" type="Label" parent="Camera/dialogue UI/death ui" unique_id=2144129180]
 modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = -147.5
-offset_right = 480.0
-offset_bottom = -44.5
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_top = 137.0
+offset_right = 960.0
+offset_bottom = 210.0
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("24_01rup")
+theme_override_fonts/font = ExtResource("23")
 theme_override_font_sizes/font_size = 77
 text = "DEAD"
 horizontal_alignment = 1
 
-[node name="you are dead" type="TextureRect" parent="Camera/dialogue UI/death ui"]
+[node name="you are dead" type="TextureRect" parent="Camera/dialogue UI/death ui" unique_id=1859826309]
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -657.5
-offset_top = -244.0
-offset_right = 657.5
-offset_bottom = 836.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = -177.0
+offset_top = 40.0
+offset_right = 1138.0
+offset_bottom = 1120.0
 scale = Vector2(0.23132, 0.23132)
 pivot_offset = Vector2(657, 0)
 texture = ExtResource("24")
 
-[node name="text_retry" type="Label" parent="Camera/dialogue UI/death ui"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = 38.0
-offset_right = 480.0
-offset_bottom = 90.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="text_retry" type="Label" parent="Camera/dialogue UI/death ui" unique_id=1138753241]
+layout_mode = 0
+offset_top = 302.0
+offset_right = 960.0
+offset_bottom = 354.0
 pivot_offset = Vector2(63.02, 0)
 theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_fonts/font = ExtResource("26_8g5uk")
+theme_override_fonts/font = ExtResource("22")
 theme_override_font_sizes/font_size = 30
 text = "RETRY"
 horizontal_alignment = 1
 
-[node name="retry" type="Button" parent="Camera/dialogue UI/death ui/text_retry"]
+[node name="retry" type="Button" parent="Camera/dialogue UI/death ui/text_retry" unique_id=115974619]
 visibility_layer = 0
 layout_mode = 0
 offset_left = 427.0
@@ -1925,7 +1887,7 @@ offset_bottom = 8.0
 scale = Vector2(13.2605, 4.06905)
 focus_neighbor_bottom = NodePath("../../text_exit/exit")
 
-[node name="button_retry" type="Node" parent="Camera/dialogue UI/death ui/text_retry/retry" node_paths=PackedStringArray("cursor", "ui", "speaker_hover", "t")]
+[node name="button_retry" type="Node" parent="Camera/dialogue UI/death ui/text_retry/retry" unique_id=303589914 node_paths=PackedStringArray("cursor", "ui", "speaker_hover", "t")]
 script = ExtResource("25")
 cursor = NodePath("../../../../../../standalone managers/cursor manager")
 alias = "retry"
@@ -1937,27 +1899,19 @@ ui_opacity_active = 1.0
 adding_cursor = true
 t = NodePath("../..")
 
-[node name="text_exit" type="Label" parent="Camera/dialogue UI/death ui"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = 70.0
-offset_right = 480.0
-offset_bottom = 122.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="text_exit" type="Label" parent="Camera/dialogue UI/death ui" unique_id=1762485709]
+layout_mode = 0
+offset_top = 339.0
+offset_right = 960.0
+offset_bottom = 391.0
 pivot_offset = Vector2(63.02, 0)
 theme_override_colors/font_color = Color(0, 0, 0, 0)
-theme_override_fonts/font = ExtResource("26_8g5uk")
+theme_override_fonts/font = ExtResource("22")
 theme_override_font_sizes/font_size = 30
 text = "EXIT"
 horizontal_alignment = 1
 
-[node name="exit" type="Button" parent="Camera/dialogue UI/death ui/text_exit"]
+[node name="exit" type="Button" parent="Camera/dialogue UI/death ui/text_exit" unique_id=270929397]
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 visibility_layer = 0
@@ -1969,7 +1923,7 @@ offset_bottom = 13.0
 scale = Vector2(12.5248, 3.63237)
 focus_neighbor_top = NodePath("../../text_retry/retry")
 
-[node name="button_exit" type="Node" parent="Camera/dialogue UI/death ui/text_exit/exit" node_paths=PackedStringArray("cursor", "ui", "speaker_hover", "t")]
+[node name="button_exit" type="Node" parent="Camera/dialogue UI/death ui/text_exit/exit" unique_id=519704686 node_paths=PackedStringArray("cursor", "ui", "speaker_hover", "t")]
 script = ExtResource("25")
 cursor = NodePath("../../../../../../standalone managers/cursor manager")
 alias = "exit"
@@ -1981,7 +1935,7 @@ ui_opacity_active = 1.0
 adding_cursor = true
 t = NodePath("../..")
 
-[node name="ui_retry" type="Label" parent="Camera/dialogue UI/death ui"]
+[node name="ui_retry" type="Label" parent="Camera/dialogue UI/death ui" unique_id=1984197045]
 visible = false
 layout_mode = 0
 offset_top = 302.0
@@ -1994,11 +1948,11 @@ theme_override_font_sizes/font_size = 30
 text = "<          >"
 horizontal_alignment = 1
 
-[node name="jank preventer" type="Node" parent="Camera/dialogue UI/death ui/ui_retry"]
+[node name="jank preventer" type="Node" parent="Camera/dialogue UI/death ui/ui_retry" unique_id=116843339]
 script = ExtResource("26")
 isHeaven = true
 
-[node name="ui_exit" type="Label" parent="Camera/dialogue UI/death ui"]
+[node name="ui_exit" type="Label" parent="Camera/dialogue UI/death ui" unique_id=2084183098]
 visible = false
 layout_mode = 0
 offset_top = 338.0
@@ -2011,7 +1965,7 @@ theme_override_font_sizes/font_size = 30
 text = "<          >"
 horizontal_alignment = 1
 
-[node name="viewblocker parent" type="Control" parent="Camera/dialogue UI"]
+[node name="viewblocker parent" type="Control" parent="Camera/dialogue UI" unique_id=1346836705]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -2019,20 +1973,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-metadata/_edit_lock_ = true
+metadata/_edit_use_anchors_ = true
 
-[node name="viewblcoker" type="ColorRect" parent="Camera/dialogue UI/viewblocker parent"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="viewblcoker" type="ColorRect" parent="Camera/dialogue UI/viewblocker parent" unique_id=618346529]
+layout_mode = 0
+offset_left = -10.0
+offset_top = -3.0
+offset_right = 972.0
+offset_bottom = 553.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
-metadata/_edit_lock_ = true
 
-[node name="m button_heaven door" type="Button" parent="Camera/dialogue UI"]
+[node name="m button_heaven door" type="Button" parent="Camera/dialogue UI" unique_id=990206187]
 visible = false
 self_modulate = Color(1, 1, 1, 0)
 offset_left = 290.0
@@ -2042,7 +1994,7 @@ offset_bottom = 271.0
 scale = Vector2(7.21751, 6.29743)
 mouse_filter = 2
 
-[node name="m class_heaven door" type="Node" parent="Camera/dialogue UI/m button_heaven door" node_paths=PackedStringArray("interaction", "ui_3D")]
+[node name="m class_heaven door" type="Node" parent="Camera/dialogue UI/m button_heaven door" unique_id=1049934677 node_paths=PackedStringArray("interaction", "ui_3D")]
 script = ExtResource("27")
 alias = "heaven door"
 usingInteractionPipe = true
@@ -2054,177 +2006,177 @@ is3D = true
 ui_opacity_inactive = 0.0
 ui_opacity_active = 1.0
 
-[node name="debug label" type="Label" parent="Camera/dialogue UI"]
+[node name="debug label" type="Label" parent="Camera/dialogue UI" unique_id=1158340414]
 visible = false
 offset_right = 40.0
 offset_bottom = 23.0
 scale = Vector2(2.41648, 2.21585)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 
-[node name="trig_door" type="MeshInstance3D" parent="."]
+[node name="trig_door" type="MeshInstance3D" parent="." unique_id=797732063]
 transform = Transform3D(1.29947, 0, 0, 0, 6.61216, 0, 0, 0, 5.92511, -11.1371, 2.17825, 0.451081)
 visible = false
 layers = 0
 mesh = SubResource("BoxMesh_bv48e")
 skeleton = NodePath("")
 
-[node name="interaction branch" type="Node" parent="trig_door"]
+[node name="interaction branch" type="Node" parent="trig_door" unique_id=365759797]
 script = ExtResource("28")
 interactionAlias = "heaven door"
 interactionAllowed = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="trig_door"]
+[node name="StaticBody3D" type="StaticBody3D" parent="trig_door" unique_id=759498273]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="trig_door/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="trig_door/StaticBody3D" unique_id=1874386861]
 shape = SubResource("ConcavePolygonShape3D_2n1i1")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=6899692]
 transform = Transform3D(-0.0222165, 0.81005, -9.71112e-10, -0.81005, -0.0222165, 4.00533e-11, -1.34186e-11, 0, 0.810355, -10.4874, 2.17213, 0.573428)
 material_override = SubResource("StandardMaterial3D_a7oxp")
 mesh = SubResource("PlaneMesh_tkjxp")
 
-[node name="heaven1" type="Node3D" parent="."]
+[node name="heaven1" type="Node3D" parent="." unique_id=1575369141]
 transform = Transform3D(1.29947, 0, 0, 0, 1.29947, 0, 0, 0, 1.29947, -11.0602, 0, 0)
 
-[node name="door left" type="MeshInstance3D" parent="heaven1"]
+[node name="door left" type="MeshInstance3D" parent="heaven1" unique_id=487143028]
 transform = Transform3D(0.993733, 0, 0, 0, 0.993733, 0, 0, 0, 0.993733, 0.00829506, 1.57899, 2.46781)
 mesh = SubResource("ArrayMesh_jglmy")
 skeleton = NodePath("")
 
-[node name="door right" type="MeshInstance3D" parent="heaven1"]
+[node name="door right" type="MeshInstance3D" parent="heaven1" unique_id=1583339794]
 transform = Transform3D(0.993733, 0, 0, 0, 0.993733, 0, 0, 0, 0.993733, 0.0420427, 1.57899, -1.77337)
 mesh = SubResource("ArrayMesh_6q4mt")
 skeleton = NodePath("")
 
-[node name="door pivot_right" type="Node3D" parent="heaven1"]
+[node name="door pivot_right" type="Node3D" parent="heaven1" unique_id=221080339]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.133054, 1.56612, -1.82423)
 
-[node name="Cylinder" type="MeshInstance3D" parent="heaven1"]
+[node name="Cylinder" type="MeshInstance3D" parent="heaven1" unique_id=1775519762]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00253689, 5.53981, 0.312658)
 mesh = SubResource("ArrayMesh_01gu1")
 skeleton = NodePath("")
 
-[node name="Cube_006" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_006" type="MeshInstance3D" parent="heaven1" unique_id=1310285613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_77pld")
 skeleton = NodePath("")
 
-[node name="BezierCurve_012" type="MeshInstance3D" parent="heaven1"]
+[node name="BezierCurve_012" type="MeshInstance3D" parent="heaven1" unique_id=710211473]
 transform = Transform3D(6.55651e-07, 1, 1.19209e-07, -0.0840718, 1.19209e-07, -0.99646, -0.99646, 6.85453e-07, 0.0840718, -0.0665883, 1.76234, 20.3477)
 mesh = SubResource("ArrayMesh_13sxv")
 skeleton = NodePath("")
 
-[node name="Cube_019" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_019" type="MeshInstance3D" parent="heaven1" unique_id=1873240238]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_gsh26")
 skeleton = NodePath("")
 
-[node name="Cube_028" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_028" type="MeshInstance3D" parent="heaven1" unique_id=1489261816]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_i0n1x")
 skeleton = NodePath("")
 
-[node name="Cube_029" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_029" type="MeshInstance3D" parent="heaven1" unique_id=700965370]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_w1xv5")
 skeleton = NodePath("")
 
-[node name="Cube_030" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_030" type="MeshInstance3D" parent="heaven1" unique_id=479053611]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_hg6qx")
 skeleton = NodePath("")
 
-[node name="Cube_031" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_031" type="MeshInstance3D" parent="heaven1" unique_id=759072666]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_qhh3a")
 skeleton = NodePath("")
 
-[node name="Cube_032" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_032" type="MeshInstance3D" parent="heaven1" unique_id=62131020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_j1rj8")
 skeleton = NodePath("")
 
-[node name="Cube_083" type="MeshInstance3D" parent="heaven1"]
+[node name="Cube_083" type="MeshInstance3D" parent="heaven1" unique_id=902512358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00227584, 1.04905, -4.23808)
 mesh = SubResource("ArrayMesh_ftkwq")
 skeleton = NodePath("")
 
-[node name="BezierCurve_043" type="MeshInstance3D" parent="heaven1"]
+[node name="BezierCurve_043" type="MeshInstance3D" parent="heaven1" unique_id=1336286394]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.133055, 1.56612, -0.790645)
 mesh = SubResource("ArrayMesh_r0q11")
 skeleton = NodePath("")
 
-[node name="Plane" type="MeshInstance3D" parent="heaven1"]
+[node name="Plane" type="MeshInstance3D" parent="heaven1" unique_id=353048076]
 transform = Transform3D(75.1221, 0, 0, 0, 75.1221, 0, 0, 0, 75.1221, -0.0223436, -0.265245, 0.329748)
 material_override = ExtResource("34")
 mesh = SubResource("ArrayMesh_485xs")
 skeleton = NodePath("")
 
-[node name="Plane2" type="MeshInstance3D" parent="heaven1"]
+[node name="Plane2" type="MeshInstance3D" parent="heaven1" unique_id=1497316659]
 transform = Transform3D(75.1221, 0, 0, 0, 75.1221, 0, 0, 0, 75.1221, -149.771, -0.265245, 0.329748)
 material_override = ExtResource("34")
 mesh = SubResource("ArrayMesh_485xs")
 skeleton = NodePath("")
 
-[node name="heaven pokers reimport1" parent="." instance=ExtResource("36")]
+[node name="heaven pokers reimport1" parent="." unique_id=1983871117 instance=ExtResource("36")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -130.561, 0, -1.58656)
 
-[node name="heaven pokers reimport2" parent="." instance=ExtResource("36")]
+[node name="heaven pokers reimport2" parent="." unique_id=1800466133 instance=ExtResource("36")]
 transform = Transform3D(-1.40372, 0, -1.22717e-07, 0, 1.40372, 0, 1.22717e-07, 0, -1.40372, -130.561, 0, -1.58656)
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=757910738]
 transform = Transform3D(0.999418, -0.0238281, 0.0244249, 0.0244249, 0.999403, -0.0244322, -0.0238281, 0.0250145, 0.999403, 3.72309, -1.48535, -0.217707)
 amount = 1000
 visibility_aabb = AABB(-4, -4, -4, 200, 200, 200)
 process_material = ExtResource("37")
 draw_pass_1 = SubResource("SphereMesh_lw0n2")
 
-[node name="light parent" type="Node3D" parent="."]
+[node name="light parent" type="Node3D" parent="." unique_id=632345922]
 transform = Transform3D(0.651947, 0, 0, 0, 0.651947, 0, 0, 0, 0.651947, -0.759192, 4.55947, -2.7553)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="light parent"]
+[node name="OmniLight3D" type="OmniLight3D" parent="light parent" unique_id=1632197078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35, 8.9, 2.048)
 light_energy = 3.6
 light_size = 0.049
 omni_range = 18.98
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="light parent"]
+[node name="OmniLight3D2" type="OmniLight3D" parent="light parent" unique_id=1133282415]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.897, 8.913, 2.048)
 light_energy = 3.6
 light_size = 0.049
 omni_range = 18.98
 
-[node name="OmniLight3D3" type="OmniLight3D" parent="light parent"]
+[node name="OmniLight3D3" type="OmniLight3D" parent="light parent" unique_id=1113393432]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.111, 8.913, 2.048)
 light_energy = 3.6
 light_size = 0.049
 omni_range = 18.98
 
-[node name="OmniLight3D4" type="OmniLight3D" parent="light parent"]
+[node name="OmniLight3D4" type="OmniLight3D" parent="light parent" unique_id=172865568]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.94, 8.913, 2.048)
 light_energy = 3.6
 light_size = 0.049
 omni_range = 18.98
 
-[node name="OmniLight3D5" type="OmniLight3D" parent="light parent"]
+[node name="OmniLight3D5" type="OmniLight3D" parent="light parent" unique_id=1455794691]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.153, 8.913, 2.048)
 light_energy = 3.6
 light_size = 0.049
 omni_range = 18.98
 
-[node name="main bird parent" type="Node3D" parent="."]
+[node name="main bird parent" type="Node3D" parent="." unique_id=1622901886]
 transform = Transform3D(0.651947, 0, 0, 0, 0.651947, 0, 0, 0, 0.651947, 18.3178, 27.5473, -11.8698)
 
-[node name="bird parent" type="Node3D" parent="main bird parent"]
+[node name="bird parent" type="Node3D" parent="main bird parent" unique_id=152739664]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, -1.46655, -0.209452, -3.08587)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent" unique_id=683834915]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent/bird copy1" unique_id=270656648]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent/bird copy1/bird parent" unique_id=1905163798]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -2324,39 +2276,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D" unique_id=1640411072]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1217840609]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D" unique_id=2002045541]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D" unique_id=1302825845]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent/bird copy1" unique_id=1858192378]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent2" type="Node3D" parent="main bird parent"]
+[node name="bird parent2" type="Node3D" parent="main bird parent" unique_id=538668678]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, -1.46655, -0.209452, 1.07595)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent2"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent2" unique_id=1952818492]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent2/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent2/bird copy1" unique_id=1509529716]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent2/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent2/bird copy1/bird parent" unique_id=1467411481]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -2456,39 +2406,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D" unique_id=2095800197]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=715931127]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D" unique_id=1819381689]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D" unique_id=145915160]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent2/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent2/bird copy1" unique_id=286365728]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent3" type="Node3D" parent="main bird parent"]
+[node name="bird parent3" type="Node3D" parent="main bird parent" unique_id=1866360871]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, 0.0772179, -0.209452, -0.633705)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent3"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent3" unique_id=1385477953]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent3/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent3/bird copy1" unique_id=1007403880]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent3/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent3/bird copy1/bird parent" unique_id=1793439276]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -2588,39 +2536,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D" unique_id=810685173]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1321120196]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D" unique_id=110320934]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D" unique_id=1065643130]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent3/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent3/bird copy1" unique_id=1743499212]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent4" type="Node3D" parent="main bird parent"]
+[node name="bird parent4" type="Node3D" parent="main bird parent" unique_id=1621262618]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, 3.61852, -0.209452, -0.633705)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent4"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent4" unique_id=1847451983]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent4/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent4/bird copy1" unique_id=1600063291]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent4/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent4/bird copy1/bird parent" unique_id=1966677871]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -2720,39 +2666,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D" unique_id=1303351083]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1144068790]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D" unique_id=1637520284]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D" unique_id=1397057219]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent4/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent4/bird copy1" unique_id=694166246]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent5" type="Node3D" parent="main bird parent"]
+[node name="bird parent5" type="Node3D" parent="main bird parent" unique_id=1170859301]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, 4.5993, -0.209452, 1.03384)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent5"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent5" unique_id=309920726]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent5/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent5/bird copy1" unique_id=1621866769]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent5/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent5/bird copy1/bird parent" unique_id=236795012]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -2852,39 +2796,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D" unique_id=1134187758]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=35638479]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D" unique_id=2084772136]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D" unique_id=248698247]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent5/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent5/bird copy1" unique_id=583406290]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent6" type="Node3D" parent="main bird parent"]
+[node name="bird parent6" type="Node3D" parent="main bird parent" unique_id=889639021]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, 8.6039, -0.209457, 2.17329)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent6"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent6" unique_id=2096872521]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent6/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent6/bird copy1" unique_id=1638910576]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent6/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent6/bird copy1/bird parent" unique_id=140622540]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -2984,39 +2926,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D" unique_id=1636906942]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=27470650]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D" unique_id=956070956]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D" unique_id=711111685]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent6/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent6/bird copy1" unique_id=141664794]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent7" type="Node3D" parent="main bird parent"]
+[node name="bird parent7" type="Node3D" parent="main bird parent" unique_id=505713858]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, 9.7472, -0.209457, 3.39486)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent7"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent7" unique_id=677818552]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent7/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent7/bird copy1" unique_id=2105231435]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent7/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent7/bird copy1/bird parent" unique_id=273145797]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -3116,39 +3056,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D" unique_id=2028130185]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1098469200]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D" unique_id=1255097755]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D" unique_id=1868114893]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent7/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent7/bird copy1" unique_id=1090793083]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent8" type="Node3D" parent="main bird parent"]
+[node name="bird parent8" type="Node3D" parent="main bird parent" unique_id=1219418530]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, 13.3615, -0.209457, 3.39486)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent8"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent8" unique_id=10522455]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent8/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent8/bird copy1" unique_id=1709096650]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent8/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent8/bird copy1/bird parent" unique_id=1872129378]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -3248,39 +3186,37 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D" unique_id=1547574747]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=69334603]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D" unique_id=33897610]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D" unique_id=1502335613]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent8/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent8/bird copy1" unique_id=1371941535]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"
 
-[node name="bird parent9" type="Node3D" parent="main bird parent"]
+[node name="bird parent9" type="Node3D" parent="main bird parent" unique_id=6247509]
 transform = Transform3D(0.235825, 0, 0, 0, 0.235825, 0, 0, 0, 0.235825, 12.4687, -0.209457, 0.528809)
 
-[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent9"]
+[node name="bird copy1" type="Node3D" parent="main bird parent/bird parent9" unique_id=1459994650]
 transform = Transform3D(-0.996558, 0, 0.0828951, 0, 1, 0, -0.0828951, 0, -0.996558, 0.167612, 0.963121, -0.245123)
 
-[node name="bird parent" type="Node3D" parent="main bird parent/bird parent9/bird copy1"]
+[node name="bird parent" type="Node3D" parent="main bird parent/bird parent9/bird copy1" unique_id=1406549557]
 transform = Transform3D(0.973917, 0, 0, 0, -0.0848824, -0.970211, 0, 0.970211, -0.0848824, 0, 0, 0)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent9/bird copy1/bird parent"]
+[node name="Skeleton3D" type="Skeleton3D" parent="main bird parent/bird parent9/bird copy1/bird parent" unique_id=1690790233]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.99997, 0.00778498, -3.47861e-05, -0.00649237, 0.836385, 0.548104, 0.00429608, -0.548088, 0.83641, -1.15255e-33, 1.83826e-24, -5.57641e-25)
@@ -3380,25 +3316,23 @@ bones/13/position = Vector3(-0.107802, -0.19843, -0.216763)
 bones/13/rotation = Quaternion(0.160836, -0.975207, -0.151228, 0.0152678)
 bones/13/scale = Vector3(1, 1, 1)
 
-[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D"]
-transform = Transform3D(1.02678, -3.63361e-08, -3.20779e-09, 7.90783e-09, -0.0894897, 1.02287, -3.8126e-08, -1.02287, -0.0894897, -9.87748e-08, -0.642315, -0.0940026)
+[node name="Cube_002" type="BoneAttachment3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D" unique_id=205182192]
+transform = Transform3D(1.0267799, -3.6336132e-08, -3.2077878e-09, 7.907829e-09, -0.08948974, 1.0228729, -3.8126018e-08, -1.0228729, -0.08948974, -9.8774805e-08, -0.6423154, -0.094002634)
 bone_name = "Cube.002"
 bone_idx = 8
 
-[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D/Cube_002"]
+[node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1002791728]
 mesh = SubResource("ArrayMesh_ue4jh")
 skeleton = NodePath("")
 
-[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D" unique_id=585245104]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
 
-[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D"]
+[node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D" unique_id=1642200361]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent9/bird copy1"]
-libraries = {
-&"": SubResource("AnimationLibrary_k0np4")
-}
-autoplay = "flying loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent9/bird copy1" unique_id=859705177]
+libraries/ = SubResource("AnimationLibrary_k0np4")
+autoplay = &"flying loop"

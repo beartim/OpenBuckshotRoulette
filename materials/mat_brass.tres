@@ -6,6 +6,6 @@
 transparency = 1
 depth_draw_mode = 1
 albedo_texture = ExtResource("1")
-metallic = 0.2800000011920929
+metallic = 0.28
 metallic_specular = 0.0
 roughness = 0.0

@@ -16,7 +16,7 @@ func ShowText_ForDuration(activeText : String, showDuration : float):
 	dialogueUI.visible = true
 	looping = true
 	TickText()
-	await get_tree().create_timer(showDuration, false).timeout
+	await GlobalVariables.tree.create_timer(showDuration, false).timeout
 	looping = false
 	dialogueUI.visible = false
 
@@ -39,6 +39,6 @@ func TickText():
 		speaker_click.play()
 		if (dialogueUI.visible_ratio >= 1):
 			looping = false
-		await get_tree().create_timer(incrementDelay, false).timeout
+		await GlobalVariables.tree.create_timer(incrementDelay, false).timeout
 		pass
 	pass

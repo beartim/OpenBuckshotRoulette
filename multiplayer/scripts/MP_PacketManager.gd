@@ -11,16 +11,16 @@ class_name PacketManager extends Node
 @export_group("")
 
 func _ready() -> void:
-	#Steam.p2p_session_request.connect(_on_p2p_session_request)
-	#Steam.p2p_session_connect_fail.connect(_on_p2p_session_connect_fail)
-	pass
+	Steam.p2p_session_request.connect(_on_p2p_session_request)
+	Steam.p2p_session_connect_fail.connect(_on_p2p_session_connect_fail)
+	GlobalSteam.packet_received.connect(_on_packet_received)
 
 func GetTime():
 	return str(Time.get_time_string_from_system())
 
 func _process(_delta) -> void:
 	# If the player is connected, read packets
-	if GlobalSteam.LOBBY_ID > 0:
+	if GlobalSteam.LOBBY_ID != 0:
 		read_p2p_packet()
 
 var read_count
@@ -28,9 +28,9 @@ func read_all_p2p_packets(read_count: int = 0):
 	if read_count >= GlobalSteam.PACKET_READ_LIMIT:
 		return
 	
-	#if Steam.getAvailableP2PPacketSize(0) > 0:
-		#read_p2p_packet()
-		#read_all_p2p_packets(read_count + 1)
+	if Steam.getAvailableP2PPacketSize(0) > 0:
+		read_p2p_packet()
+		read_all_p2p_packets(read_count + 1)
 
 func send_p2p_packet_directly_to_host(sending_from_id : int, packet_data : Dictionary):
 	if sending_from_id == GlobalSteam.HOST_ID && !GlobalVariables.mp_debugging:
@@ -53,7 +53,7 @@ func send_p2p_packet_through_host(sending_From_id : int, packet_data : Dictionar
 func send_p2p_packet(target: int, packet_data: Dictionary) -> void:
 	if GlobalVariables.mp_debugging: return
 	# Set the send_type and channel
-	#var send_type: int = Steam.P2P_SEND_RELIABLE
+	var send_type: int = Steam.P2P_SEND_RELIABLE
 	var channel: int = 0
 	
 	# Create a data array to send the data through
@@ -70,59 +70,94 @@ func send_p2p_packet(target: int, packet_data: Dictionary) -> void:
 			# Loop through all members that aren't you
 			for this_member in GlobalSteam.LOBBY_MEMBERS:
 				if this_member['steam_id'] != GlobalSteam.STEAM_ID:
-					#Steam.sendP2PPacket(this_member['steam_id'], this_data, send_type, channel)
+					if GlobalVariables.using_steam:
+						Steam.sendP2PPacket(this_member['steam_id'], this_data, send_type, channel)
 					if GlobalVariables.printing_packets: print("sending packet with target 0: ", packet_data)
+		if not GlobalVariables.using_steam and GlobalSteam.connected:
+			GlobalSteam.send_packet(this_data)
 
 	# Else send it to someone specific
-	#else:
-		#Steam.sendP2PPacket(target, this_data, send_type, channel)
+	else:
+		if GlobalVariables.using_steam:
+			Steam.sendP2PPacket(target, this_data, send_type, channel)
+		# For custom server, since it's relayed, send to server
+		if not GlobalVariables.using_steam and GlobalSteam.connected:
+			GlobalSteam.send_packet(this_data)
+
+func _on_packet_received(readable_data: Dictionary):
+	var sender_id: int = GlobalSteam.HOST_ID  # Assume from host
+	
+	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+		if sender_id != GlobalSteam.HOST_ID: 
+			print("packet refused: received packet from non-host user.")
+			return
+	
+	if sender_id in GlobalSteam.USER_ID_LIST_TO_IGNORE:
+		print("packet refused: received packet from an ID that is set to be ignored.")
+		return
+	
+	if game_state != null:
+		if sender_id in game_state.MAIN_active_user_id_to_ignore_timeout_packets_array:
+			print("received packet from an ID that has exceeded timeout")
+			if readable_data.packet_id in game_state.MAIN_active_timeout_packet_id_array:
+				print("received packet is set to ignore on timeout. refused")
+			else:
+				print("received packet is not set to ignore on timeout. continuing")
+	
+	if sender_id == GlobalSteam.HOST_ID:
+		print("received packet from host")
+	if GlobalVariables.printing_packets: 
+		print("received packet: ", readable_data)
+	
+	temp_id = sender_id
+	PipeData(readable_data)
 
 var temp_id = 0
 func read_p2p_packet() -> void:
-	pass
-	#var packet_size: int = Steam.getAvailableP2PPacketSize(0)
+	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
 	
 	# There is a packet
-	#if packet_size > 0:
-		#var this_packet: Dictionary = Steam.readP2PPacket(packet_size, 0)
-		#
-		#if this_packet.is_empty() or this_packet == null:
-			#print("WARNING: read an empty packet with non-zero size!")
-		#
-		## Get the remote user's ID
-		#var packet_sender: int = this_packet['steam_id_remote']
-		#
-		## Make the packet data readable
-		#var packet_code: PackedByteArray = this_packet['data']
-		#var readable_data: Dictionary = bytes_to_var(packet_code.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP))
-		#
-		#if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
-			#if packet_sender != GlobalSteam.HOST_ID: 
-				#print("packet refused: received packet from non-host user.")
-				#return
-		#
-		#if packet_sender in GlobalSteam.USER_ID_LIST_TO_IGNORE:
-			#print("packet refused: received packet from an ID that is set to be ignored.")
-			#return
-		#
-		#if game_state != null:
-			#if packet_sender in game_state.MAIN_active_user_id_to_ignore_timeout_packets_array:
-				#print("received packet from an ID that has exceeded timeout")
-				#if readable_data.packet_id in game_state.MAIN_active_timeout_packet_id_array:
-					#print("received packet is set to ignore on timeout. refused")
-				#else:
-					#print("received packet is not set to ignore on timeout. continuing")
-		#
-		#if packet_sender == GlobalSteam.HOST_ID:
-			#print("received packet from host")
-		#if GlobalVariables.printing_packets: 
-			#print("received packet: ", readable_data)
-		#
-		#temp_id = packet_sender
-		#PipeData(readable_data)
+	if packet_size > 0:
+		var this_packet: Dictionary = Steam.readP2PPacket(packet_size, 0)
+		
+		if this_packet.is_empty() or this_packet == null:
+			print("WARNING: read an empty packet with non-zero size!")
+		
+		# Get the remote user's ID
+		var packet_sender: int = this_packet['steam_id_remote']
+		
+		# Make the packet data readable
+		var packet_code: PackedByteArray = this_packet['data']
+		var readable_data: Dictionary = bytes_to_var(packet_code.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP))
+		
+		if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+			if packet_sender != GlobalSteam.HOST_ID: 
+				print("packet refused: received packet from non-host user.")
+				return
+		
+		if packet_sender in GlobalSteam.USER_ID_LIST_TO_IGNORE:
+			print("packet refused: received packet from an ID that is set to be ignored.")
+			return
+		
+		if game_state != null:
+			if packet_sender in game_state.MAIN_active_user_id_to_ignore_timeout_packets_array:
+				print("received packet from an ID that has exceeded timeout")
+				if readable_data.packet_id in game_state.MAIN_active_timeout_packet_id_array:
+					print("received packet is set to ignore on timeout. refused")
+				else:
+					print("received packet is not set to ignore on timeout. continuing")
+		
+		if packet_sender == GlobalSteam.HOST_ID:
+			print("received packet from host")
+		if GlobalVariables.printing_packets: 
+			print("received packet: ", readable_data)
+		
+		temp_id = packet_sender
+		PipeData(readable_data)
 
 @export var lobbyController : LobbyController
 @export var memberChecker : MemberChecker
+
 func PipeData(dict : Dictionary):
 	if GlobalVariables.printing_packets: print("[", GetTime(), "]", ": sorting packet: ", dict)
 	var value_category = dict.values()[0]
@@ -146,7 +181,10 @@ func PipeData(dict : Dictionary):
 		"handshake":
 			print("got handshake with dictionary: ", dict)
 		"start game from lobby":
-			lobbyController.StartGameRoutine_Main()
+			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
+				lobbyController.StartGameRoutine_Main()
+			else:
+				lobbyController.StartGameRoutine_Client()
 		"host arrived in main scene":
 			lobbyController.StartGameRoutine_LoadScene()
 		"member joined list":
@@ -168,14 +206,24 @@ func PipeData(dict : Dictionary):
 			lobby.ReceivePacket_VersionResponse(dict)
 		"update match customization":
 			match_customization.ReceivePacket_MatchCustomization(dict)
+		"request player list sync":
+			# Host should handle this request and broadcast player list
+			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
+				print("Host received player list sync request from client: ", dict.get("requesting_player_id"))
+				lobby.BroadcastPlayerListSync()
+		"sync player list":
+			# All clients receive the synced player list
+			print("Received player list sync from host")
+			if lobby_ui != null:
+				lobby_ui.UpdatePlayerList()
 
 func _on_p2p_session_request(remote_id: int) -> void:
 	# Get the requester's name
-	#var this_requester: String = Steam.getFriendPersonaName(remote_id)
-	#print("%s is requesting a P2P session" % this_requester)
+	var this_requester: String = Steam.getFriendPersonaName(remote_id)
+	print("%s is requesting a P2P session" % this_requester)
 	
 	# Accept the P2P session; can apply logic to deny this request if needed
-	#Steam.acceptP2PSessionWithUser(remote_id)
+	Steam.acceptP2PSessionWithUser(remote_id)
 	
 	# Make the initial handshake
 	make_p2p_handshake()

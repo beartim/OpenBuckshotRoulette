@@ -8,7 +8,7 @@ func ShowIceMachine():
 
 func StartIceMachine():
 	print("starting ice machine in 15 sec")
-	await get_tree().create_timer(15, false).timeout
+	await GlobalVariables.tree.create_timer(15, false).timeout
 	speaker_ice_machine.play()
 
 func StopIceMachine():

@@ -329,74 +329,74 @@ func Pipe(alias : String, match_customization_branch : MP_MatchCustomization_Bra
 				active_customization_dictionary.number_of_rounds -= 1
 				speaker_press.play()
 		"starting health plus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					if round.starting_health != 6:
-						if round.starting_health == -1: 
-							round.starting_health = 0
-						round.starting_health += 1
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					if round_property.starting_health != 6:
+						if round_property.starting_health == -1: 
+							round_property.starting_health = 0
+						round_property.starting_health += 1
 						speaker_press.play()
 		"starting health minus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					if round.starting_health != 1 && round.starting_health != 0 && round.starting_health != -1:
-						round.starting_health -= 1
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					if round_property.starting_health != 1 && round_property.starting_health != 0 && round_property.starting_health != -1:
+						round_property.starting_health -= 1
 						speaker_press.play()
 		"starting health random":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					round.starting_health = -1
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					round_property.starting_health = -1
 					speaker_press.play()
 		"skip intro":
 			active_customization_dictionary.skipping_intro = !active_customization_dictionary.skipping_intro
 		"item per player plus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for item_property in round.item_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for item_property in round_property.item_properties:
 						if item_property.item_id == match_customization_branch.assigned_item_id:
 							if item_property.max_per_player != 8:
 								item_property.max_per_player += 1
 								speaker_press.play()
 		"item per player minus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for item_property in round.item_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for item_property in round_property.item_properties:
 						if item_property.item_id == match_customization_branch.assigned_item_id:
 							if item_property.max_per_player != 1:
 								item_property.max_per_player -= 1
 								speaker_press.play()
 		"item max on table plus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for item_property in round.item_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for item_property in round_property.item_properties:
 						if item_property.item_id == match_customization_branch.assigned_item_id:
 							if item_property.max_on_table != 32:
 								item_property.max_on_table += 1
 								speaker_press.play()
 		"item max on table minus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for item_property in round.item_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for item_property in round_property.item_properties:
 						if item_property.item_id == match_customization_branch.assigned_item_id:
 							if item_property.max_on_table != 1:
 								item_property.max_on_table -= 1
 								speaker_press.play()
 		"is ingame":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for item_property in round.item_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for item_property in round_property.item_properties:
 						if item_property.item_id == match_customization_branch.assigned_item_id:
 							item_property.is_ingame = !item_property.is_ingame
 		"shell sequence random":
-			for round in active_customization_dictionary.round_property_array:
-				for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				for shell_load in round_property.shell_load_properties:
 					if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 						shell_load.number_of_blanks = -1
 						shell_load.number_of_lives = -1
 		"number of blanks plus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for shell_load in round_property.shell_load_properties:
 						if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 							if shell_load.number_of_blanks == -1:
 								shell_load.number_of_blanks = 1
@@ -407,18 +407,18 @@ func Pipe(alias : String, match_customization_branch : MP_MatchCustomization_Bra
 									shell_load.number_of_blanks += 1
 									speaker_press.play()
 		"number of blanks minus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for shell_load in round_property.shell_load_properties:
 						if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 							if (shell_load.number_of_lives + shell_load.number_of_blanks) != 1:
 								if shell_load.number_of_blanks != -1 && shell_load.number_of_blanks != 0:
 									shell_load.number_of_blanks -= 1
 									speaker_press.play()
 		"number of lives plus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for shell_load in round_property.shell_load_properties:
 						if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 							if shell_load.number_of_lives == -1:
 								shell_load.number_of_lives = 1
@@ -429,34 +429,34 @@ func Pipe(alias : String, match_customization_branch : MP_MatchCustomization_Bra
 									shell_load.number_of_lives += 1
 									speaker_press.play()
 		"number of lives minus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for shell_load in round_property.shell_load_properties:
 						if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 							if (shell_load.number_of_lives + shell_load.number_of_blanks) != 1:
 								if shell_load.number_of_lives != -1 && shell_load.number_of_lives != 0:
 									shell_load.number_of_lives -= 1
 									speaker_press.play()
 		"number of items plus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for shell_load in round_property.shell_load_properties:
 						if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 								if shell_load.number_of_items != 8:
 									shell_load.number_of_items += 1
 									speaker_press.play()
 		"number of items minus":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for shell_load in round_property.shell_load_properties:
 						if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 							if shell_load.number_of_items != 0 && shell_load.number_of_items != -1:
 								shell_load.number_of_items -= 1
 								speaker_press.play()
 		"number of items random":
-			for round in active_customization_dictionary.round_property_array:
-				if round.round_index == editing_current_round:
-					for shell_load in round.shell_load_properties:
+			for round_property in active_customization_dictionary.round_property_array:
+				if round_property.round_index == editing_current_round:
+					for shell_load in round_property.shell_load_properties:
 						if shell_load.sequence_index == match_customization_branch.assigned_sequence_index:
 							shell_load.number_of_items = -1
 		"revert to default":
@@ -562,51 +562,25 @@ func CustomizationDictionary_SetUI(dict : Dictionary):
 	#set health
 	for charge in charge_array:
 		charge.visible = false
-	for round in dict.round_property_array:
-		if round.round_index == editing_current_round:
-			if round.starting_health != -1:
+	for round_property in dict.round_property_array:
+		if round_property.round_index == editing_current_round:
+			if round_property.starting_health != -1:
 				label_starting_health.text = tr("MP_UI STARTING HEALTH")
-				for i in range(round.starting_health):
+				for i in range(round_property.starting_health):
 					charge_array[i].visible = true
 			else:
 				label_starting_health.text = tr("MP_UI STARTING HEALTH") + " ?"
 	#set item properties
-	for round in dict.round_property_array:
-		if round.round_index == editing_current_round:
-			for item_property in round.item_properties:
+	for round_property in dict.round_property_array:
+		if round_property.round_index == editing_current_round:
+			for item_property in round_property.item_properties:
 				for branch in item_property_branch_array:
 					if branch.item_id == item_property.item_id:
 						branch.UpdateItemProperties(item_property.max_per_player, item_property.max_on_table, item_property.is_ingame)
 	#set shell sequence properties:
-	for round in dict.round_property_array:
-		if round.round_index == editing_current_round:
-			for shell_load in round.shell_load_properties:
+	for round_property in dict.round_property_array:
+		if round_property.round_index == editing_current_round:
+			for shell_load in round_property.shell_load_properties:
 				for branch in sequence_property_branch_array:
 					if branch.sequence_index == shell_load.sequence_index:
 						branch.UpdateSequenceProperties(shell_load.number_of_blanks, shell_load.number_of_lives, shell_load.number_of_items)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

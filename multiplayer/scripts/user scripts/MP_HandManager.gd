@@ -78,7 +78,7 @@ func Hand_GrabItem(id : int, which_hand : String):
 	AssignHand(id, which_hand)
 	active_lerp.StartLerp(active_hand_main_parent.transform.origin, active_pos_in_briefcase, active_hand_main_parent.rotation_degrees, active_rot_in_briefcase, 4.8, lerp_duration_item_grabbing)
 	separate_lerp_head.StartLerp(separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.rotation_degrees, rot_head_grabbing_briefcase, 4.8, lerp_duration_item_grabbing)
-	await get_tree().create_timer(lerp_duration_item_grabbing, false).timeout
+	await GlobalVariables.tree.create_timer(lerp_duration_item_grabbing, false).timeout
 	active_hand_default.visible = false
 	active_hand.visible = true
 	active_mesh.visible = true
@@ -113,14 +113,14 @@ func Hand_PlaceItem(local_grid_index: int, is_last_item : bool = false):
 	var local_grid_position = Vector3(active_pos_grid_offset_array[local_grid_index].x, temp_y, active_pos_grid_offset_array[local_grid_index].z)
 	active_lerp.StartLerp(active_hand_main_parent.transform.origin, local_grid_position, active_hand_main_parent.rotation_degrees, active_rot_grid_offset_array[local_grid_index], 4.8, lerp_duration_item_grabbing)
 	separate_lerp_head.StartLerp(separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.rotation_degrees, active_grid_direction_rot, 4.8, lerp_duration_item_grabbing)
-	await get_tree().create_timer(lerp_duration_item_grabbing, false).timeout
+	await GlobalVariables.tree.create_timer(lerp_duration_item_grabbing, false).timeout
 	active_hand.visible = false
 	active_mesh.visible = false
 	active_hand_default.visible = true
 	SpawnItemSeparatelyAtGrid(local_grid_index)
 	active_lerp.StartLerp(active_hand_main_parent.transform.origin, active_pos_default, active_hand_main_parent.rotation_degrees, active_rot_default, 0.2, lerp_duration_item_grabbing)
 	separate_lerp_head.StartLerp(separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.rotation_degrees, head_original_rot, 4.8, lerp_duration_item_grabbing)
-	await get_tree().create_timer(lerp_duration_item_grabbing, false).timeout
+	await GlobalVariables.tree.create_timer(lerp_duration_item_grabbing, false).timeout
 	if is_last_item: 
 		Hands_ReturnBriefcase()
 
@@ -172,7 +172,7 @@ func Hand_PickupItem(local_grid_index : int, id : int, which_hand : String, item
 		local_grid_rotation = stealing_variable_dictionary.local_grid_rotation
 	active_lerp.StartLerp(active_hand_main_parent.transform.origin, local_grid_position, active_hand_main_parent.rotation_degrees, local_grid_rotation, 4.8)
 	if active_grid_direction_rot != Vector3(0, 0, 0): separate_lerp_head.StartLerp(separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.rotation_degrees, active_grid_direction_rot, 4.8, lerp_duration_item_grabbing)
-	await get_tree().create_timer(lerp_duration, false).timeout
+	await GlobalVariables.tree.create_timer(lerp_duration, false).timeout
 	item_object.queue_free()
 	active_hand_default.visible = false
 	active_hand.visible = true
@@ -191,7 +191,7 @@ func Hand_PickupItem(local_grid_index : int, id : int, which_hand : String, item
 	properties.item_manager.speaker_tp_grab_item_on_table.play()
 	
 	separate_lerp_head.StartLerp(separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.transform.origin, separate_lerp_head.obj.rotation_degrees, head_original_rot, 4.8, lerp_duration_item_grabbing)
-	await get_tree().create_timer(lerp_duration, false).timeout
+	await GlobalVariables.tree.create_timer(lerp_duration, false).timeout
 	active_lerp.moving = false
 
 func AssignHand(id : int, which_hand : String):

@@ -16,6 +16,6 @@ var blinking = false
 func Blink():
 	while blinking:
 		obj.visible = false
-		await get_tree().create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout
 		obj.visible = true
-		await get_tree().create_timer(delay, false).timeout
+		await GlobalVariables.tree.create_timer(delay, false).timeout

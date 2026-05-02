@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://domnxegwr6444"]
 
-[ext_resource type="Script" uid="uid://cuv3km8l0agmf" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_ItemProperties.gd" id="1"]
+[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_ItemProperties.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://cylsdupptnccs" path="res://multiplayer/textures/green1.png" id="2"]
 [ext_resource type="Theme" uid="uid://byh50rlarrsdb" path="res://misc/button_theme1.tres" id="3"]
-[ext_resource type="Script" uid="uid://dpf4l6f2v8gy3" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="4"]
-[ext_resource type="Script" uid="uid://eihvbvuf26ef" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_Branch.gd" id="5"]
+[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="4"]
+[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_Branch.gd" id="5"]
 [ext_resource type="FontFile" uid="uid://b0df1ns6fwvs4" path="res://fonts/fonts language/RobotoSlab-Medium_cyrillic.ttf" id="6"]
 [ext_resource type="Texture2D" uid="uid://c0p4n4w7j4du" path="res://multiplayer/misc/mp_icon checkmark.png" id="7"]
 [ext_resource type="FontFile" uid="uid://vhj3kkn6yn8o" path="res://fonts/fake receipt.otf" id="8"]

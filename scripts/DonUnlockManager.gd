@@ -9,16 +9,16 @@ var t = "DOUBLE UNLOCK"
 
 func UnlockRoutine():
 	UnlockMode()
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	dia.overriding = true
 	dia.dialogueUI = ui
 	dia.HideText()
 	dia.ShowText_Forever(tr(t))
-	await get_tree().create_timer(4, false).timeout
+	await GlobalVariables.tree.create_timer(4, false).timeout
 	anim.play("fade")
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	print("changing scene to: menu")
-	SceneChanger.change("res://scenes/menu.tscn")
+	GlobalVariables.tree.change_scene_to_file("res://scenes/menu.tscn")
 
 func UnlockMode():
 	var data = {

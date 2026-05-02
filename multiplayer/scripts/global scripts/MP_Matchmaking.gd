@@ -27,8 +27,8 @@ func _ready():
 	origspeed_pan = animator_pan.speed_scale
 	FindSatellite()
 	UpdateSearchRange()
-	#Steam.lobby_match_list.connect(OnLobbyList)
-	#Steam.addRequestLobbyListResultCountFilter(50)
+	Steam.lobby_match_list.connect(OnLobbyList)
+	Steam.addRequestLobbyListResultCountFilter(50)
 
 func RefreshList():
 	animator_globe.speed_scale = animator_globe.speed_scale / 2
@@ -58,26 +58,26 @@ func ToggleSearchRange():
 	RefreshList()
 
 func UpdateSearchRange(): 
-	#match search_range:
-		#"near":
-			#Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_CLOSE)
-		#"far":
-			#Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_FAR)
-		#"worldwide":
-			#Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_WORLDWIDE)
+	match search_range:
+		"near":
+			Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_CLOSE)
+		"far":
+			Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_FAR)
+		"worldwide":
+			Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_WORLDWIDE)
 	label_search_range.text = tr("MP_SET RANGE") % tr("MP_RANGE " + search_range.to_upper())
 
 func Get():
-	#Steam.requestLobbyList()
+	Steam.requestLobbyList()
 	print("getting lobby list")
 
 func JoinLobbyFromSearch(lobby_id : int):
 	lobby.interaction_enabled = false
 	animator_fader.play("fade in")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	lobby_ui.ExitLobbySearch()
 	animator_fader.play("fade out")
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	lobby.join_lobby(lobby_id)
 	lobby.interaction_enabled = true
 
@@ -91,16 +91,16 @@ func OnLobbyList(list):
 	var index = 0
 	var invalid_list_array = []
 	for lobby in list:
-		#if Steam.getLobbyData(lobby, "member_count") == "" or Steam.getLobbyData(lobby, "player_limit") == "":
-			#print("found invalid lobby, skipping")
-			#invalid_list_array.append(0)
-			#continue
+		if Steam.getLobbyData(lobby, "member_count") == "" or Steam.getLobbyData(lobby, "player_limit") == "":
+			print("found invalid lobby, skipping")
+			invalid_list_array.append(0)
+			continue
 		index += 1
-		#print("result: ", index, " - ", lobby, " with member count: ", Steam.getLobbyData(lobby, "member_count"), " and player limit: ", Steam.getLobbyData(lobby, "player_limit"))
+		print("result: ", index, " - ", lobby, " with member count: ", Steam.getLobbyData(lobby, "member_count"), " and player limit: ", Steam.getLobbyData(lobby, "player_limit"))
 		var result = result_instance.instantiate()
 		result_parent.add_child(result)
 		var result_branch : MP_Matchmaking_Result = result.get_child(0)
-		#result_branch.Set(index, Steam.getLobbyData(lobby, "member_count"), Steam.getLobbyData(lobby, "player_limit"))
+		result_branch.Set(index, Steam.getLobbyData(lobby, "member_count"), Steam.getLobbyData(lobby, "player_limit"))
 		result_branch.AssignLobbyID(lobby)
 	if list == [] or invalid_list_array.size() == list.size():
 		search_console.text = tr("MP_NO LOBBIES FOUND")

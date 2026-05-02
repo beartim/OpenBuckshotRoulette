@@ -16,7 +16,7 @@ func _ready():
 	Signals()
 	BeginLoop()
 	CheckControllerState()
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	ach.UnlockAchievement("ach2")
 
 func Signals():
@@ -42,25 +42,25 @@ func Button_Main(tag : String):
 	for u in ui: u.visible = false
 	for cl in buttonArray:
 		cl.isActive = false
-	await get_tree().create_timer(3.12, false).timeout
+	await GlobalVariables.tree.create_timer(3.12, false).timeout
 	match tag:
 		"retry":
-			print("changing scene to: death / 3")
-			SceneChanger.change("res://scenes/menu.tscn")
+			print("changing scene to: death")
+			GlobalVariables.tree.change_scene_to_file("res://scenes/death.tscn")
 		"exit":
-			get_tree().quit()
+			GlobalVariables.tree.quit()
 
 @export var bracket_door : Node3D
 @export var btn_door : Control
 @export var btn_retry : Control
 @export var btn_exit : Control
 func BeginLoop():
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	speaker_music.play()
 	viewblocker.visible = false
 	animator.play("camera pan down")
 	animator.queue("camera idle")
-	await get_tree().create_timer(11.1, false).timeout
+	await GlobalVariables.tree.create_timer(11.1, false).timeout
 	if (cursor.controller_active): btn_door.grab_focus()
 	controller.previousFocus = btn_door
 	btn_door.visible = true
@@ -74,7 +74,7 @@ func Fly():
 	intbranch_heavendoor.interactionAllowed = false
 	cursor.SetCursor(false, false)
 	animator.play("move")
-	await get_tree().create_timer(15.6, false).timeout
+	await GlobalVariables.tree.create_timer(15.6, false).timeout
 	cursor.SetCursor(true, true)
 	if (cursor.controller_active): btn_retry.grab_focus()
 	controller.previousFocus = btn_retry

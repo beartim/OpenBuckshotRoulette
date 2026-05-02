@@ -5,7 +5,7 @@ class_name MP_UserCustomization extends Node
 @export var main_hand_instance_array : Array[MP_MainHandInstance]
 
 func _ready():
-	await get_tree().create_timer(1, false).timeout
+	await GlobalVariables.tree.create_timer(1, false).timeout
 	var temp_id_head = 0
 	var temp_id_hand_R = 0
 	var temp_id_hand_L = 0

@@ -53,7 +53,7 @@ func _ready():
 	for c in item_spawn_parent_local.get_children():
 		if c.name != "pos_item pickup":
 			c.queue_free()
-	await get_tree().create_timer(10, false).timeout
+	await GlobalVariables.tree.create_timer(10, false).timeout
 
 var debug_grid_index = -1
 var ind = -1
@@ -63,11 +63,11 @@ func _unhandled_input(event):
 	if GlobalVariables.mp_debug_keys_enabled:
 		if event.is_action_pressed("debug_t"):
 			if !properties.is_active && properties.health_current != 0:
-				await get_tree().create_timer(randf_range(0, 1.0), false).timeout
+				await GlobalVariables.tree.create_timer(randf_range(0, 1.0), false).timeout
 				GrabItemRequest()
 		if event.is_action_pressed("debug_y"):
 			if !properties.is_active && properties.health_current != 0:
-				await get_tree().create_timer(randf_range(0, 1.0), false).timeout
+				await GlobalVariables.tree.create_timer(randf_range(0, 1.0), false).timeout
 				debug_grid_index += 1
 				if properties.intermediary.game_state.MAIN_inventory_by_socket[properties.socket_number][debug_grid_index] != {}:
 					debug_grid_index += 1
@@ -93,9 +93,9 @@ func BeginItemGrabbing():
 	properties.is_grabbing_items = true
 	debug_grid_index = -1
 	if !properties.running_fast_revival:
-		#await get_tree().create_timer(1.3, false).timeout
+		#await GlobalVariables.tree.create_timer(1.3, false).timeout
 		pass
-	#if properties.death.user_reviving: await get_tree().create_timer(2.72, false).timeout
+	#if properties.death.user_reviving: await GlobalVariables.tree.create_timer(2.72, false).timeout
 	properties.num_of_items_currently_grabbed = 0
 	if properties.is_active:
 		properties.inspection.SetInspectObject(false)
@@ -103,7 +103,7 @@ func BeginItemGrabbing():
 		speaker_fp_item_briefcase.stream = sound_fp_place
 		speaker_fp_item_briefcase.play()
 		properties.cam.BeginLerp("item briefcase")
-		await get_tree().create_timer(1.1, false).timeout
+		await GlobalVariables.tree.create_timer(1.1, false).timeout
 		
 		bp_item_distribution.visible = true
 		if properties.cursor.controller_active: btn_briefcase_intake.grab_focus()
@@ -129,17 +129,17 @@ func EndItemGrabbing():
 	SetGridColliders(false)
 	SetIntakeCollider(false)
 	perms.SetMainPermission(false)
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	animator_briefcase.play("return briefcase")
 	speaker_fp_item_briefcase.stream = sound_fp_take
 	speaker_fp_item_briefcase.play()
-	await get_tree().create_timer(.3, false).timeout
+	await GlobalVariables.tree.create_timer(.3, false).timeout
 	properties.cam.BeginLerp("home")
 
 func ReturnItemToBriefcase():
 	PlayItemPullSound_FirstPerson()
 	active_separate_lerp.StartLerp(active_instance.transform.origin, active_res.pos_in_briefcase_local, active_instance.rotation_degrees, active_res.rot_in_briefcase_local)
-	await get_tree().create_timer(.4, false).timeout
+	await GlobalVariables.tree.create_timer(.4, false).timeout
 	active_instance.queue_free()
 
 func EndItemGrabbingDefault():
@@ -236,7 +236,7 @@ func GrabItem(item_id : int):
 	active_instance.transform.origin = active_res.pos_in_briefcase_local
 	active_instance.rotation_degrees = active_res.rot_in_briefcase_local
 	active_separate_lerp.StartLerp(active_instance.transform.origin, active_res.pos_out_briefcase_local, active_instance.rotation_degrees, active_res.rot_out_briefcase_local)
-	await get_tree().create_timer(active_separate_lerp.dur, false).timeout
+	await GlobalVariables.tree.create_timer(active_separate_lerp.dur, false).timeout
 	SetIntakeCollider(false)
 	SetGridColliders(true)
 
