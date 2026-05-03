@@ -158,6 +158,13 @@ func read_p2p_packet() -> void:
 @export var lobbyController : LobbyController
 @export var memberChecker : MemberChecker
 
+func _resolved_lobby_controller() -> LobbyController:
+	if lobbyController != null:
+		return lobbyController
+	if lobby != null and lobby.lobby_controller != null:
+		return lobby.lobby_controller
+	return null
+
 func PipeData(dict : Dictionary):
 	if GlobalVariables.printing_packets: print("[", GetTime(), "]", ": sorting packet: ", dict)
 	var value_category = dict.values()[0]
@@ -181,20 +188,37 @@ func PipeData(dict : Dictionary):
 		"handshake":
 			print("got handshake with dictionary: ", dict)
 		"start game from lobby":
+			var lc_start := _resolved_lobby_controller()
+			if lc_start == null:
+				push_warning("PacketManager: no LobbyController; ignoring start game from lobby.")
+				return
 			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
-				lobbyController.StartGameRoutine_Main()
+				lc_start.StartGameRoutine_Main()
 			else:
-				lobbyController.StartGameRoutine_Client()
+				lc_start.StartGameRoutine_Client()
 		"host arrived in main scene":
-			lobbyController.StartGameRoutine_LoadScene()
+			var lc_scene := _resolved_lobby_controller()
+			if lc_scene == null:
+				push_warning("PacketManager: no LobbyController; ignoring host arrived in main scene.")
+				return
+			lc_scene.StartGameRoutine_LoadScene()
 		"member joined list":
+			if memberChecker == null:
+				return
 			var steam_id = dict["steam_id"]
 			memberChecker.MemberJoinedList(steam_id)
 		"update member list":
+			if memberChecker == null:
+				return
+			if not dict.has("number of players here"):
+				push_warning("PacketManager: update member list missing 'number of players here'; ignoring.")
+				return
 			var temp_numberOfPlayersHere = dict["number of players here"]
-			memberChecker.amountOfPlayers_here = temp_numberOfPlayersHere	
+			memberChecker.amountOfPlayers_here = temp_numberOfPlayersHere
 			memberChecker.UpdateMemberList()
 		"all members arrived":
+			if memberChecker == null:
+				return
 			memberChecker.MembersArrived()
 		"kick player":
 			lobby.ReceivePacket_KickPlayer(dict)
@@ -212,8 +236,18 @@ func PipeData(dict : Dictionary):
 				print("Host received player list sync request from client: ", dict.get("requesting_player_id"))
 				lobby.BroadcastPlayerListSync()
 		"sync player list":
-			# All clients receive the synced player list
 			print("Received player list sync from host")
+			if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+				GlobalSteam.LOBBY_MEMBERS.clear()
+				for row in dict.get("player_list", []):
+					if row is Dictionary:
+						GlobalSteam.LOBBY_MEMBERS.append({
+							"steam_id": int(row.get("steam_id", 0)),
+							"steam_name": str(row.get("steam_name", "")),
+						})
+				if instance_handler != null:
+					instance_handler.current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
+					instance_handler.CheckLobbyMemberArray()
 			if lobby_ui != null:
 				lobby_ui.UpdatePlayerList()
 

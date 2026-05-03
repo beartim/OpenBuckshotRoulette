@@ -6,9 +6,16 @@
 
 你需要使用 Godot Engine 4.6.2 编辑它  
 
-Open Buckshot Roulette 可以较流畅地运行在安卓设备上  
+~~Open Buckshot Roulette 可以较流畅地运行在安卓设备上~~  
+双人游戏目前基本可用  
 
-我们正在努力完善自定义赌局和尝试重写多人游戏
+## 多人游戏
+### 搭建服务器
+```bash
+cd ./buckshot-dedicated-server
+npm install
+node main
+```
 
 ## 许可证
 - 自由软件许可证: [GNU General Public License v3 (GPL v3)](LICENSE)

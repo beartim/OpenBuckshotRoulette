@@ -42,6 +42,8 @@ func _ready():
 	
 	if GlobalVariables.mp_debugging: STEAM_ID = 1234
 	print("online ... ", ONLINE, " ... steam id ... ", STEAM_ID, " ... steam name ... ", STEAM_NAME)
+
+	call_deferred("_ensure_steam_lobby_mirror_connected")
 	
 	# Connect to custom server
 	var err = ws_peer.connect_to_url("ws://127.0.0.1:14122")
@@ -82,22 +84,21 @@ func _process(_delta: float) -> void:
 			print("Disconnected from server")
 
 func handle_binary_packet(packet: PackedByteArray):
-	# Decompress (data was already compressed by MP_PacketManager)
-	var decompressed = packet.decompress(FileAccess.COMPRESSION_GZIP, -1)
-	if decompressed.size() == 0:
-		print("Failed to decompress packet. Packet size: ", packet.size())
-		# Try treating as already decompressed for debugging
-		if packet.size() > 0:
-			print("Attempting to parse as uncompressed data...")
-			var readable_data = bytes_to_var(packet)
-			if readable_data is Dictionary:
-				print("Successfully parsed as uncompressed dictionary")
-				emit_signal("packet_received", readable_data)
-			else:
-				print("Failed to parse uncompressed data")
+	if packet.is_empty():
 		return
-	var readable_data = bytes_to_var(decompressed)
-	emit_signal("packet_received", readable_data)
+	# Dedicated server gunzips once in handlePacket() then relays raw var_to_bytes payload — parse directly first.
+	var decoded: Variant = bytes_to_var(packet)
+	if decoded is Dictionary:
+		emit_signal("packet_received", decoded as Dictionary)
+		return
+	# Fallback: gzip-wrapped bytes (Steam P2P path / relays that skip gunzip).
+	var decompressed: PackedByteArray = packet.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
+	if not decompressed.is_empty():
+		decoded = bytes_to_var(decompressed)
+		if decoded is Dictionary:
+			emit_signal("packet_received", decoded as Dictionary)
+			return
+	push_warning("Steam.gd: could not decode binary websocket packet (size=%d)" % packet.size())
 
 func InitializeSteam():
 	if GlobalVariables.using_steam:
@@ -130,20 +131,43 @@ func handle_server_message(data):
 			LOBBY_ID = int(data.roomId)
 			HOST_ID = data.hostId
 			LOBBY_MEMBERS.clear()
+			
+			# Always use server-provided member list (should be complete)
 			if data.has("members"):
 				for member_data in data.members:
-					LOBBY_MEMBERS.append({"steam_id": member_data.playerId, "steam_name": member_data.playerName})
-			else:
-				var member = {"steam_id": client_id, "steam_name": STEAM_NAME}
-				LOBBY_MEMBERS.append(member)
-			print("Joined room: ", LOBBY_ID)
+					# Check for duplicate IDs
+					var dup = false
+					for existing in LOBBY_MEMBERS:
+						if existing["steam_id"] == member_data.playerId:
+							dup = true
+							break
+					if not dup:
+						LOBBY_MEMBERS.append({"steam_id": member_data.playerId, "steam_name": member_data.playerName})
+			
+			# Ensure self is in list
+			var self_exists = false
+			for member in LOBBY_MEMBERS:
+				if member["steam_id"] == STEAM_ID:
+					self_exists = true
+					break
+			if not self_exists:
+				LOBBY_MEMBERS.append({"steam_id": STEAM_ID, "steam_name": STEAM_NAME})
+			
+			print("Joined room: ", LOBBY_ID, " - Members: ", LOBBY_MEMBERS.size())
 			emit_signal("lobby_joined", LOBBY_ID, 0, false, 1)
 		"playerJoined":
-			# Add to members
-			var member = {"steam_id": data.playerId, "steam_name": data.get("playerName", "Player" + str(data.playerId))}
-			LOBBY_MEMBERS.append(member)
-			print("Player joined: ", data.playerId, " name: ", member["steam_name"])
-			emit_signal("lobby_members_changed")
+			# Check if player already in list to avoid duplicates
+			var exists = false
+			for existing_member in LOBBY_MEMBERS:
+				if existing_member["steam_id"] == data.playerId:
+					exists = true
+					break
+			
+			if not exists:
+				var member = {"steam_id": data.playerId, "steam_name": data.get("playerName", "Player" + str(data.playerId))}
+				LOBBY_MEMBERS.append(member)
+				print("Player joined: ", data.playerId, " name: ", member["steam_name"])
+				emit_signal("lobby_members_changed")
 		"playerLeft":
 			# Remove from members
 			for i in range(LOBBY_MEMBERS.size()):
@@ -167,6 +191,11 @@ func join_room(room_id: int):
 	if connected:
 		var msg = {"type": "joinRoom", "roomId": str(room_id), "playerId": STEAM_ID, "playerName": STEAM_NAME}
 		ws_peer.send_text(JSON.stringify(msg))
+
+func leave_room() -> void:
+	if not connected or LOBBY_ID == 0:
+		return
+	ws_peer.send_text(JSON.stringify({"type": "leaveRoom"}))
 
 # Simulated Steam functions
 func getNumLobbyMembers(lobby_id: int) -> int:
@@ -196,3 +225,37 @@ func send_packet(data: PackedByteArray) -> void:
 	if connected:
 		# Data is already compressed by MP_PacketManager, don't compress twice
 		ws_peer.send(data)
+
+
+## Keep GlobalSteam.LOBBY_MEMBERS in sync during mp_main where LobbyManager is not loaded (Steam joins/leaves/kicks).
+func _ensure_steam_lobby_mirror_connected() -> void:
+	if not GlobalVariables.using_steam:
+		return
+	if Steam.lobby_chat_update.is_connected(_on_steam_lobby_mirror_refresh):
+		return
+	if Steam.has_signal("lobby_chat_update"):
+		Steam.lobby_chat_update.connect(_on_steam_lobby_mirror_refresh)
+
+
+func _on_steam_lobby_mirror_refresh(this_lobby_id: int, _change_id: int, _making_change_id: int, _chat_state: int) -> void:
+	if not GlobalVariables.using_steam or this_lobby_id == 0:
+		return
+	if this_lobby_id != LOBBY_ID or LOBBY_ID == 0:
+		return
+	sync_lobby_members_from_steam_sdk()
+
+
+func sync_lobby_members_from_steam_sdk() -> void:
+	if not GlobalVariables.using_steam:
+		return
+	var lid : Variant = LOBBY_ID
+	if lid == 0:
+		return
+	var num_of_members := Steam.getNumLobbyMembers(lid)
+	LOBBY_MEMBERS.clear()
+	for member_index in range(num_of_members):
+		var mid: int = Steam.getLobbyMemberByIndex(lid, member_index)
+		var mnm: String = Steam.getFriendPersonaName(mid)
+		LOBBY_MEMBERS.append({"steam_id": mid, "steam_name": mnm})
+	HOST_ID = Steam.getLobbyOwner(lid)
+	emit_signal("lobby_members_changed")

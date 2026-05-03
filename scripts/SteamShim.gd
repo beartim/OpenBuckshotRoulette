@@ -279,6 +279,10 @@ func leaveLobby(lobby_id: int) -> void:
 	if _steam != null and _steam.has_method("leaveLobby"):
 		_steam.leaveLobby(lobby_id)
 
+func kickLobbyMember(lobby_id: int, steam_id_member: int) -> void:
+	if _steam != null and _steam.has_method("kickLobbyMember"):
+		_steam.kickLobbyMember(lobby_id, steam_id_member)
+
 func getLobbyOwner(lobby_id: int) -> int:
 	if _steam != null and _steam.has_method("getLobbyOwner"):
 		return int(_steam.getLobbyOwner(lobby_id))

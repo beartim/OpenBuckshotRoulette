@@ -20,9 +20,18 @@ var scene_root
 
 func _ready():
 	GetRoot()
+	if GlobalSteam.has_signal("lobby_members_changed") and !GlobalSteam.lobby_members_changed.is_connected(_on_globalsteam_lobby_members_changed):
+		GlobalSteam.lobby_members_changed.connect(_on_globalsteam_lobby_members_changed)
 	if (GlobalVariables.mp_debugging):
 		StartMainGame()
 	original_host_id = GlobalSteam.HOST_ID
+
+
+func _on_globalsteam_lobby_members_changed() -> void:
+	# Lobby list already updated on GlobalSteam before this signal fires
+	if instance_property_array.size() == 0:
+		return
+	CheckLobbyMemberArray()
 
 func Setup_ExitGameWithLobbyMembers():
 	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
@@ -56,38 +65,42 @@ func Packet_ExitGameWithLobby_Request():
 var removing_instances = true
 var previous_member_steamid_array = []
 var current_member_steamid_array = []
-var instances_to_delete = []
+
+func SnapshotLobbyMembersForDisconnectSync() -> void:
+	previous_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate(true)
+	current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate(true)
+
+
 func CheckLobbyMemberArray():
-	#if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID: 
-	#	print("is not host. return from check lobby member array")
-	#	return
-	#print("is host. checking to delete members")
-	if GlobalVariables.mp_debugging: current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
-	if previous_member_steamid_array.size() != current_member_steamid_array.size():
-		var steamid_array_previous = []
-		var steamid_array_current = []
-		var steamid_array_deleting = []
-		for i in range(previous_member_steamid_array.size()):
-			steamid_array_previous.append(previous_member_steamid_array[i].steam_id)
-		for i in range(current_member_steamid_array.size()):
-			steamid_array_current.append(current_member_steamid_array[i].steam_id)
-		for id in steamid_array_previous:
-			if !steamid_array_current.has(id): 
-				steamid_array_deleting.append(id)
-		for id in steamid_array_deleting:
-			var property_to_delete = null
-			for i in instance_property_array:
-				if i.user_id == id: property_to_delete = i
-			if property_to_delete != null: 
-				print("found instance to delete with assigned steam id: ", property_to_delete.user_id, " and adding to array")
-				instances_to_delete.append(property_to_delete.user_id)
-		RemoveInstancesFromGame(instances_to_delete)
-	intermediary.ingame_lobby_ui.UpdateUserList()
+	current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate(true)
+	var steamid_array_previous: Array[int] = []
+	var steamid_array_current: Array[int] = []
+	for m in previous_member_steamid_array:
+		steamid_array_previous.append(int(m["steam_id"]))
+	for m in current_member_steamid_array:
+		steamid_array_current.append(int(m["steam_id"]))
+	var ids_to_remove: Array[int] = []
+	for pid in steamid_array_previous:
+		if not steamid_array_current.has(pid):
+			var has_instance := false
+			for inst in instance_property_array:
+				if inst.user_id == pid:
+					has_instance = true
+					break
+			if has_instance and not ids_to_remove.has(pid):
+				ids_to_remove.append(pid)
+	if ids_to_remove.size() > 0:
+		RemoveInstancesFromGame(ids_to_remove)
+	previous_member_steamid_array = current_member_steamid_array.duplicate(true)
+	if intermediary != null && intermediary.ingame_lobby_ui != null:
+		intermediary.ingame_lobby_ui.UpdateUserList()
 
 func RemoveInstancesFromGame(instances_to_delete_array : Array):
-	if !removing_instances: return
+	if !removing_instances:
+		return
 	var socket_turn_to_check = 0
-	if instances_to_delete.size() == 0: print("instances to delete array is empty. returning"); return
+	if instances_to_delete_array.size() == 0:
+		return
 	print("removing instances from game with array: ", instances_to_delete_array)
 	for instance in instance_property_array:
 		for id in instances_to_delete_array:
@@ -194,6 +207,7 @@ func InitialInstanceSetup_Host():
 	#main loop
 	SetupDictionary()
 	SetupInstances(instance_dictionary)
+	SnapshotLobbyMembersForDisconnectSync()
 	var packet = {
 		"packet category": "MP_UserInstanceHandler",
 		"packet alias": "initial instance setup",
@@ -209,6 +223,7 @@ func InitialInstanceSetup_Peer(packet : Dictionary):
 	var p = packet
 	intermediary.game_state.MAIN_active_environmental_event = packet.environmental_event
 	SetupInstances(p.instance_dict)
+	SnapshotLobbyMembersForDisconnectSync()
 
 func SetupDictionary():
 	var lobby_dict_array = GlobalSteam.LOBBY_MEMBERS
@@ -216,7 +231,14 @@ func SetupDictionary():
 	var socket_index = 0
 	var setting_opposite = lobby_dict_array.size() == 2
 	for i in range(lobby_dict_array.size()):
-		var is_host = lobby_dict_array[i].steam_id == GlobalSteam.HOST_ID
+		var member_entry = lobby_dict_array[i]
+		var pid: int = int(member_entry["steam_id"])
+		var is_host : bool = pid == GlobalSteam.HOST_ID
+		var display_name: String = str(member_entry.get("steam_name", "")).strip_edges()
+		if display_name == "":
+			display_name = GlobalSteam.getFriendPersonaName(pid)
+		if display_name == "" || display_name == "Unknown":
+			display_name = "Player%d" % (pid % 100000)
 		if setting_opposite:
 			if i == 0:
 				socket_index = 1
@@ -224,14 +246,33 @@ func SetupDictionary():
 				socket_index = 3
 		var dict = {
 			"socket_number": socket_index,
-			"user_id": lobby_dict_array[i].steam_id,
+			"user_id": pid,
 			"is_host": is_host,
-			"user_name": "empty",
+			"user_name": display_name,
 			"cpu_enabled": false,
 		}
 		instance_dictionary.append(dict)
 		socket_index += 1
 	print("lobby dict array after initial dictionary array fill: ", lobby_dict_array)
+
+func _resolve_display_name_from_slot_dict(user: Variant) -> String:
+	if !(user is Dictionary):
+		return "?"
+	var d: Dictionary = user as Dictionary
+	var dn := String(d.get("user_name", "")).strip_edges()
+	var uid := int(d.get("user_id", -1))
+	if dn != "" && dn != "empty":
+		return dn
+	if uid >= 0:
+		var gs := GlobalSteam.getFriendPersonaName(uid)
+		if gs != "" && gs != "Unknown":
+			return gs
+		var shim := Steam.getFriendPersonaName(uid)
+		if str(shim) != str(uid):
+			return str(shim)
+		return "Player%d" % (uid % 100000)
+	return "?"
+
 
 func SetupInstances(dictionary_array):
 	for user in dictionary_array:
@@ -245,7 +286,7 @@ func SetupInstances(dictionary_array):
 		
 		properties.socket_number = user.socket_number
 		properties.user_id = user.user_id
-		properties.user_name = Steam.getFriendPersonaName(user.user_id)
+		properties.user_name = _resolve_display_name_from_slot_dict(user)
 		properties.cpu_enabled = user.cpu_enabled
 		properties.is_active = setting_active
 

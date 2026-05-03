@@ -1,12 +1,13 @@
 extends Node
 
-var currentVersion_nr = "v2.2.0"
+var currentVersion_nr = "v1.0.0.12-beta EXTENDS v2.2.0"
 var currentVersion_hotfix = 6
 var using_steam = false
 
 var currentVersion = ""
 var versuffix_steam = " (STEAM)"
 var versuffix_itch = " (ITCH.IO)"
+var versuffix_community = " (OPEN SOURCE)"
 
 var discord_link = "https://discord.gg/UdjMNaKkQe"
 
@@ -286,7 +287,7 @@ func _ready():
 	set_tree(self)
 	ApplyTimeScale(1.0)
 	if using_steam: currentVersion = currentVersion_nr + versuffix_steam
-	else: currentVersion = currentVersion_nr + versuffix_itch
+	else: currentVersion = currentVersion_nr + versuffix_community
 	debug_round_index_to_end_game_at = 2
 	original_volume_linear_interaction = db_to_linear(AudioServer.get_bus_volume_db(3))
 	original_volume_linear_music = db_to_linear(AudioServer.get_bus_volume_db(1))
@@ -336,3 +337,7 @@ func set_tree(node: Node):
 		print('使用新的场景树')
 	else:
 		printerr('场景树设置失败: 场景树不存在')
+
+const performance_option : Dictionary = {
+	show_ambient_filter = true,
+}

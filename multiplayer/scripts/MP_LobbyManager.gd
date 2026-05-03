@@ -115,7 +115,12 @@ func Pipe(alias : String = "", sub_alias : String = ""):
 
 func KickPlayerInLobby(steam_id : int):
 	print("attempting to kick player: ", steam_id)
-	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID: return
+	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+		return
+	# Target 0 does not loop back to the host; refresh host-side list immediately
+	_remove_member_from_local_lobby_list(steam_id)
+	if lobby_ui != null:
+		lobby_ui.UpdatePlayerList()
 	var packet = {
 		"packet category": "MP_LobbyManager",
 		"packet alias": "kick player",
@@ -125,6 +130,8 @@ func KickPlayerInLobby(steam_id : int):
 	}
 	packets.send_p2p_packet(0, packet)
 	if GlobalVariables.mp_debugging: packets.PipeData(packet)
+	if GlobalVariables.using_steam and GlobalSteam.LOBBY_ID != 0:
+		Steam.kickLobbyMember(GlobalSteam.LOBBY_ID, steam_id)
 
 func ShowInviteDialogue():
 	if GlobalSteam.LOBBY_ID == 0: return
@@ -233,6 +240,8 @@ func leave_lobby() -> void:
 	GlobalVariables.lobby_id_found_in_command_line = 0
 	# If in a lobby, leave it
 	if GlobalSteam.LOBBY_ID != 0:
+		if not GlobalVariables.using_steam:
+			GlobalSteam.leave_room()
 		# Send leave request to Steam
 		Steam.leaveLobby(GlobalSteam.LOBBY_ID)
 		
@@ -315,7 +324,24 @@ func _on_lobby_joined(this_lobby_id: int, _permissions: int, _locked: bool, resp
 			cursor.controller.previousFocus = lobby_ui.GetFirstUIFocus()
 		lobby_ui.UpdatePlayerList()
 
+func prune_version_checked_to_current_members() -> void:
+	var allowed: Dictionary = {}
+	for m in GlobalSteam.LOBBY_MEMBERS:
+		allowed[int(m["steam_id"])] = true
+	var next: Array[int] = []
+	for sid in GlobalVariables.steam_id_version_checked_array:
+		if allowed.has(int(sid)):
+			next.append(int(sid))
+	GlobalVariables.steam_id_version_checked_array = next
+
+
 func _on_lobby_members_changed() -> void:
+	prune_version_checked_to_current_members()
+	# Dedicated server has no Steam lobby_chat_update — host broadcasts so everyone stays in sync on join/leave
+	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID and GlobalSteam.LOBBY_ID != 0 and not GlobalVariables.using_steam:
+		host_broadcast_player_list_sync()
+	if instance_handler != null:
+		instance_handler.CheckLobbyMemberArray()
 	if lobby_ui != null:
 		lobby_ui.UpdatePlayerList()
 
@@ -334,6 +360,8 @@ func check_version():
 			"sent_from": "client",
 			"packet_id": 32,
 			"version": GlobalVariables.version_to_check,
+			# Relay/WebSocket packets do not expose the real Steam remote id in PacketManager; host must read this explicitly
+			"client_steam_id": GlobalSteam.STEAM_ID,
 		}
 		packets.send_p2p_packet_directly_to_host(GlobalSteam.STEAM_ID, packet)
 
@@ -377,27 +405,64 @@ func _on_lobby_chat_update(this_lobby_id: int, change_id: int, making_change_id:
 	
 	# Update the lobby now that a change has occurred
 	get_lobby_members()
-	
-	# If host, broadcast updated player list to all clients
+
+	# If host, broadcast updated player list to all clients (target 0 excludes host P2P; clients apply player_list)
 	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID and (chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED or chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_LEFT):
-		print("Host broadcasting updated player list to all clients")
-		var sync_packet = {
-			"packet category": "MP_LobbyManager",
-			"packet alias": "sync player list",
-			"sent_from": "host",
-			"packet_id": 41,
-			"player_list": GlobalSteam.LOBBY_MEMBERS.duplicate(),
-		}
-		packets.send_p2p_packet(0, sync_packet)
+		host_broadcast_player_list_sync()
 
 var previous_host = 0
+func host_broadcast_player_list_sync() -> void:
+	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+		return
+	if GlobalSteam.LOBBY_ID == 0:
+		return
+	print("Host broadcasting updated player list to all clients")
+	var sync_packet = {
+		"packet category": "MP_LobbyManager",
+		"packet alias": "sync player list",
+		"sent_from": "host",
+		"packet_id": 41,
+		"player_list": GlobalSteam.LOBBY_MEMBERS.duplicate(true),
+	}
+	packets.send_p2p_packet(0, sync_packet)
+
+
+func BroadcastPlayerListSync() -> void:
+	get_lobby_members()
+	host_broadcast_player_list_sync()
+
+
+func _remove_member_from_local_lobby_list(steam_id : int) -> void:
+	for i in range(GlobalSteam.LOBBY_MEMBERS.size() - 1, -1, -1):
+		if GlobalSteam.LOBBY_MEMBERS[i]["steam_id"] == steam_id:
+			GlobalSteam.LOBBY_MEMBERS.remove_at(i)
+
+
 func get_lobby_members() -> void:
 	var temp_hostname = ""
 	var temp_hostid = 0
 	
 	if instance_handler != null:
 		instance_handler.previous_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
-	
+
+	# Dedicated / non–Steam multiplayer: lobby list is driven by GlobalSteam WebSocket handlers, not Steam IMatchmaking APIs.
+	if not GlobalVariables.using_steam:
+		prune_version_checked_to_current_members()
+		if lobby_ui != null:
+			lobby_ui.UpdatePlayerList()
+		if instance_handler != null:
+			instance_handler.current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
+		if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID and GlobalSteam.LOBBY_ID != 0:
+			Steam.setLobbyData(GlobalSteam.LOBBY_ID, "member_count", str(GlobalSteam.LOBBY_MEMBERS.size()))
+			if not (GlobalSteam.HOST_ID in GlobalVariables.steam_id_version_checked_array):
+				GlobalVariables.steam_id_version_checked_array.append(GlobalSteam.HOST_ID)
+		if instance_handler != null:
+			instance_handler.CheckLobbyMemberArray()
+		if lobby_ui != null:
+			lobby_ui.UpdatePlayerList()
+		previous_host = GlobalSteam.HOST_ID
+		return
+
 	#print("member array before clear: ", GlobalSteam.LOBBY_MEMBERS)
 	# Clear your previous lobby list
 	GlobalSteam.LOBBY_MEMBERS.clear()
@@ -413,11 +478,14 @@ func get_lobby_members() -> void:
 		var member_steam_name: String = Steam.getFriendPersonaName(member_steam_id)
 		# Add them to the list
 		GlobalSteam.LOBBY_MEMBERS.append({"steam_id":member_steam_id, "steam_name":member_steam_name})
-	if lobby_ui != null: 
+	if lobby_ui != null:
 		lobby_ui.UpdatePlayerList()
-	if instance_handler != null: instance_handler.current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
+	if instance_handler != null:
+		instance_handler.current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
 	GlobalSteam.HOST_ID = Steam.getLobbyOwner(GlobalSteam.LOBBY_ID)
-	
+
+	prune_version_checked_to_current_members()
+
 	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
 		Steam.setLobbyData(GlobalSteam.LOBBY_ID, "member_count", str(GlobalSteam.LOBBY_MEMBERS.size()))
 		if !(GlobalSteam.HOST_ID in GlobalVariables.steam_id_version_checked_array):
@@ -453,30 +521,34 @@ func _on_persona_change(this_steam_id: int, _flag: int) -> void:
 func ReceivePacket_KickPlayer(packet : Dictionary):
 	print("kicking with packet: ", packet)
 	print("self id: ", GlobalSteam.STEAM_ID, " id to kick in packet: ", packet.steam_id)
-	GlobalSteam.USER_ID_LIST_TO_IGNORE.append(packet.steam_id)
-	if GlobalSteam.STEAM_ID == packet.steam_id:
+	var kicked_id : int = int(packet.steam_id)
+	if not (kicked_id in GlobalSteam.USER_ID_LIST_TO_IGNORE):
+		GlobalSteam.USER_ID_LIST_TO_IGNORE.append(kicked_id)
+	if GlobalSteam.STEAM_ID == kicked_id:
 		leave_lobby()
 		if is_lobby:
 			lobby_ui.ShowPopupWindow(tr("MP_UI LOBBY KICKED"))
-		if instance_handler != null: 
+		if instance_handler != null:
 			instance_handler.intermediary.ExitGame(tr("MP_UI LOBBY KICKED"))
-	if GlobalVariables.mp_debugging:
-		for i in range(GlobalSteam.LOBBY_MEMBERS.size()):
-			if GlobalSteam.LOBBY_MEMBERS[i].steam_id == packet.steam_id:
-				GlobalSteam.LOBBY_MEMBERS.remove_at(i)
-				break
+	else:
+		_remove_member_from_local_lobby_list(kicked_id)
+		if lobby_ui != null:
+			lobby_ui.UpdatePlayerList()
+	if instance_handler != null:
 		instance_handler.CheckLobbyMemberArray()
 
 func ReceivePacket_VersionCheck(packet : Dictionary, user_id : int):
 	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
+		var client_sid: int = int(packet.get("client_steam_id", user_id))
 		var allowed = GlobalVariables.version_to_check == packet.version
 		if allowed:
-			print("version check with %s successful." % user_id)
-			GlobalVariables.steam_id_version_checked_array.append(user_id)
+			print("version check with %s successful." % client_sid)
+			if not (client_sid in GlobalVariables.steam_id_version_checked_array):
+				GlobalVariables.steam_id_version_checked_array.append(client_sid)
 			lobby_ui.CheckAllVersions()
 		else:
-			print("version check with %s unsuccessful." % user_id)
-			Console_Copypaste(tr("MP_UI LOBBY VERSION MISMATCH HOST") % Steam.getFriendPersonaName(user_id))
+			print("version check with %s unsuccessful." % client_sid)
+			Console_Copypaste(tr("MP_UI LOBBY VERSION MISMATCH HOST") % Steam.getFriendPersonaName(client_sid))
 		var response = {
 			"packet category": "MP_LobbyManager",
 			"packet alias": "version response",
@@ -485,7 +557,7 @@ func ReceivePacket_VersionCheck(packet : Dictionary, user_id : int):
 			"entry_allowed": allowed,
 			"host_version": GlobalVariables.version_to_check,
 		}
-		packets.send_p2p_packet(user_id, response)
+		packets.send_p2p_packet(client_sid, response)
 		if allowed:
 			match_customization.CheckMatchCustomizationDifferences()
 

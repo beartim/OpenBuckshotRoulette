@@ -81,15 +81,8 @@ func InteractionPipe(alias : String, button_class_main : MP_ButtonClassMain):
 		"continue button":
 			ingame_lobby_ui.ToggleUI()
 		"kick button":
-			var packet = {
-				"packet category": "MP_LobbyManager",
-				"packet alias": "kick player",
-				"sent_from": "host",
-				"packet_id": 26,
-				"steam_id": button_class_main.segment.user_id,
-			}
-			packets.send_p2p_packet(0, packet)
-			if GlobalVariables.mp_debugging: packets.PipeData(packet)
+			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID and ingame_lobby_ui != null and ingame_lobby_ui.lobby != null:
+				ingame_lobby_ui.lobby.KickPlayerInLobby(button_class_main.segment.user_id)
 
 
 

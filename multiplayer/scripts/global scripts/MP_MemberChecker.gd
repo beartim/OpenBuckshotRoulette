@@ -64,6 +64,7 @@ func MemberJoinedList(steam_id : int):
 		"packet alias": "update member list",
 		"sent_from": "host",
 		"packet_id": 5,
+		"number of players here": amountOfPlayers_here,
 	}
 	for id in membersHere_list:
 		if (id != GlobalSteam.HOST_ID):

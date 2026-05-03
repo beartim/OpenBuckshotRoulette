@@ -14,14 +14,17 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="Buckshot Roulette"
+config/name="Open Buckshot Roulette"
+config/version="1.0.0.12"
 run/main_scene="res://scenes/menu.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="dev1503.openbuckshotroulette"
+config/project_settings_override="user://_override.cfg"
+config/quit_on_go_back=false
 config/features=PackedStringArray("4.6", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
-boot_splash/show_image=false
-boot_splash/image="res://misc/CR White splash.png"
-config/icon="res://misc/icon1.png"
-boot_splash/minimum_display_time=3000
+boot_splash/image="uid://dckyjic6jr8lm"
+config/icon="uid://7p6fpotb7tsf"
 
 [audio]
 
@@ -42,7 +45,7 @@ file_logging/enable_file_logging=true
 
 window/size/viewport_width=960
 window/size/viewport_height=540
-window/size/window_width_override=1280
+window/size/window_width_override=1560
 window/size/window_height_override=720
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"

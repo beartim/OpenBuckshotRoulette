@@ -4,6 +4,10 @@ dist/
 export_presets.cfg
 *.import
 # *.uid
+*.tmp
 
 # VS Code
 .vscode/
+
+# Node
+**/node_modules/
