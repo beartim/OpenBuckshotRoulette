@@ -16,27 +16,69 @@ var activeInteractionBranch
 var checking = true
 
 func _process(delta):
+	UpdateRaycastAndHover()
 	CheckPickupLerp()
-	CheckInteractionBranch()
-	if (checking): CheckIfHovering()
-	pass
 
 func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		MainInteractionEvent()
 
 func MainInteractionEvent():
+	RefreshRaycastAndBranch()
+	CheckIfHovering()
+	
 	if (activeInteractionBranch != null && activeInteractionBranch.interactionAllowed && !activeInteractionBranch.interactionInvalid):
 		var childArray = activeInteractionBranch.get_parent().get_children()
-		for i in range(childArray.size()): if (childArray[i] is PickupIndicator): childArray[i].SnapToMax()
-		if (!activeInteractionBranch.isGrid): InteractWith(activeInteractionBranch.interactionAlias)
-		else: InteractWithGrid(activeInteractionBranch.gridIndex)
+		for i in range(childArray.size()): 
+			if (childArray[i] is PickupIndicator): 
+				childArray[i].SnapToMax()
+		if (!activeInteractionBranch.isGrid): 
+			InteractWith(activeInteractionBranch.interactionAlias)
+		else: 
+			InteractWithGrid(activeInteractionBranch.gridIndex)
+
+func RefreshRaycastAndBranch():
+	mouseRay.force_raycast_update()
+	var result = mouseRay.get_collider_result()
+	if result != null and result.has("collider"):
+		activeParent = result.collider.get_parent()
+	else:
+		activeParent = null
+	
+	var isFound = null
+	if (activeParent != null):
+		var childArray = activeParent.get_children()
+		for i in range(childArray.size()):
+			if (childArray[i] is InteractionBranch):
+				isFound = childArray[i]
+				break
+	activeInteractionBranch = isFound
+
+func UpdateRaycastAndHover():
+	mouseRay.force_raycast_update()
+	var result = mouseRay.get_collider_result()
+	if result != null and result.has("collider"):
+		activeParent = result.collider.get_parent()
+	else:
+		activeParent = null
+	
+	var isFound = null
+	if (activeParent != null):
+		var childArray = activeParent.get_children()
+		for i in range(childArray.size()):
+			if (childArray[i] is InteractionBranch):
+				isFound = childArray[i]
+				break
+	activeInteractionBranch = isFound
+	
+	if (checking): 
+		CheckIfHovering()
 
 func CheckIfHovering():
 	if (activeInteractionBranch != null && activeInteractionBranch.interactionAllowed):
 		if (activeInteractionBranch.interactionAllowed && !activeInteractionBranch.interactionInvalid):
 			cursor.SetCursorImage("hover")
-		else: if (activeInteractionBranch.interactionAllowed && activeInteractionBranch.interactionInvalid):
+		else: 
 			cursor.SetCursorImage("invalid")
 	else:
 		cursor.SetCursorImage("point")
@@ -92,7 +134,6 @@ func InteractWith(alias : String):
 			intro.Interaction_CRT()
 		"crt button":
 			if (activeInteractionBranch.crtButton_alias != ""): 
-				#activeInteractionBranch.get_parent().get_child(1).Press()
 				crt.Interaction(activeInteractionBranch.crtButton_alias)
 
 func SignatureButtonRemote(assignedBranch : SignButton, alias : String):
@@ -116,18 +157,3 @@ func CheckPickupLerp():
 	else:	
 		activeParent = null
 	pass
-
-func CheckInteractionBranch():
-	var isFound = null
-	if (activeParent != null):
-		var childArray = activeParent.get_children()
-		for i in range(childArray.size()):
-			if (childArray[i] is InteractionBranch):
-				var branch = childArray[i]
-				# activeInteractionBranch = childArray[i]
-				isFound = childArray[i]
-				break
-	if (isFound):
-		activeInteractionBranch = isFound
-	else:
-		activeInteractionBranch = null

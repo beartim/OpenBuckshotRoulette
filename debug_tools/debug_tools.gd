@@ -1,4 +1,5 @@
 extends Node
+
 @onready var canvas_layer: CanvasLayer = $CanvasLayer
 @onready var label_bullets_count: Label = $CanvasLayer/Control/Panel_Gambling/Label_BulletsCount
 @onready var label_next_bullet: Label = $CanvasLayer/Control/Panel_Gambling/Label_NextBullet
@@ -21,12 +22,15 @@ var dealer_health:= 0
 var _mp_hide_dealer_in_debug_panel := false
 var mp_gambling_refresh_ttl := 0.0
 
+const DEBUG_TOOLS_ENABLED := false
+const SKIP_SPLASH_ANIM := true
+
 func  _ready() -> void:
 	add_to_group("debug_tools")
 	canvas_layer.hide()
-	set_process(false)
 
 func _input(event: InputEvent) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	if (Input.is_action_just_pressed("debug_tools")):
 		_set_debug_visible(!canvas_layer.visible)
 
@@ -45,9 +49,11 @@ func _process(delta: float) -> void:
 		Input.set_mouse_mode(_forced_mouse_mode)
 
 func _exit_tree() -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_end_forcing_mouse_mode()
 
 func _set_debug_visible(visible: bool) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	canvas_layer.visible = visible
 	if visible:
 		_begin_forcing_mouse_mode()
@@ -62,6 +68,7 @@ func _set_debug_visible(visible: bool) -> void:
 		_end_forcing_mouse_mode()
 
 func _begin_forcing_mouse_mode() -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	if _forcing_mouse_mode:
 		return
 	_forcing_mouse_mode = true
@@ -70,6 +77,7 @@ func _begin_forcing_mouse_mode() -> void:
 	set_process(true)
 
 func _end_forcing_mouse_mode() -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	if !_forcing_mouse_mode:
 		return
 	_forcing_mouse_mode = false
@@ -77,19 +85,24 @@ func _end_forcing_mouse_mode() -> void:
 	Input.set_mouse_mode(_mouse_mode_to_restore)
 
 func _on_h_slider_game_speed_value_changed(value: float) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	label_game_speed.text = 'GameSpeed: ' + str(value)
 	GlobalVariables.SetDebugTimeScaleMultiplier(value)
 
 func set_number_of_lives(num: int):
+	if (!DEBUG_TOOLS_ENABLED): return
 	lives = num
 	
 func set_number_of_blanks(num: int):
+	if (!DEBUG_TOOLS_ENABLED): return
 	blanks = num
 
 func set_next_bullet(is_live):
+	if (!DEBUG_TOOLS_ENABLED): return
 	next_bullet = is_live
 
 func _apply_sequence_summary(sequence: Array[String]) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	lives = sequence.count("live")
 	blanks = sequence.count("blank")
 	has_next_bullet = sequence.size() > 0
@@ -98,11 +111,13 @@ func _apply_sequence_summary(sequence: Array[String]) -> void:
 
 
 func sync_from_sequence(sequence: Array[String]) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_apply_sequence_summary(sequence)
 	update_gambling_status()
 
 
 func sync_health(player: int, dealer: int) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_mp_hide_dealer_in_debug_panel = false
 	player_health = player
 	dealer_health = dealer
@@ -110,6 +125,7 @@ func sync_health(player: int, dealer: int) -> void:
 		update_gambling_status()
 
 func update_gambling_status():
+	if (!DEBUG_TOOLS_ENABLED): return
 	label_bullets_count.text = 'Lives: ' + str(lives) + ' Blanks: ' + str(blanks)
 	if !has_next_bullet:
 		label_next_bullet.text = 'Next: -'
@@ -130,21 +146,26 @@ func update_gambling_status():
 
 
 func _on_button_add_dealer_health_pressed() -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_adjust_health(false, 1)
 
 
 func _on_button_reduce_dealer_health_pressed() -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_adjust_health(false, -1)
 
 
 func _on_button_add_player_health_pressed() -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_adjust_health(true, 1)
 
 
 func _on_button_reduce_player_health_2_pressed() -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_adjust_health(true, -1)
 
 func _adjust_health(is_player: bool, delta: int) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	var gs_mp: MP_GameStateManager = _find_mp_game_state()
 	if gs_mp != null:
 		if is_player:
@@ -174,6 +195,7 @@ func _adjust_health(is_player: bool, delta: int) -> void:
 	sync_health(rm.health_player, rm.health_opponent)
 
 func _get_round_max_health(rm) -> int:
+	if (!DEBUG_TOOLS_ENABLED): return 0
 	if rm.roundArray == null:
 		return 0
 	var idx: int = rm.currentRound
@@ -183,10 +205,12 @@ func _get_round_max_health(rm) -> int:
 
 
 func _find_mp_game_state() -> MP_GameStateManager:
+	if (!DEBUG_TOOLS_ENABLED): return null
 	return _find_mp_game_state_under(get_tree().root)
 
 
 func _find_mp_game_state_under(node: Node) -> MP_GameStateManager:
+	if (!DEBUG_TOOLS_ENABLED): return null
 	if node is MP_GameStateManager:
 		return node as MP_GameStateManager
 	for child in node.get_children():
@@ -197,6 +221,7 @@ func _find_mp_game_state_under(node: Node) -> MP_GameStateManager:
 
 
 func _coerce_shell_strings(seq: Variant) -> Array[String]:
+	if (!DEBUG_TOOLS_ENABLED): return []
 	var out: Array[String] = []
 	if seq is Array:
 		for elem in seq as Array:
@@ -205,6 +230,7 @@ func _coerce_shell_strings(seq: Variant) -> Array[String]:
 
 
 func _refresh_mp_gambling_from_game_state(gs: MP_GameStateManager) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	_mp_hide_dealer_in_debug_panel = true
 	var d: Variant = gs.MAIN_active_sequence_dict
 	if d is Dictionary && not (d as Dictionary).is_empty() && (d as Dictionary).has("sequence_in_shotgun"):
@@ -224,6 +250,7 @@ func _refresh_mp_gambling_from_game_state(gs: MP_GameStateManager) -> void:
 
 
 func _adjust_mp_local_player_health(gs: MP_GameStateManager, delta: int) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	var rd: Variant = gs.MAIN_active_round_dict
 	if gs.instance_handler == null:
 		return
@@ -242,3 +269,6 @@ func _adjust_mp_local_player_health(gs: MP_GameStateManager, delta: int) -> void
 		if prop.health_counter != null:
 			prop.health_counter.UpdateDisplay()
 		break
+
+func _on_button_close_pressed() -> void:
+	_set_debug_visible(false)

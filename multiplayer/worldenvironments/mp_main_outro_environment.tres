@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=3 format=3 uid="uid://cucsg3ijsfamb"]
+[gd_resource type="Environment" format=3 uid="uid://cucsg3ijsfamb"]
 
 [ext_resource type="Material" uid="uid://db61jslwbwqe1" path="res://multiplayer/misc/mp_sky shader.tres" id="1"]
 

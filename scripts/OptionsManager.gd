@@ -2,7 +2,7 @@ class_name OptionsManager extends Node
 
 @export var controller : ControllerManager
 
-@export var defaultOption_language : String = "EN"
+@export var defaultOption_language : String = "ZHS"
 @export var defaultOption_windowed : bool
 @export var defaultOption_controllerActive : bool
 var defaultOption_inputmap_keyboard = {
@@ -46,11 +46,12 @@ var setting_inputmap_keyboard = {}
 var setting_inputmap_controller = {}
 var setting_volume = 1
 var setting_windowed = false
-var setting_language = "EN"
+var setting_language = "ZHS"
 var setting_controllerEnabled = false
 var setting_colorblind = false
 var setting_greyscale_death = true
 var setting_music_enabled = true
+var setting_server_address = "ws://192.160.0.101:14122"
 
 func _ready():
 	LoadSettings()
@@ -65,6 +66,7 @@ func _ready():
 		ApplySettings_language()
 		ApplySettings_inputmap()
 		ApplySettings_greyscaledeath()
+	GlobalSteam.connect_to_server()
 
 func Printout():
 	print("user current version: ", GlobalVariables.currentVersion)
@@ -232,7 +234,9 @@ func SaveSettings():
 		"setting_colorblind": setting_colorblind,
 		"setting_music_enabled": setting_music_enabled,
 		"setting_greyscale_death": setting_greyscale_death,
+		"setting_server_address": setting_server_address
 	}
+	Steam.server_address = setting_server_address
 	print("attempting to save settings")
 	var file = FileAccess.open(savePath, FileAccess.WRITE)
 	file.store_var(data)
@@ -252,6 +256,9 @@ func LoadSettings():
 		setting_controllerEnabled = data.setting_controllerEnabled
 		setting_inputmap_keyboard = data.setting_inputmap_keyboard
 		setting_inputmap_controller = data.setting_inputmap_controller
+		if (data.has('setting_server_address')):
+			setting_server_address = data.setting_server_address
+			Steam.server_address = setting_server_address
 		if (data.has('setting_colorblind')): 
 			setting_colorblind = data.setting_colorblind
 			if (checkmark_colorblind != null): checkmark_colorblind.UpdateCheckmark(setting_colorblind)

@@ -1,9 +1,14 @@
 [gd_scene format=3 uid="uid://0rkffdwpvpro"]
 
 [ext_resource type="Script" uid="uid://dhyrqicv4ud8j" path="res://debug_tools/debug_tools.gd" id="1_u2hdw"]
+[ext_resource type="FontFile" uid="uid://lygcike6do71" path="res://fonts/Consolas-Regular.ttf" id="2_fpd2w"]
+[ext_resource type="Script" uid="uid://b84s0wg4b5xj1" path="res://debug_tools/label_fps.gd" id="3_n84is"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_u2hdw"]
 font_color = Color(0, 0.671549, 0.671549, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_n84is"]
+font = ExtResource("2_fpd2w")
 
 [node name="DebugTools" type="Node" unique_id=1807873415]
 process_mode = 3
@@ -11,12 +16,12 @@ script = ExtResource("1_u2hdw")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1279942368]
 process_mode = 3
-layer = 4096
+layer = 4095
 
 [node name="Control" type="Control" parent="CanvasLayer" unique_id=1372348555]
 process_mode = 3
 top_level = true
-z_index = 4096
+z_index = 4095
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,9 +41,9 @@ color = Color(0, 0, 0, 0.3764706)
 
 [node name="Panel_System" type="Panel" parent="CanvasLayer/Control" unique_id=1318199934]
 layout_mode = 0
-offset_left = 22.0
+offset_left = 46.0
 offset_top = 19.0
-offset_right = 180.0
+offset_right = 204.0
 offset_bottom = 91.0
 
 [node name="Label" type="Label" parent="CanvasLayer/Control/Panel_System" unique_id=2119191467]
@@ -71,9 +76,9 @@ horizontal_alignment = 3
 
 [node name="Panel_Gambling" type="Panel" parent="CanvasLayer/Control" unique_id=542148086]
 layout_mode = 0
-offset_left = 197.0
+offset_left = 221.0
 offset_top = 19.0
-offset_right = 355.0
+offset_right = 379.0
 offset_bottom = 137.0
 
 [node name="Label" type="Label" parent="CanvasLayer/Control/Panel_Gambling" unique_id=522282910]
@@ -211,8 +216,37 @@ text = "-"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Button_Close" type="Button" parent="CanvasLayer/Control" unique_id=1087308912]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -77.0
+offset_top = 19.0
+offset_right = -46.0
+offset_bottom = 50.0
+grow_horizontal = 0
+text = "×"
+
+[node name="Label_FPS" type="Label" parent="." unique_id=590897100]
+process_mode = 3
+top_level = true
+z_index = 4096
+offset_left = 46.0
+offset_right = 90.0
+offset_bottom = 17.0
+text = "FPS: "
+label_settings = SubResource("LabelSettings_n84is")
+script = ExtResource("3_n84is")
+
+[node name="Timer_FPS" type="Timer" parent="Label_FPS" unique_id=903501646]
+autostart = true
+ignore_time_scale = true
+
 [connection signal="value_changed" from="CanvasLayer/Control/Panel_System/HSlider_GameSpeed" to="." method="_on_h_slider_game_speed_value_changed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth/Button_AddPlayerHealth" to="." method="_on_button_add_player_health_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth/Button_ReducePlayerHealth2" to="." method="_on_button_reduce_player_health_2_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_DealerHealth/Button_AddDealerHealth" to="." method="_on_button_add_dealer_health_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_DealerHealth/Button_ReduceDealerHealth" to="." method="_on_button_reduce_dealer_health_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Button_Close" to="." method="_on_button_close_pressed"]
+[connection signal="timeout" from="Label_FPS/Timer_FPS" to="Label_FPS" method="_on_timer_fps_timeout"]

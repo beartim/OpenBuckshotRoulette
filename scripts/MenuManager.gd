@@ -14,6 +14,7 @@ class_name MenuManager extends Node
 @export var parent_audiovideo : Control
 @export var parent_language : Control
 @export var parent_controller : Control
+@export var parent_online_service : Control
 @export var parent_rebinding : Control
 @export var title : Node3D
 @export var waterfalls : Array[AnimationPlayer]
@@ -22,6 +23,7 @@ class_name MenuManager extends Node
 @export var mouseblocker : Control
 @export var anim_creds : AnimationPlayer
 @export var version : Label
+@export var menu: Node
 
 var viewing_intro : bool
 
@@ -44,6 +46,9 @@ func _ready():
 	buttons[18].connect("is_pressed", ResetControls)
 	buttons[19].connect("is_pressed", DiscordLink)
 	buttons[22].connect("is_pressed", StartMultiplayer)
+	buttons[24].connect("is_pressed", GithubLink)
+	buttons[25].connect("is_pressed", Options_OnlineService)
+	buttons[26].connect("is_pressed", ReturnToLastScreen)
 	
 	buttons_options[0].connect("is_pressed", IncreaseVol)
 	buttons_options[1].connect("is_pressed", DecreaseVol)
@@ -58,6 +63,7 @@ func _ready():
 	version.text = GlobalVariables.currentVersion
 	
 	Intro()
+	
 
 func _process(delta):
 	T()
@@ -135,6 +141,7 @@ func Buttons(state : bool):
 @export var firstFocus_audioVideo : Control
 @export var firstFocus_language : Control
 @export var firstFocus_controller : Control
+@export var firstFocus_onlineService : Control
 @export var firstFocus_rebinding : Control
 
 var assigningFocus = false
@@ -168,6 +175,9 @@ func Show(what : String):
 		"controller":
 			parent_controller.visible = true
 			focus = firstFocus_controller
+		'online service':
+			parent_online_service.visible = true
+			focus = firstFocus_onlineService
 		"rebind controls":
 			parent_rebinding.visible = true
 			focus = firstFocus_rebinding
@@ -180,6 +190,7 @@ func ReturnToLastScreen():
 	if currentScreen == "credits": anim_creds.play("RESET")
 	if (currentScreen) == "sub options": lastScreen = "main"
 	if (currentScreen) == "rebind controls": lastScreen = "sub options"
+	if (currentScreen) == "online service": lastScreen = "sub options"
 	if (currentScreen == "audio video" or currentScreen == "language" or currentScreen == "controller" or currentScreen == "rebind controls"): optionmanager.SaveSettings()
 	Show(lastScreen)
 	ResetButtons()
@@ -258,6 +269,9 @@ func ToggleGreyscaleDeath():
 	optionmanager.ToggleGreyscaleDeath()
 func DiscordLink():
 	OS.shell_open(GlobalVariables.discord_link)
+func GithubLink():
+	print(GlobalVariables.github_link)
+	OS.shell_open(GlobalVariables.github_link)
 func RebindControls():
 	Show("rebind controls")
 	ResetButtons()
@@ -274,6 +288,10 @@ func Options_Controller():
 	Show("controller")
 	ResetButtons()
 	pass
+func Options_OnlineService():
+	Show("online service")
+	ResetButtons()
+	menu.update_server_address_label()
 func IncreaseVol():
 	optionmanager.Adjust("increase")
 func DecreaseVol():

@@ -24,6 +24,7 @@ var lobby_player_limit = 4
 
 var ws_peer = WebSocketPeer.new()
 var connected = false
+var is_active_connection = false
 var client_id = 0
 
 func _ready():
@@ -36,24 +37,32 @@ func _ready():
 		STEAM_ID = Steam.getSteamID()
 		STEAM_NAME = Steam.getPersonaName()
 	else:
-		ONLINE = true
-		STEAM_ID = randi() % 1000000 + 1000  # Random ID
+		# ONLINE = true
+		STEAM_ID = randi() % 1000000 + 1000
 		STEAM_NAME = generate_random_name()
 	
 	if GlobalVariables.mp_debugging: STEAM_ID = 1234
 	print("online ... ", ONLINE, " ... steam id ... ", STEAM_ID, " ... steam name ... ", STEAM_NAME)
 
 	call_deferred("_ensure_steam_lobby_mirror_connected")
+
+func connect_to_server():
+	if is_active_connection:
+		print("Closing existing connection...")
+		ws_peer.close()
+		connected = false
+		is_active_connection = false
 	
-	# Connect to custom server
-	var err = ws_peer.connect_to_url("ws://127.0.0.1:14122")
+	var err = ws_peer.connect_to_url(Steam.server_address)
 	if err != OK:
-		print("Failed to connect to server")
+		print("Failed to initiate connection to ", Steam.server_address)
+		is_active_connection = false
 	else:
-		print("Connecting to server...")
+		print("Connecting to server at ", Steam.server_address, "...")
+		is_active_connection = true
 
 func generate_random_name() -> String:
-	var length = randi() % 5 + 6  # 6-10
+	var length = randi() % 5 + 6
 	var name = ""
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	for i in range(length):
@@ -64,9 +73,14 @@ func _process(_delta: float) -> void:
 	if GlobalVariables.using_steam:
 		Steam.run_callbacks()
 	
+	if not is_active_connection:
+		return
+
 	ws_peer.poll()
 	var state = ws_peer.get_ready_state()
+	
 	if state == WebSocketPeer.STATE_OPEN:
+		ONLINE = true
 		if not connected:
 			connected = true
 			print("Connected to server")
@@ -76,22 +90,22 @@ func _process(_delta: float) -> void:
 				var data = JSON.parse_string(packet.get_string_from_utf8())
 				handle_server_message(data)
 			else:
-				# Binary packet
 				handle_binary_packet(packet)
-	elif state == WebSocketPeer.STATE_CLOSED:
+	elif state == WebSocketPeer.STATE_CLOSED or state == WebSocketPeer.STATE_CLOSING:
+		ONLINE = false
 		if connected:
 			connected = false
+			is_active_connection = false
 			print("Disconnected from server")
+	else: ONLINE = false
 
 func handle_binary_packet(packet: PackedByteArray):
 	if packet.is_empty():
 		return
-	# Dedicated server gunzips once in handlePacket() then relays raw var_to_bytes payload — parse directly first.
 	var decoded: Variant = bytes_to_var(packet)
 	if decoded is Dictionary:
 		emit_signal("packet_received", decoded as Dictionary)
 		return
-	# Fallback: gzip-wrapped bytes (Steam P2P path / relays that skip gunzip).
 	var decompressed: PackedByteArray = packet.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	if not decompressed.is_empty():
 		decoded = bytes_to_var(decompressed)
@@ -125,17 +139,14 @@ func handle_server_message(data):
 				var member = {"steam_id": client_id, "steam_name": STEAM_NAME}
 				LOBBY_MEMBERS.append(member)
 			print("Room created: ", LOBBY_ID)
-			# Emit signal like Steam
 			emit_signal("lobby_created", 1, LOBBY_ID)
 		"joinedRoom":
 			LOBBY_ID = int(data.roomId)
 			HOST_ID = data.hostId
 			LOBBY_MEMBERS.clear()
 			
-			# Always use server-provided member list (should be complete)
 			if data.has("members"):
 				for member_data in data.members:
-					# Check for duplicate IDs
 					var dup = false
 					for existing in LOBBY_MEMBERS:
 						if existing["steam_id"] == member_data.playerId:
@@ -144,7 +155,6 @@ func handle_server_message(data):
 					if not dup:
 						LOBBY_MEMBERS.append({"steam_id": member_data.playerId, "steam_name": member_data.playerName})
 			
-			# Ensure self is in list
 			var self_exists = false
 			for member in LOBBY_MEMBERS:
 				if member["steam_id"] == STEAM_ID:
@@ -156,7 +166,6 @@ func handle_server_message(data):
 			print("Joined room: ", LOBBY_ID, " - Members: ", LOBBY_MEMBERS.size())
 			emit_signal("lobby_joined", LOBBY_ID, 0, false, 1)
 		"playerJoined":
-			# Check if player already in list to avoid duplicates
 			var exists = false
 			for existing_member in LOBBY_MEMBERS:
 				if existing_member["steam_id"] == data.playerId:
@@ -169,7 +178,6 @@ func handle_server_message(data):
 				print("Player joined: ", data.playerId, " name: ", member["steam_name"])
 				emit_signal("lobby_members_changed")
 		"playerLeft":
-			# Remove from members
 			for i in range(LOBBY_MEMBERS.size()):
 				if LOBBY_MEMBERS[i]["steam_id"] == data.playerId:
 					LOBBY_MEMBERS.remove_at(i)
@@ -177,7 +185,6 @@ func handle_server_message(data):
 			print("Player left: ", data.playerId)
 			emit_signal("lobby_members_changed")
 		_:
-			# Forward to packet manager or something
 			pass
 
 func create_room():
@@ -197,7 +204,6 @@ func leave_room() -> void:
 		return
 	ws_peer.send_text(JSON.stringify({"type": "leaveRoom"}))
 
-# Simulated Steam functions
 func getNumLobbyMembers(lobby_id: int) -> int:
 	if lobby_id == LOBBY_ID:
 		return LOBBY_MEMBERS.size()
@@ -223,11 +229,8 @@ func getLobbyOwner(lobby_id: int) -> int:
 
 func send_packet(data: PackedByteArray) -> void:
 	if connected:
-		# Data is already compressed by MP_PacketManager, don't compress twice
 		ws_peer.send(data)
 
-
-## Keep GlobalSteam.LOBBY_MEMBERS in sync during mp_main where LobbyManager is not loaded (Steam joins/leaves/kicks).
 func _ensure_steam_lobby_mirror_connected() -> void:
 	if not GlobalVariables.using_steam:
 		return
@@ -236,14 +239,12 @@ func _ensure_steam_lobby_mirror_connected() -> void:
 	if Steam.has_signal("lobby_chat_update"):
 		Steam.lobby_chat_update.connect(_on_steam_lobby_mirror_refresh)
 
-
 func _on_steam_lobby_mirror_refresh(this_lobby_id: int, _change_id: int, _making_change_id: int, _chat_state: int) -> void:
 	if not GlobalVariables.using_steam or this_lobby_id == 0:
 		return
 	if this_lobby_id != LOBBY_ID or LOBBY_ID == 0:
 		return
 	sync_lobby_members_from_steam_sdk()
-
 
 func sync_lobby_members_from_steam_sdk() -> void:
 	if not GlobalVariables.using_steam:

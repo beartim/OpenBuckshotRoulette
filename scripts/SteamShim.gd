@@ -52,6 +52,7 @@ var _steam: Object = null
 var _lobby_data: Dictionary = {}
 var _lobby_distance_filter: int = LOBBY_DISTANCE_FILTER_CLOSE
 var _lobby_result_count_limit: int = 50
+var server_address = 'ws://192.168.0.101:14122'
 
 func _ready() -> void:
 	if Engine.has_singleton("Steam"):

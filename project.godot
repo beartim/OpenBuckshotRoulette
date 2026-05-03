@@ -22,6 +22,7 @@ config/custom_user_dir_name="dev1503.openbuckshotroulette"
 config/project_settings_override="user://_override.cfg"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.6", "Forward Plus")
+run/max_fps=120
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/image="uid://dckyjic6jr8lm"
 config/icon="uid://7p6fpotb7tsf"
@@ -602,6 +603,7 @@ locale/locale_filter_mode=0
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
 limits/opengl/max_lights_per_object=20
 environment/defaults/default_clear_color=Color(0.254902, 0.254902, 0.254902, 1)
 environment/size/mode=0

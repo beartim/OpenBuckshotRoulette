@@ -30,6 +30,7 @@
 [ext_resource type="FontFile" uid="uid://vhj3kkn6yn8o" path="res://fonts/fake receipt.otf" id="27"]
 [ext_resource type="Script" uid="uid://8xr3c14ik276" path="res://scripts/ButtonClass.gd" id="28"]
 [ext_resource type="Texture2D" uid="uid://dfjx01c5mpkbn" path="res://misc/options_vinyl disk2.png" id="29"]
+[ext_resource type="Texture2D" uid="uid://dq5hakr8c82m0" path="res://misc/github icon.png" id="29_lqq6t"]
 [ext_resource type="Texture2D" uid="uid://d0bbexsobmy8k" path="res://misc/monitor_windowed.png" id="30"]
 [ext_resource type="Texture2D" uid="uid://bmfpqyheaxjq2" path="res://misc/monitor_fullscreen.png" id="31"]
 [ext_resource type="Texture2D" uid="uid://cy1liokt0o1io" path="res://misc/master vol2.png" id="32"]
@@ -262,7 +263,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("menu ui/credits/credits move parent:position")
+tracks/0/path = NodePath("menu ui/credits/Control/credits move parent:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -290,14 +291,14 @@ length = 129.7
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("menu ui/credits/credits move parent:position")
+tracks/0/path = NodePath("menu ui/credits/Control/credits move parent:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 129.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 631), Vector2(0, -2477)]
+"values": [Vector2(0, 631), Vector2(0, -4400)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -829,6 +830,7 @@ albedo_texture = ExtResource("58")
 [node name="menu" type="Node3D" unique_id=1645197180]
 script = ExtResource("1_rlbjc")
 metadata/_edit_vertical_guides_ = [480.0]
+metadata/_edit_horizontal_guides_ = [270.0]
 
 [node name="standalone managers" type="Node" parent="." unique_id=1826619044]
 
@@ -860,22 +862,23 @@ connecting_persona_state_change = false
 menu_manager = NodePath("../menu manager")
 command_line = NodePath("../mp_command line checker")
 
-[node name="menu manager" type="Node" parent="standalone managers" unique_id=1197296999 node_paths=PackedStringArray("savefile", "cursor", "animator_intro", "speaker_music", "speaker_start", "buttons", "buttons_options", "screens", "parent_main", "parent_creds", "parent_suboptions", "parent_audiovideo", "parent_language", "parent_controller", "parent_rebinding", "title", "waterfalls", "optionmanager", "controller", "mouseblocker", "anim_creds", "version", "firstFocus_main", "firstFocus_subOptions", "firstFocus_credits", "firstFocus_audioVideo", "firstFocus_language", "firstFocus_controller", "firstFocus_rebinding")]
+[node name="menu manager" type="Node" parent="standalone managers" unique_id=1197296999 node_paths=PackedStringArray("savefile", "cursor", "animator_intro", "speaker_music", "speaker_start", "buttons", "buttons_options", "screens", "parent_main", "parent_creds", "parent_suboptions", "parent_audiovideo", "parent_language", "parent_controller", "parent_online_service", "parent_rebinding", "title", "waterfalls", "optionmanager", "controller", "mouseblocker", "anim_creds", "version", "menu", "firstFocus_main", "firstFocus_subOptions", "firstFocus_credits", "firstFocus_audioVideo", "firstFocus_language", "firstFocus_controller", "firstFocus_onlineService", "firstFocus_rebinding")]
 script = ExtResource("4")
 savefile = NodePath("../SaveFileManager")
 cursor = NodePath("../cursor manager")
 animator_intro = NodePath("../../animator_intro")
 speaker_music = NodePath("../../speaker_music")
 speaker_start = NodePath("../../speaker_start main")
-buttons = [NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_start/button class_start"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_options/button class_sub options"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_credits/button class_credits"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_exit/button class_exit"), NodePath("../../Camera/dialogue UI/menu ui/credits/true button_return credits/button class_return"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_exit sub options/button class_exit sub options"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_return audio video/button class_return audio video"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_audio video/button class_audio video"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_language/button class_language"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_controller/button class_controller"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_return options controller/button class_return options controller"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language return/button class_language return"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_mouse enable/button class_mouse enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_controller enable/button class_controller enable"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_windowed/button class_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen/button class_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_rebinding/button class_rebinding"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_return keybinding/button class_return keybinding"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_reset keybinds/button class_reset keybinds"), NodePath("../../Camera/dialogue UI/menu ui/main screen/true button_discord/button class_discord"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_colorblind mode/button class_colorblind mode"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_toggle music/button class_toggle music"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_multiplayer/button class_multiplayer"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_greyscale death/button class_greyscale death")]
-buttons_options = [NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_increase/button class_increase"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_decrease/button class_decrease"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen/button class_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_windowed/button class_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_controller enable/button class_controller enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_mouse enable/button class_mouse enable"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_colorblind mode/button class_colorblind mode"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_toggle music/button class_toggle music"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_greyscale death/button class_greyscale death")]
-screens = [NodePath("../../Camera/dialogue UI/menu ui/main screen"), NodePath("../../Camera/dialogue UI/menu ui/sub options select"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video"), NodePath("../../Camera/dialogue UI/menu ui/credits"), NodePath("../../Camera/dialogue UI/menu ui/language"), NodePath("../../Camera/dialogue UI/menu ui/options_controller"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding")]
+buttons = [NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_start/button class_start"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_options/button class_sub options"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_credits/button class_credits"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_exit/button class_exit"), NodePath("../../Camera/dialogue UI/menu ui/credits/Control2/true button_return credits/button class_return"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_exit sub options/button class_exit sub options"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_return audio video/button class_return audio video"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_audio video/button class_audio video"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_language/button class_language"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_controller/button class_controller"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_return options controller/button class_return options controller"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language return/button class_language return"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_mouse enable/button class_mouse enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_controller enable/button class_controller enable"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_windowed/button class_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen/button class_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_rebinding/button class_rebinding"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_return keybinding/button class_return keybinding"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_reset keybinds/button class_reset keybinds"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_Discord/true button_discord/button class_discord"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_colorblind mode/button class_colorblind mode"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_toggle music/button class_toggle music"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_multiplayer/button class_multiplayer"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_greyscale death/button class_greyscale death"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_Github/true button/button class_github"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_online service/button class_online service"), NodePath("../../Camera/dialogue UI/menu ui/options_online service/true button_return options online service/button class_return options controller")]
+buttons_options = [NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_increase/button class_increase"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_decrease/button class_decrease"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen/button class_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_windowed/button class_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_controller enable/button class_controller enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_mouse enable/button class_mouse enable"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_colorblind mode/button class_colorblind mode"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_toggle music/button class_toggle music"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_greyscale death/button class_greyscale death"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_online service/button class_online service")]
+screens = [NodePath("../../Camera/dialogue UI/menu ui/main screen"), NodePath("../../Camera/dialogue UI/menu ui/sub options select"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video"), NodePath("../../Camera/dialogue UI/menu ui/credits"), NodePath("../../Camera/dialogue UI/menu ui/language"), NodePath("../../Camera/dialogue UI/menu ui/options_controller"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding"), NodePath("../../Camera/dialogue UI/menu ui/options_online service")]
 parent_main = NodePath("../../Camera/dialogue UI/menu ui/main screen")
 parent_creds = NodePath("../../Camera/dialogue UI/menu ui/credits")
 parent_suboptions = NodePath("../../Camera/dialogue UI/menu ui/sub options select")
 parent_audiovideo = NodePath("../../Camera/dialogue UI/menu ui/options_audio video")
 parent_language = NodePath("../../Camera/dialogue UI/menu ui/language")
 parent_controller = NodePath("../../Camera/dialogue UI/menu ui/options_controller")
+parent_online_service = NodePath("../../Camera/dialogue UI/menu ui/options_online service")
 parent_rebinding = NodePath("../../Camera/dialogue UI/menu ui/controller rebinding")
 title = NodePath("../../title")
 waterfalls = [NodePath("../../shell waterfall2/AnimationPlayer"), NodePath("../../shell waterfall4/AnimationPlayer")]
@@ -884,12 +887,14 @@ controller = NodePath("../controller manager")
 mouseblocker = NodePath("../../Camera/dialogue UI/menu ui/mouse blocker")
 anim_creds = NodePath("../../Camera/dialogue UI/animator_credits")
 version = NodePath("../../Camera/dialogue UI/menu ui/main screen/version")
+menu = NodePath("../..")
 firstFocus_main = NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_start")
 firstFocus_subOptions = NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_audio video")
-firstFocus_credits = NodePath("../../Camera/dialogue UI/menu ui/credits/true button_return credits")
+firstFocus_credits = NodePath("../../Camera/dialogue UI/menu ui/credits/Control2/true button_return credits")
 firstFocus_audioVideo = NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_return audio video")
 firstFocus_language = NodePath("../../Camera/dialogue UI/menu ui/language/true button_language english")
 firstFocus_controller = NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_return options controller")
+firstFocus_onlineService = NodePath("../../Camera/dialogue UI/menu ui/options_online service/true button_return options online service")
 firstFocus_rebinding = NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_return keybinding")
 
 [node name="temp death screen" type="Node" parent="standalone managers" unique_id=53800075 node_paths=PackedStringArray("savefile", "viewblocker", "speaker")]
@@ -915,8 +920,8 @@ script = ExtResource("11")
 [node name="controller manager" type="Node" parent="standalone managers" unique_id=1438662990 node_paths=PackedStringArray("buttons", "brackets", "cursor")]
 script = ExtResource("12")
 dynamicallySwappingDevice = true
-buttons = [NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_decrease/button class_decrease"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_increase/button class_increase"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen/button class_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_windowed/button class_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_return audio video/button class_return audio video"), NodePath("../../Camera/dialogue UI/menu ui/credits/true button_return credits/button class_return"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_exit/button class_exit"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_credits/button class_credits"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_options/button class_sub options"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_start/button class_start"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_audio video/button class_audio video"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_language/button class_language"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_controller/button class_controller"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_exit sub options/button class_exit sub options"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_controller enable/button class_controller enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_mouse enable/button class_mouse enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_return options controller/button class_return options controller"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language return/button class_language return"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language english/button class_language english"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav up/button class_rebind nav up"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav down/button class_rebind nav down"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav left/button class_rebind nav left"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav right/button class_rebind nav right"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind select/button class_rebind select"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind restart/button class_rebind restart"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind back/button class_rebind back"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind exit/button class_rebind exit"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_reset keybinds/button class_reset keybinds"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_return keybinding/button class_return keybinding"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language english/button class_language english"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language estonia/button class_language estonia"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language french/button class_language french"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language spanish/button class_language spanish"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language spanish (latin america)/button class_language spanish (latin america)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language italian/button class_language italian"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language german/button class_language german"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language portuguese (brazil)/button class_language portuguese (brazil)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language portuguese (portugal)/button class_language portuguese (portugal)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language chinese (simplified)/button class_language chinese (simplified)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language chinese (traditional)/button class_language chinese (traditional)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language japanese/button class_language japanese"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language korean/button class_language korean"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language russian/button class_language russian"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language ukranian/button class_language ukranian"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language turkish/button class_language turkish"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language polish/button class_language polish"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language return/button class_language return")]
-brackets = [NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_volume up"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_volume down"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/bracket selection_controller"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/bracket selection_mouse"), NodePath("../../Camera/dialogue UI/menu ui/main screen/bracket selection_discord"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_colorblind mode"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_toggle music"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_greyscale death")]
+buttons = [NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_decrease/button class_decrease"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_increase/button class_increase"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen/button class_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_windowed/button class_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/true button_return audio video/button class_return audio video"), NodePath("../../Camera/dialogue UI/menu ui/credits/Control2/true button_return credits/button class_return"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_exit/button class_exit"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_credits/button class_credits"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_options/button class_sub options"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_start/button class_start"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_audio video/button class_audio video"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_language/button class_language"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_controller/button class_controller"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_exit sub options/button class_exit sub options"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_controller enable/button class_controller enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_mouse enable/button class_mouse enable"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/true button_return options controller/button class_return options controller"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language return/button class_language return"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language english/button class_language english"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav up/button class_rebind nav up"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav down/button class_rebind nav down"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav left/button class_rebind nav left"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav right/button class_rebind nav right"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind select/button class_rebind select"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind restart/button class_rebind restart"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind back/button class_rebind back"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_rebind exit/button class_rebind exit"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_reset keybinds/button class_reset keybinds"), NodePath("../../Camera/dialogue UI/menu ui/controller rebinding/true button_return keybinding/button class_return keybinding"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language english/button class_language english"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language estonia/button class_language estonia"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language french/button class_language french"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language spanish/button class_language spanish"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language spanish (latin america)/button class_language spanish (latin america)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language italian/button class_language italian"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language german/button class_language german"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language portuguese (brazil)/button class_language portuguese (brazil)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language portuguese (portugal)/button class_language portuguese (portugal)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language chinese (simplified)/button class_language chinese (simplified)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language chinese (traditional)/button class_language chinese (traditional)"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language japanese/button class_language japanese"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language korean/button class_language korean"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language russian/button class_language russian"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language ukranian/button class_language ukranian"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language turkish/button class_language turkish"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language polish/button class_language polish"), NodePath("../../Camera/dialogue UI/menu ui/language/true button_language return/button class_language return"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_Github/true button/button class_github"), NodePath("../../Camera/dialogue UI/menu ui/sub options select/true button_online service/button class_online service")]
+brackets = [NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_volume up"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_volume down"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_windowed"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_fullscreen"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/bracket selection_controller"), NodePath("../../Camera/dialogue UI/menu ui/options_controller/bracket selection_mouse"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_Discord/bracket selection_discord"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_colorblind mode"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_toggle music"), NodePath("../../Camera/dialogue UI/menu ui/options_audio video/bracket selection_greyscale death"), NodePath("../../Camera/dialogue UI/menu ui/main screen/Control_Github/bracket selection")]
 cursor = NodePath("../cursor manager")
 exitingButtons = true
 settingVisibility = true
@@ -1109,37 +1114,49 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="bracket selection_discord" type="TextureRect" parent="Camera/dialogue UI/menu ui/main screen" unique_id=1003710945]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -85.0
-offset_top = -81.99997
-offset_right = 385.0
-offset_bottom = 370.0
-scale = Vector2(0.181524, 0.146467)
-texture = ExtResource("25")
-
-[node name="discord icon" type="TextureRect" parent="Camera/dialogue UI/menu ui/main screen" unique_id=1655257635]
+[node name="Control_Discord" type="Control" parent="Camera/dialogue UI/menu ui/main screen" unique_id=528401494]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -72.99994
-offset_top = -83.0
-offset_right = 915.0
-offset_bottom = 1073.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="bracket selection_discord" type="TextureRect" parent="Camera/dialogue UI/menu ui/main screen/Control_Discord" unique_id=1003710945]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -101.00049
+offset_top = -85.0
+offset_right = 368.9995
+offset_bottom = 367.0
+scale = Vector2(0.181524, 0.146467)
+texture = ExtResource("25")
+
+[node name="discord icon" type="TextureRect" parent="Camera/dialogue UI/menu ui/main screen/Control_Discord" unique_id=1655257635]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -89.0
+offset_top = -86.0
+offset_right = 899.0
+offset_bottom = 1070.0
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(0.0631802, 0.0631802)
 texture = ExtResource("26")
 
-[node name="true button_discord" type="Button" parent="Camera/dialogue UI/menu ui/main screen" unique_id=738082522]
+[node name="true button_discord" type="Button" parent="Camera/dialogue UI/menu ui/main screen/Control_Discord" unique_id=738082522]
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
@@ -1148,27 +1165,103 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -83.0
-offset_top = -83.0
-offset_right = -72.131165
-offset_bottom = -75.0
+offset_left = -99.0
+offset_top = -86.0
+offset_right = -88.131165
+offset_bottom = -78.0
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(7.63651, 9.17861)
-focus_neighbor_left = NodePath("../Control_MainOptions/true button_exit")
-focus_neighbor_top = NodePath("../Control_MainOptions/true button_exit")
-focus_neighbor_right = NodePath("../Control_MainOptions/true button_exit")
-focus_neighbor_bottom = NodePath("../Control_MainOptions/true button_start")
+focus_neighbor_left = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_top = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_right = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_bottom = NodePath("../../Control_MainOptions/true button_start")
 
-[node name="button class_discord" type="Node" parent="Camera/dialogue UI/menu ui/main screen/true button_discord" unique_id=406969853 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+[node name="button class_discord" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_Discord/true button_discord" unique_id=406969853 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
-cursor = NodePath("../../../../../../standalone managers/cursor manager")
+cursor = NodePath("../../../../../../../standalone managers/cursor manager")
 alias = "discord"
 isActive = true
 isDynamic = true
 ui = NodePath("../../bracket selection_discord")
-speaker_press = NodePath("../../../../../../speaker_press")
-speaker_hover = NodePath("../../../../../../speaker_hover")
+speaker_press = NodePath("../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../speaker_hover")
+playing = true
+altsound = true
+ui_opacity_inactive = 0.0
+ui_opacity_active = 1.0
+resetting = true
+
+[node name="Control_Github" type="Control" parent="Camera/dialogue UI/menu ui/main screen" unique_id=1448092844]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="bracket selection" type="TextureRect" parent="Camera/dialogue UI/menu ui/main screen/Control_Github" unique_id=898156138]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -191.0
+offset_top = -85.000244
+offset_right = 279.0
+offset_bottom = 366.99976
+scale = Vector2(0.181524, 0.146467)
+texture = ExtResource("25")
+
+[node name="icon" type="TextureRect" parent="Camera/dialogue UI/menu ui/main screen/Control_Github" unique_id=740207884]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -179.0
+offset_top = -86.0
+offset_right = 809.0
+offset_bottom = 1070.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.0631802, 0.0631802)
+texture = ExtResource("29_lqq6t")
+
+[node name="true button" type="Button" parent="Camera/dialogue UI/menu ui/main screen/Control_Github" unique_id=1502619488]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -189.0
+offset_top = -85.99994
+offset_right = -178.13116
+offset_bottom = -77.99994
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(7.63651, 9.17861)
+focus_neighbor_left = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_top = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_right = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_bottom = NodePath("../../Control_MainOptions/true button_start")
+
+[node name="button class_github" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_Github/true button" unique_id=1047271076 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../standalone managers/cursor manager")
+alias = "github"
+isActive = true
+isDynamic = true
+ui = NodePath("../../bracket selection")
+speaker_press = NodePath("../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../speaker_hover")
 playing = true
 altsound = true
 ui_opacity_inactive = 0.0
@@ -1183,9 +1276,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -20.0
-offset_top = -20.0
+offset_top = -12.0
 offset_right = 20.0
-offset_bottom = 20.0
+offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -1300,7 +1393,7 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(8.18198, 3.01166)
 focus_neighbor_top = NodePath("../true button_exit")
-focus_neighbor_right = NodePath("../../true button_discord")
+focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
 focus_neighbor_bottom = NodePath("../true button_multiplayer")
 
 [node name="button class_start" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_start" unique_id=104325548 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1327,7 +1420,7 @@ offset_right = -56.99994
 offset_bottom = 109.0
 scale = Vector2(8.18198, 3.01166)
 focus_neighbor_top = NodePath("../true button_start")
-focus_neighbor_right = NodePath("../../true button_discord")
+focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
 focus_neighbor_bottom = NodePath("../true button_options")
 
 [node name="button class_multiplayer" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_multiplayer" unique_id=740415924 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1355,7 +1448,7 @@ offset_bottom = 137.0
 grow_horizontal = 2
 scale = Vector2(11.3777, 3.01166)
 focus_neighbor_top = NodePath("../true button_multiplayer")
-focus_neighbor_right = NodePath("../../true button_discord")
+focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
 focus_neighbor_bottom = NodePath("../true button_credits")
 
 [node name="button class_sub options" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_options" unique_id=2010222811 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1384,7 +1477,7 @@ offset_bottom = 160.0
 grow_horizontal = 2
 scale = Vector2(12.8665, 2.77652)
 focus_neighbor_top = NodePath("../true button_options")
-focus_neighbor_right = NodePath("../../true button_discord")
+focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
 focus_neighbor_bottom = NodePath("../true button_exit")
 
 [node name="button class_credits" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_credits" unique_id=1537607121 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1412,7 +1505,7 @@ offset_right = -17.87994
 offset_bottom = 186.00008
 scale = Vector2(6.46671, 2.77652)
 focus_neighbor_top = NodePath("../true button_credits")
-focus_neighbor_right = NodePath("../../true button_discord")
+focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
 focus_neighbor_bottom = NodePath("../true button_start")
 
 [node name="button class_exit" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_exit" unique_id=1430264673 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1453,18 +1546,18 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -20.0
-offset_top = -20.0
+offset_top = -14.0
 offset_right = 20.0
-offset_bottom = 20.0
+offset_bottom = 26.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="button_audio video" type="Label" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=1666786648]
 layout_mode = 0
-offset_left = -459.99997
-offset_top = 84.0
-offset_right = 500.00003
-offset_bottom = 123.0
+offset_left = -459.99994
+offset_top = 71.0
+offset_right = 500.00006
+offset_bottom = 110.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -1475,10 +1568,10 @@ horizontal_alignment = 1
 
 [node name="button_language" type="Label" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=1135065153]
 layout_mode = 0
-offset_left = -459.99997
-offset_top = 109.0
-offset_right = 500.00003
-offset_bottom = 148.0
+offset_left = -459.99994
+offset_top = 96.0
+offset_right = 500.00006
+offset_bottom = 135.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -1489,10 +1582,10 @@ horizontal_alignment = 1
 
 [node name="button_controller" type="Label" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=927448432]
 layout_mode = 0
-offset_left = -459.99997
-offset_top = 134.0
-offset_right = 500.00003
-offset_bottom = 173.0
+offset_left = -459.99994
+offset_top = 121.0
+offset_right = 500.00006
+offset_bottom = 160.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -1501,12 +1594,26 @@ theme_override_font_sizes/font_size = 26
 text = "CONTROLLER"
 horizontal_alignment = 1
 
-[node name="button_return" type="Label" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=1076673211]
+[node name="button_online service" type="Label" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=767573919]
 layout_mode = 0
 offset_left = -459.99997
-offset_top = 159.0
+offset_top = 146.0
 offset_right = 500.00003
-offset_bottom = 198.0
+offset_bottom = 185.0
+scale = Vector2(0.760005, 1)
+pivot_offset = Vector2(480, 0)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "ONLINE SERVICE"
+horizontal_alignment = 1
+
+[node name="button_return" type="Label" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=1076673211]
+layout_mode = 0
+offset_left = -459.99994
+offset_top = 172.0
+offset_right = 500.00006
+offset_bottom = 211.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(480, 0)
 focus_neighbor_top = NodePath("../button_controller")
@@ -1521,9 +1628,9 @@ modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = -62.0
-offset_top = 89.0
+offset_top = 76.0
 offset_right = -54.0
-offset_bottom = 97.0
+offset_bottom = 84.0
 scale = Vector2(21.742, 3.01166)
 focus_neighbor_top = NodePath("../true button_exit sub options")
 focus_neighbor_bottom = NodePath("../true button_language")
@@ -1545,9 +1652,9 @@ modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = -38.0
-offset_top = 115.99994
+offset_top = 102.99994
 offset_right = -30.0
-offset_bottom = 123.99994
+offset_bottom = 110.99994
 scale = Vector2(14.8577, 3.01166)
 focus_neighbor_top = NodePath("../true button_audio video")
 focus_neighbor_bottom = NodePath("../true button_controller")
@@ -1569,9 +1676,9 @@ modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = -50.99994
-offset_top = 139.0
+offset_top = 128.0
 offset_right = -42.99994
-offset_bottom = 147.0
+offset_bottom = 136.0
 scale = Vector2(17.9065, 2.77652)
 focus_neighbor_top = NodePath("../true button_language")
 focus_neighbor_bottom = NodePath("../true button_exit sub options")
@@ -1588,14 +1695,38 @@ speaker_hover = NodePath("../../../../../../speaker_hover")
 playing = true
 ui_opacity_active = 0.5
 
+[node name="true button_online service" type="Button" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=1854580287]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = -80.0
+offset_top = 154.0
+offset_right = -68.66333
+offset_bottom = 162.0
+scale = Vector2(17.9065, 2.77652)
+focus_neighbor_top = NodePath("../true button_language")
+focus_neighbor_bottom = NodePath("../true button_exit sub options")
+
+[node name="button class_online service" type="Node" parent="Camera/dialogue UI/menu ui/sub options select/true button_online service" unique_id=652275881 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../standalone managers/cursor manager")
+alias = "online service"
+isActive = true
+isDynamic = true
+ui = NodePath("../../button_online service")
+speaker_press = NodePath("../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../speaker_hover")
+playing = true
+ui_opacity_active = 0.5
+
 [node name="true button_exit sub options" type="Button" parent="Camera/dialogue UI/menu ui/sub options select" unique_id=641740606]
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = -23.0
-offset_top = 166.0
+offset_top = 179.0
 offset_right = -15.0
-offset_bottom = 174.0
+offset_bottom = 187.0
 scale = Vector2(11.9867, 2.77652)
 focus_neighbor_top = NodePath("../true button_controller")
 focus_neighbor_bottom = NodePath("../true button_audio video")
@@ -1614,16 +1745,21 @@ ui_opacity_active = 0.5
 
 [node name="options_audio video" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=200051534]
 visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="option vinyl" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=285690823]
-layout_mode = 0
-offset_left = 441.0
-offset_top = 11.0
-offset_right = 825.0
-offset_bottom = 395.0
+layout_mode = 1
+offset_left = -39.0
+offset_top = -261.0
+offset_right = 345.0
+offset_bottom = 123.0
 scale = Vector2(0.43926, 0.43926)
 pivot_offset = Vector2(192, 192)
 texture = ExtResource("29")
@@ -1635,10 +1771,10 @@ autoplay = &"vinyl rotate loop"
 [node name="option monitor_windowed" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1194500488]
 texture_filter = 3
 layout_mode = 0
-offset_left = 324.0
-offset_top = 297.0
-offset_right = 1521.0
-offset_bottom = 917.0
+offset_left = -156.0
+offset_top = 25.0
+offset_right = 1041.0
+offset_bottom = 645.0
 scale = Vector2(0.124876, 0.224402)
 mouse_filter = 2
 texture = ExtResource("30")
@@ -1646,10 +1782,10 @@ texture = ExtResource("30")
 [node name="option monitor_fullscreen" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1329995402]
 texture_filter = 3
 layout_mode = 0
-offset_left = 500.0
-offset_top = 308.0
-offset_right = 1697.0
-offset_bottom = 928.0
+offset_left = 19.999512
+offset_top = 36.0
+offset_right = 1216.9995
+offset_bottom = 656.0
 scale = Vector2(0.107972, 0.202376)
 mouse_filter = 2
 texture = ExtResource("31")
@@ -1657,10 +1793,10 @@ texture = ExtResource("31")
 [node name="option master vol" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1566704913]
 texture_filter = 3
 layout_mode = 0
-offset_left = 322.0
-offset_top = 123.0
-offset_right = 1519.0
-offset_bottom = 743.0
+offset_left = -158.0
+offset_top = -149.0
+offset_right = 1039.0
+offset_bottom = 471.0
 scale = Vector2(0.261866, 0.261866)
 mouse_filter = 2
 texture = ExtResource("32")
@@ -1686,80 +1822,79 @@ autoplay = &"flicker ui"
 
 [node name="bracket selection_volume up" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1049641320]
 layout_mode = 0
-offset_left = 566.0
-offset_top = 151.0
-offset_right = 728.0
-offset_bottom = 294.0
+offset_left = 86.0
+offset_top = -121.0
+offset_right = 248.0
+offset_bottom = 22.0
 scale = Vector2(0.527673, 0.456966)
 mouse_filter = 2
 texture = ExtResource("34")
 
 [node name="bracket selection_colorblind mode" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=769892730]
 layout_mode = 0
-offset_left = 550.0
-offset_top = 55.0
-offset_right = 712.0
-offset_bottom = 198.0
+offset_left = 70.0
+offset_top = -217.0
+offset_right = 232.0
+offset_bottom = -74.0
 scale = Vector2(0.311253, 0.235922)
 mouse_filter = 2
 texture = ExtResource("34")
 
 [node name="bracket selection_greyscale death" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=304300624]
 layout_mode = 0
-offset_left = 550.0
-offset_top = 82.0
-offset_right = 712.0
-offset_bottom = 225.0
+offset_left = 70.0
+offset_top = -190.0
+offset_right = 232.0
+offset_bottom = -47.0
 scale = Vector2(0.311253, 0.235922)
 mouse_filter = 2
 texture = ExtResource("34")
 
 [node name="bracket selection_volume down" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=2008083210]
 layout_mode = 0
-offset_left = 566.0
-offset_top = 193.0
-offset_right = 728.0
-offset_bottom = 336.0
+offset_left = 86.0
+offset_top = -79.0
+offset_right = 248.0
+offset_bottom = 64.0
 scale = Vector2(0.527673, 0.456966)
 mouse_filter = 2
 texture = ExtResource("34")
 
 [node name="bracket selection_toggle music" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=848450773]
 layout_mode = 0
-offset_left = 566.0
-offset_top = 233.0
-offset_right = 728.0
-offset_bottom = 376.0
+offset_left = 86.0
+offset_top = -39.0
+offset_right = 248.0
+offset_bottom = 104.0
 scale = Vector2(0.527673, 0.456966)
 mouse_filter = 2
 texture = ExtResource("34")
 
 [node name="bracket selection_windowed" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1487009110]
 layout_mode = 0
-offset_left = 314.0
-offset_top = 291.0
-offset_right = 476.0
-offset_bottom = 434.0
+offset_left = -166.0
+offset_top = 19.0
+offset_right = -4.0
+offset_bottom = 162.0
 scale = Vector2(1.03172, 1)
 mouse_filter = 2
 texture = ExtResource("35")
 
 [node name="bracket selection_fullscreen" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1249573472]
 layout_mode = 0
-offset_left = 480.0
-offset_top = 291.0
-offset_right = 642.0
-offset_bottom = 434.0
+offset_top = 19.0
+offset_right = 162.0
+offset_bottom = 162.0
 scale = Vector2(1.03172, 1)
 mouse_filter = 2
 texture = ExtResource("35")
 
 [node name="button_exit options" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=482742128]
 layout_mode = 0
-offset_left = -170.0
-offset_top = 453.0
-offset_right = 1130.0
-offset_bottom = 492.0
+offset_left = -650.00006
+offset_top = 181.0
+offset_right = 649.99994
+offset_bottom = 220.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(650, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -1770,10 +1905,10 @@ horizontal_alignment = 1
 
 [node name="text_color blind mode" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=442090006]
 layout_mode = 0
-offset_left = -98.295
-offset_top = 58.0
-offset_right = 551.705
-offset_bottom = 97.0
+offset_left = -578.2949
+offset_top = -213.99997
+offset_right = 71.70508
+offset_bottom = -174.99997
 scale = Vector2(0.574333, 0.755696)
 pivot_offset = Vector2(650, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -1784,10 +1919,10 @@ horizontal_alignment = 2
 
 [node name="text_greyscale death" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1942839242]
 layout_mode = 0
-offset_left = -98.295
-offset_top = 83.0
-offset_right = 551.705
-offset_bottom = 122.0
+offset_left = -578.2949
+offset_top = -188.99997
+offset_right = 71.70508
+offset_bottom = -149.99997
 scale = Vector2(0.574333, 0.755696)
 pivot_offset = Vector2(650, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -1798,10 +1933,10 @@ horizontal_alignment = 2
 
 [node name="checkmark_colorblind" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1381457796]
 layout_mode = 0
-offset_left = 560.0
-offset_top = 58.0
-offset_right = 626.0
-offset_bottom = 122.0
+offset_left = 80.0
+offset_top = -214.0
+offset_right = 146.0
+offset_bottom = -150.0
 scale = Vector2(0.372295, 0.372295)
 texture = ExtResource("36")
 
@@ -1813,10 +1948,10 @@ checkmark_ianctive = ExtResource("36")
 
 [node name="checkmark_greyscale" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1639530845]
 layout_mode = 0
-offset_left = 560.0
-offset_top = 85.0
-offset_right = 626.0
-offset_bottom = 149.0
+offset_left = 80.0
+offset_top = -187.0
+offset_right = 146.0
+offset_bottom = -123.0
 scale = Vector2(0.372295, 0.372295)
 texture = ExtResource("36")
 
@@ -1830,10 +1965,10 @@ checkmark_ianctive = ExtResource("36")
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 335.0
-offset_top = 308.0
-offset_right = 343.0
-offset_bottom = 316.0
+offset_left = -145.0
+offset_top = 36.0
+offset_right = -137.0
+offset_bottom = 44.0
 scale = Vector2(15.6344, 14.8702)
 focus_neighbor_top = NodePath("../true button_toggle music")
 focus_neighbor_right = NodePath("../true button_fullscreen")
@@ -1858,10 +1993,10 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 561.0
-offset_top = 59.0
-offset_right = 569.0
-offset_bottom = 67.0
+offset_left = 81.0
+offset_top = -212.99998
+offset_right = 89.0
+offset_bottom = -204.99998
 scale = Vector2(2.80992, 2.8106)
 focus_neighbor_bottom = NodePath("../true button_greyscale death")
 
@@ -1884,10 +2019,10 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 561.0
-offset_top = 85.0
-offset_right = 569.0
-offset_bottom = 93.0
+offset_left = 81.0
+offset_top = -186.99998
+offset_right = 89.0
+offset_bottom = -178.99998
 scale = Vector2(2.80992, 2.8106)
 focus_neighbor_top = NodePath("../true button_colorblind mode")
 focus_neighbor_bottom = NodePath("../true button_increase")
@@ -1911,10 +2046,10 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 413.0
-offset_top = 459.0
-offset_right = 421.0
-offset_bottom = 467.0
+offset_left = -67.0
+offset_top = 187.0
+offset_right = -59.0
+offset_bottom = 195.0
 scale = Vector2(17.5539, 2.80719)
 
 [node name="button class_return audio video" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/true button_return audio video" unique_id=2029580661 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1933,10 +2068,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 508.0
-offset_top = 311.0
-offset_right = 516.0
-offset_bottom = 319.0
+offset_left = 28.00003
+offset_top = 38.999996
+offset_right = 36.00003
+offset_bottom = 46.999996
 scale = Vector2(14.2114, 14.7366)
 focus_neighbor_left = NodePath("../true button_windowed")
 focus_neighbor_top = NodePath("../true button_toggle music")
@@ -1961,10 +2096,10 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 580.0
-offset_top = 163.0
-offset_right = 588.0
-offset_bottom = 171.0
+offset_left = 100.00003
+offset_top = -108.99997
+offset_right = 108.00003
+offset_bottom = -100.99997
 scale = Vector2(5.54352, 3.86788)
 focus_neighbor_top = NodePath("../true button_greyscale death")
 focus_neighbor_bottom = NodePath("../true button_decrease")
@@ -1987,10 +2122,10 @@ ui_opacity_active = 1.0
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 579.0
-offset_top = 204.0
-offset_right = 587.0
-offset_bottom = 212.0
+offset_left = 99.00003
+offset_top = -68.00001
+offset_right = 107.00003
+offset_bottom = -60.000008
 scale = Vector2(5.79536, 4.22118)
 focus_neighbor_top = NodePath("../true button_increase")
 focus_neighbor_bottom = NodePath("../true button_toggle music")
@@ -2013,10 +2148,10 @@ ui_opacity_active = 1.0
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 579.0
-offset_top = 244.0
-offset_right = 587.0
-offset_bottom = 252.0
+offset_left = 99.00003
+offset_top = -28.0
+offset_right = 107.00003
+offset_bottom = -20.0
 scale = Vector2(5.79536, 4.22118)
 focus_neighbor_top = NodePath("../true button_decrease")
 focus_neighbor_bottom = NodePath("../true button_fullscreen")
@@ -2037,26 +2172,35 @@ ui_opacity_active = 1.0
 
 [node name="options_controller" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=1875652090]
 visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="device controller" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_controller" unique_id=2099096756]
 layout_mode = 0
-offset_left = 326.0
-offset_top = 186.0
-offset_right = 751.0
-offset_bottom = 611.0
+offset_left = -133.99988
+offset_top = -63.99994
+offset_right = 291.00012
+offset_bottom = 361.00006
 scale = Vector2(0.343956, 0.343956)
 mouse_filter = 2
 texture = ExtResource("39")
 
 [node name="device mouse" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_controller" unique_id=692607977]
 layout_mode = 0
-offset_left = 490.0
-offset_top = 186.0
-offset_right = 915.0
-offset_bottom = 611.0
+offset_left = 30.000122
+offset_top = -63.99994
+offset_right = 455.00012
+offset_bottom = 361.00006
 scale = Vector2(0.343956, 0.343956)
 mouse_filter = 2
 texture = ExtResource("40")
@@ -2087,30 +2231,30 @@ texture = ExtResource("31")
 
 [node name="bracket selection_controller" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_controller" unique_id=733114363]
 layout_mode = 0
-offset_left = 314.0
-offset_top = 185.0
-offset_right = 476.0
-offset_bottom = 328.0
+offset_left = -146.00003
+offset_top = -65.0
+offset_right = 15.9999695
+offset_bottom = 78.0
 scale = Vector2(1.03172, 1)
 mouse_filter = 2
 texture = ExtResource("35")
 
 [node name="bracket selection_mouse" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_controller" unique_id=668029000]
 layout_mode = 0
-offset_left = 480.0
-offset_top = 185.0
-offset_right = 642.0
-offset_bottom = 328.0
+offset_left = 20.0
+offset_top = -65.0
+offset_right = 182.0
+offset_bottom = 78.0
 scale = Vector2(1.03172, 1)
 mouse_filter = 2
 texture = ExtResource("35")
 
 [node name="button exit options controller" type="Label" parent="Camera/dialogue UI/menu ui/options_controller" unique_id=885058036]
 layout_mode = 0
-offset_left = -170.0
-offset_top = 409.0
-offset_right = 1130.0
-offset_bottom = 444.0
+offset_left = -630.0
+offset_top = 159.0
+offset_right = 670.0
+offset_bottom = 198.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(650, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2121,10 +2265,10 @@ horizontal_alignment = 1
 
 [node name="rebind controls" type="Label" parent="Camera/dialogue UI/menu ui/options_controller" unique_id=543838227]
 layout_mode = 0
-offset_left = -170.0
-offset_top = 377.0
-offset_right = 1130.0
-offset_bottom = 412.0
+offset_left = -630.0
+offset_top = 127.0
+offset_right = 670.0
+offset_bottom = 166.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(650, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2135,10 +2279,10 @@ horizontal_alignment = 1
 
 [node name="select device" type="Label" parent="Camera/dialogue UI/menu ui/options_controller" unique_id=476400516]
 layout_mode = 0
-offset_left = -170.0
-offset_top = 147.0
-offset_right = 1130.0
-offset_bottom = 182.0
+offset_left = -630.0
+offset_top = -103.0
+offset_right = 670.0
+offset_bottom = -64.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(650, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2151,10 +2295,10 @@ horizontal_alignment = 1
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 328.0
-offset_top = 197.0
-offset_right = 336.0
-offset_bottom = 205.0
+offset_left = -132.0
+offset_top = -53.0
+offset_right = -124.0
+offset_bottom = -45.0
 scale = Vector2(17.5049, 15.1842)
 focus_neighbor_right = NodePath("../true button_mouse enable")
 focus_neighbor_bottom = NodePath("../true button_rebinding")
@@ -2178,10 +2322,10 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 496.0
-offset_top = 198.0
-offset_right = 504.0
-offset_bottom = 206.0
+offset_left = 36.000034
+offset_top = -51.99997
+offset_right = 44.000034
+offset_bottom = -43.99997
 scale = Vector2(17.2228, 15.063)
 focus_neighbor_left = NodePath("../true button_controller enable")
 focus_neighbor_bottom = NodePath("../true button_rebinding")
@@ -2205,10 +2349,10 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 413.0
-offset_top = 415.0
-offset_right = 421.0
-offset_bottom = 423.0
+offset_left = -47.0
+offset_top = 164.99994
+offset_right = -39.0
+offset_bottom = 172.99994
 scale = Vector2(17.5539, 2.80719)
 focus_neighbor_top = NodePath("../true button_rebinding")
 
@@ -2228,10 +2372,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 382.0
-offset_right = 391.0
-offset_bottom = 390.0
+offset_left = -77.0
+offset_top = 132.0
+offset_right = -69.0
+offset_bottom = 140.0
 scale = Vector2(27.0265, 3.33822)
 focus_neighbor_top = NodePath("../true button_mouse enable")
 focus_neighbor_bottom = NodePath("../true button_return options controller")
@@ -2248,33 +2392,287 @@ speaker_hover = NodePath("../../../../../../speaker_hover")
 playing = true
 ui_opacity_active = 0.5
 
+[node name="options_online service" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=89946228]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="Camera/dialogue UI/menu ui/options_online service" unique_id=2072604077]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control" unique_id=1486283351]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -269.0
+offset_top = -130.0
+offset_right = 175.73395
+offset_bottom = -91.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.760005, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "SERVER ADDRESS"
+
+[node name="Label_ServerAddress" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label" unique_id=316392821]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -121.684265
+offset_top = -22.5
+offset_right = 447.05087
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 16
+text = "ws://127.0.0.1:14122"
+horizontal_alignment = 2
+
+[node name="Label" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label/Label_ServerAddress" unique_id=819919984]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -385.8416
+offset_top = -3.0
+offset_bottom = 21.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 16
+text = "PASTE FROM CLIPBOARD"
+horizontal_alignment = 2
+
+[node name="true button" type="Button" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label/Label_ServerAddress/Label" unique_id=1273630153]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = -293.4191
+offset_top = -20.000002
+offset_right = -253.99191
+offset_bottom = -5.2316685
+scale = Vector2(17.5539, 2.80719)
+metadata/_edit_lock_ = true
+
+[node name="button class_pause server address" type="Node" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label/Label_ServerAddress/Label/true button" unique_id=673403222 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../../../../standalone managers/cursor manager")
+alias = "pause server address"
+isActive = true
+isDynamic = true
+ui = NodePath("../..")
+speaker_press = NodePath("../../../../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../../../../speaker_hover")
+playing = true
+ui_opacity_active = 0.5
+
+[node name="Label2" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control" unique_id=835829349]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -269.5
+offset_top = -82.0
+offset_right = 206.15479
+offset_bottom = -43.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.760005, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "CONNECTION STATUS"
+
+[node name="Label_ConnectionStatus" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label2" unique_id=493015829]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -136.15784
+offset_top = -22.5
+offset_right = 432.57727
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 16
+text = "DISCONNECTED"
+horizontal_alignment = 2
+
+[node name="Label" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label2/Label_ConnectionStatus" unique_id=1493809370]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -385.8416
+offset_top = -3.0
+offset_bottom = 21.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 16
+text = "RECONNECT"
+horizontal_alignment = 2
+
+[node name="true button" type="Button" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label2/Label_ConnectionStatus/Label" unique_id=1051912920]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = -293.4191
+offset_top = -20.000002
+offset_right = -253.99191
+offset_bottom = -5.2316685
+scale = Vector2(17.5539, 2.80719)
+metadata/_edit_lock_ = true
+
+[node name="button class_reconnect_to_ws" type="Node" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label2/Label_ConnectionStatus/Label/true button" unique_id=721542356 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../../../../standalone managers/cursor manager")
+alias = "reconnect_to_ws"
+isActive = true
+isDynamic = true
+ui = NodePath("../..")
+speaker_press = NodePath("../../../../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../../../../speaker_hover")
+playing = true
+ui_opacity_active = 0.5
+
+[node name="button exit option online service" type="Label" parent="Camera/dialogue UI/menu ui/options_online service" unique_id=1315088221]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -650.0
+offset_top = 155.0
+offset_right = 650.0
+offset_bottom = 194.0
+scale = Vector2(0.760005, 1)
+pivot_offset = Vector2(650, 0)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "RETURN"
+horizontal_alignment = 1
+
+[node name="true button_return options online service" type="Button" parent="Camera/dialogue UI/menu ui/options_online service" unique_id=297943888]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = 164.00006
+offset_right = -62.0
+offset_bottom = 172.00006
+scale = Vector2(17.5539, 2.80719)
+
+[node name="button class_return options controller" type="Node" parent="Camera/dialogue UI/menu ui/options_online service/true button_return options online service" unique_id=1984122227 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../standalone managers/cursor manager")
+alias = "return"
+isActive = true
+isDynamic = true
+ui = NodePath("../../button exit option online service")
+speaker_press = NodePath("../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../speaker_hover")
+playing = true
+ui_opacity_active = 0.5
+
 [node name="credits" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=208930155]
 visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="credits backdrop" type="ColorRect" parent="Camera/dialogue UI/menu ui/credits" unique_id=2039055590]
-layout_mode = 0
-offset_left = -19.0
-offset_top = -13.0
-offset_right = 21.0
-offset_bottom = 27.0
-scale = Vector2(24.8091, 14.3936)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 0)
 
-[node name="credits move parent" type="Control" parent="Camera/dialogue UI/menu ui/credits" unique_id=1268985641]
+[node name="Control" type="Control" parent="Camera/dialogue UI/menu ui/credits" unique_id=838273885]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = -440.0
+offset_bottom = -230.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="credits move parent" type="Control" parent="Camera/dialogue UI/menu ui/credits/Control" unique_id=1268985641]
 anchors_preset = 0
 offset_top = 538.0
 offset_right = 40.0
-offset_bottom = 578.009
+offset_bottom = 578.0088
 
-[node name="credits_main credits" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=253198343]
+[node name="1503dev" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=29356196]
+layout_mode = 1
+offset_left = 276.0
+offset_top = -42.0
+offset_right = 1102.0
+offset_bottom = 147.64038
+scale = Vector2(0.497474, 0.506221)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = -2
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "Maintained by 1503Dev
+https://github.com/1503Dev/OpenBuckshotRoulette"
+horizontal_alignment = 1
+
+[node name="credits_main credits" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=253198343]
 layout_mode = 0
 offset_left = -476.0
-offset_top = -51.0
+offset_top = 13.0
 offset_right = 1444.0
-offset_bottom = 1080.61
+offset_bottom = 1144.61
 scale = Vector2(0.497474, 0.506221)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2285,7 +2683,7 @@ theme_override_font_sizes/font_size = 26
 text = "MAIN CREDITS"
 horizontal_alignment = 1
 
-[node name="- - -" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1517950861]
+[node name="- - -" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1517950861]
 visible = false
 layout_mode = 0
 offset_left = -481.0
@@ -2302,22 +2700,22 @@ theme_override_font_sizes/font_size = 26
 text = "- - -"
 horizontal_alignment = 1
 
-[node name="critical reflex_logo" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1289251992]
+[node name="critical reflex_logo" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1289251992]
 layout_mode = 0
 offset_left = 2.0
-offset_top = -169.543
+offset_top = -97.54297
 offset_right = 1026.0
-offset_bottom = 854.457
+offset_bottom = 926.45703
 scale = Vector2(0.188452, 0.188452)
 pivot_offset = Vector2(480, 480)
 texture = ExtResource("41")
 
-[node name="critical reflex middle" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1521945020]
+[node name="critical reflex middle" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1521945020]
 layout_mode = 0
-offset_left = -481.0
-offset_top = 340.0
+offset_left = -481.00006
+offset_top = 412.0
 offset_right = 1439.0
-offset_bottom = 1010.0
+offset_bottom = 2299.0
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2350,12 +2748,12 @@ Valentin Moldovanov
 "
 horizontal_alignment = 1
 
-[node name="critical reflex left" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=2114501680]
+[node name="critical reflex left" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=2114501680]
 layout_mode = 0
 offset_left = -1121.0
-offset_top = 340.211
+offset_top = 412.211
 offset_right = 799.0
-offset_bottom = 1471.82
+offset_bottom = 2299.211
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2388,12 +2786,12 @@ Fedor Solovyov
 "
 horizontal_alignment = 2
 
-[node name="critical reflex right" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1365133734]
+[node name="critical reflex right" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1365133734]
 layout_mode = 0
 offset_left = 169.0
-offset_top = 340.211
+offset_top = 412.211
 offset_right = 2089.0
-offset_bottom = 1471.82
+offset_bottom = 2047.2109
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2422,12 +2820,12 @@ Vanya Rakcheev
 Vladislava Balashova
 "
 
-[node name="- - -2" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=517577552]
+[node name="- - -2" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=517577552]
 layout_mode = 0
-offset_left = -480.818
-offset_top = 725.0
-offset_right = 1439.18
-offset_bottom = 825.0
+offset_left = -480.81793
+offset_top = 797.0
+offset_right = 1439.1802
+offset_bottom = 897.0
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2438,12 +2836,12 @@ theme_override_font_sizes/font_size = 26
 text = "- - -"
 horizontal_alignment = 1
 
-[node name="special thanks" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1959835248]
+[node name="special thanks" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1959835248]
 layout_mode = 0
-offset_left = -480.818
-offset_top = 765.0
-offset_right = 1439.18
-offset_bottom = 1500.0
+offset_left = -480.81793
+offset_top = 1389.0
+offset_right = 1439.1802
+offset_bottom = 2124.0
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2454,22 +2852,22 @@ theme_override_font_sizes/font_size = 26
 text = "ATTRIBUTION SPECIAL THANKS"
 horizontal_alignment = 1
 
-[node name="logo_sandbox strategies" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1579662300]
+[node name="logo_sandbox strategies" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1579662300]
 layout_mode = 0
 offset_left = -242.818
-offset_top = 492.996
-offset_right = 1197.18
-offset_bottom = 1933.0
+offset_top = 1204.996
+offset_right = 1197.182
+offset_bottom = 2645.0
 scale = Vector2(0.213883, 0.213883)
 pivot_offset = Vector2(720, 720)
 texture = ExtResource("42")
 
-[node name="sandbox strategies" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1183969303]
+[node name="sandbox strategies" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1183969303]
 layout_mode = 0
-offset_left = -480.818
-offset_top = 1282.99
-offset_right = 1439.18
-offset_bottom = 1581.0
+offset_left = -480.81793
+offset_top = 1994.99
+offset_right = 1439.1802
+offset_bottom = 2705.99
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2488,22 +2886,22 @@ John Mak
 "
 horizontal_alignment = 1
 
-[node name="logo_arcus key" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1514328489]
+[node name="logo_arcus key" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1514328489]
 layout_mode = 0
-offset_left = 2.1824
-offset_top = 999.996
+offset_left = 2.182373
+offset_top = 1895.9958
 offset_right = 1026.18
-offset_bottom = 2024.0
+offset_bottom = 2920.0
 scale = Vector2(0.278035, 0.278035)
 pivot_offset = Vector2(480, 480)
 texture = ExtResource("43")
 
-[node name="arcus key" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1400519509]
+[node name="arcus key" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1400519509]
 layout_mode = 0
-offset_left = -480.818
-offset_top = 1545.0
-offset_right = 1439.18
-offset_bottom = 1720.0
+offset_left = -480.81793
+offset_top = 2440.9998
+offset_right = 1439.1802
+offset_bottom = 2900.0
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2519,22 +2917,22 @@ Cindy Cai
 "
 horizontal_alignment = 1
 
-[node name="logo_freesound" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=1371034218]
+[node name="logo_freesound" type="TextureRect" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=1371034218]
 layout_mode = 0
-offset_left = 2.1824
-offset_top = 1241.0
-offset_right = 1026.18
-offset_bottom = 2265.0
+offset_left = 2.182373
+offset_top = 2233.0
+offset_right = 1026.1824
+offset_bottom = 3257.0
 scale = Vector2(0.278035, 0.278035)
 pivot_offset = Vector2(480, 480)
 texture = ExtResource("44")
 
-[node name="credits_sound attribution" type="Label" parent="Camera/dialogue UI/menu ui/credits/credits move parent" unique_id=2016307235]
+[node name="credits_sound attribution" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control/credits move parent" unique_id=2016307235]
 layout_mode = 0
-offset_left = -480.818
-offset_top = 1775.0
-offset_right = 1439.18
-offset_bottom = 3105.0
+offset_left = -480.81793
+offset_top = 2783.0
+offset_right = 1439.1802
+offset_bottom = 5930.0
 scale = Vector2(0.49394, 0.502625)
 pivot_offset = Vector2(960, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2582,13 +2980,24 @@ text = "\"Cyber Tickle 4.wav\" - DiscordantScraps
 \"squeaky scrape 12\" - department64"
 horizontal_alignment = 1
 
-[node name="button_exit credits" type="Label" parent="Camera/dialogue UI/menu ui/credits" unique_id=1864617201]
-visible = false
+[node name="Control2" type="Control" parent="Camera/dialogue UI/menu ui/credits" unique_id=1092043322]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -196.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="button_exit credits" type="Label" parent="Camera/dialogue UI/menu ui/credits/Control2" unique_id=1864617201]
 layout_mode = 0
-offset_left = 266.0
-offset_top = 519.0
-offset_right = 1226.0
-offset_bottom = 558.0
+offset_left = -530.31726
+offset_top = 15.0
+offset_right = 429.68274
+offset_bottom = 54.0
 scale = Vector2(0.436839, 0.574784)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2597,40 +3006,49 @@ theme_override_font_sizes/font_size = 26
 text = "RETURN"
 horizontal_alignment = 2
 
-[node name="true button_return credits" type="Button" parent="Camera/dialogue UI/menu ui/credits" unique_id=1212415047]
-visible = false
+[node name="true button_return credits" type="Button" parent="Camera/dialogue UI/menu ui/credits/Control2" unique_id=1212415047]
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 829.0
-offset_top = 509.0
-offset_right = 837.0
-offset_bottom = 517.0
+offset_left = 2.6827545
+offset_top = 11.999986
+offset_right = 14.8714905
+offset_bottom = 21.156921
 scale = Vector2(15.8343, 3.05779)
 
-[node name="button class_return" type="Node" parent="Camera/dialogue UI/menu ui/credits/true button_return credits" unique_id=706564343 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+[node name="button class_return" type="Node" parent="Camera/dialogue UI/menu ui/credits/Control2/true button_return credits" unique_id=706564343 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
-cursor = NodePath("../../../../../../standalone managers/cursor manager")
+cursor = NodePath("../../../../../../../standalone managers/cursor manager")
 alias = "return"
 isActive = true
 isDynamic = true
 ui = NodePath("../../button_exit credits")
-speaker_press = NodePath("../../../../../../speaker_press")
-speaker_hover = NodePath("../../../../../../speaker_hover")
+speaker_press = NodePath("../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../speaker_hover")
 playing = true
 ui_opacity_active = 0.5
 
 [node name="language" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=1206428750]
 visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="button_language english" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=279403853]
 layout_mode = 0
-offset_top = 20.0
-offset_right = 960.0
-offset_bottom = 59.0
+offset_left = -460.0
+offset_top = -228.0
+offset_right = 500.0
+offset_bottom = -189.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2641,9 +3059,10 @@ horizontal_alignment = 1
 
 [node name="button_language estonia" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=2038540511]
 layout_mode = 0
-offset_top = 46.0
-offset_right = 960.0
-offset_bottom = 85.0
+offset_left = -460.0
+offset_top = -201.99994
+offset_right = 500.0
+offset_bottom = -162.99994
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2654,9 +3073,10 @@ horizontal_alignment = 1
 
 [node name="button_language french" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=1043584019]
 layout_mode = 0
-offset_top = 72.0
-offset_right = 960.0
-offset_bottom = 111.0
+offset_left = -460.0
+offset_top = -176.0
+offset_right = 500.0
+offset_bottom = -137.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2667,9 +3087,10 @@ horizontal_alignment = 1
 
 [node name="button_language spanish" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=2016431268]
 layout_mode = 0
-offset_top = 98.0
-offset_right = 960.0
-offset_bottom = 137.0
+offset_left = -460.0
+offset_top = -150.0
+offset_right = 500.0
+offset_bottom = -111.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2680,9 +3101,10 @@ horizontal_alignment = 1
 
 [node name="button_language spanish (latin america)" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=824851874]
 layout_mode = 0
-offset_top = 124.0
-offset_right = 960.0
-offset_bottom = 163.0
+offset_left = -460.0
+offset_top = -124.0
+offset_right = 500.0
+offset_bottom = -85.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2693,9 +3115,10 @@ horizontal_alignment = 1
 
 [node name="button_language italian" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=331156263]
 layout_mode = 0
-offset_top = 150.0
-offset_right = 960.0
-offset_bottom = 189.0
+offset_left = -460.0
+offset_top = -98.0
+offset_right = 500.0
+offset_bottom = -59.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2706,9 +3129,10 @@ horizontal_alignment = 1
 
 [node name="button_language german" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=2052639122]
 layout_mode = 0
-offset_top = 177.0
-offset_right = 960.0
-offset_bottom = 216.0
+offset_left = -460.0
+offset_top = -71.0
+offset_right = 500.0
+offset_bottom = -32.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2719,9 +3143,10 @@ horizontal_alignment = 1
 
 [node name="button_language portuguese (brazil)" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=754436142]
 layout_mode = 0
-offset_top = 204.0
-offset_right = 960.0
-offset_bottom = 243.0
+offset_left = -460.0
+offset_top = -44.0
+offset_right = 500.0
+offset_bottom = -5.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2732,9 +3157,10 @@ horizontal_alignment = 1
 
 [node name="button_language portuguese (portugal)" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=22254062]
 layout_mode = 0
-offset_top = 231.0
-offset_right = 960.0
-offset_bottom = 270.0
+offset_left = -460.0
+offset_top = -17.0
+offset_right = 500.0
+offset_bottom = 22.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2745,9 +3171,10 @@ horizontal_alignment = 1
 
 [node name="button_language chinese (simplified)" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=1606747839]
 layout_mode = 0
-offset_top = 258.0
-offset_right = 960.0
-offset_bottom = 297.0
+offset_left = -460.0
+offset_top = 10.0
+offset_right = 500.0
+offset_bottom = 49.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2758,9 +3185,10 @@ horizontal_alignment = 1
 
 [node name="button_language chinese (traditional)" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=1296491900]
 layout_mode = 0
-offset_top = 285.0
-offset_right = 960.0
-offset_bottom = 324.0
+offset_left = -460.0
+offset_top = 37.0
+offset_right = 500.0
+offset_bottom = 76.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2771,9 +3199,10 @@ horizontal_alignment = 1
 
 [node name="button_language japanese" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=1534156239]
 layout_mode = 0
-offset_top = 312.0
-offset_right = 960.0
-offset_bottom = 351.0
+offset_left = -460.0
+offset_top = 64.0
+offset_right = 500.0
+offset_bottom = 103.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2784,9 +3213,10 @@ horizontal_alignment = 1
 
 [node name="button_language korean" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=591746303]
 layout_mode = 0
-offset_top = 340.0
-offset_right = 960.0
-offset_bottom = 379.0
+offset_left = -460.0
+offset_top = 92.0
+offset_right = 500.0
+offset_bottom = 131.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2797,9 +3227,10 @@ horizontal_alignment = 1
 
 [node name="button_language russian" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=794918622]
 layout_mode = 0
-offset_top = 367.0
-offset_right = 960.0
-offset_bottom = 406.0
+offset_left = -460.0
+offset_top = 119.0
+offset_right = 500.0
+offset_bottom = 158.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2810,9 +3241,10 @@ horizontal_alignment = 1
 
 [node name="button_language ukranian" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=1675173475]
 layout_mode = 0
-offset_top = 395.0
-offset_right = 960.0
-offset_bottom = 434.0
+offset_left = -460.0
+offset_top = 147.0
+offset_right = 500.0
+offset_bottom = 186.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2823,9 +3255,10 @@ horizontal_alignment = 1
 
 [node name="button_language turkish" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=649117858]
 layout_mode = 0
-offset_top = 423.0
-offset_right = 960.0
-offset_bottom = 462.0
+offset_left = -460.0
+offset_top = 175.0
+offset_right = 500.0
+offset_bottom = 214.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2836,9 +3269,10 @@ horizontal_alignment = 1
 
 [node name="button_language polish" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=651317647]
 layout_mode = 0
-offset_top = 451.0
-offset_right = 960.0
-offset_bottom = 490.0
+offset_left = -460.0
+offset_top = 203.0
+offset_right = 500.0
+offset_bottom = 242.0
 scale = Vector2(0.701995, 0.923672)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2849,10 +3283,10 @@ horizontal_alignment = 1
 
 [node name="button_language return" type="Label" parent="Camera/dialogue UI/menu ui/language" unique_id=806667598]
 layout_mode = 0
-offset_left = -0.197601
-offset_top = 493.0
-offset_right = 959.802
-offset_bottom = 532.0
+offset_left = -460.1976
+offset_top = 245.0
+offset_right = 499.80203
+offset_bottom = 284.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -2865,10 +3299,10 @@ horizontal_alignment = 1
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 23.0
-offset_right = 391.0
-offset_bottom = 31.0
+offset_left = -77.00005
+offset_top = -225.0
+offset_right = -69.00005
+offset_bottom = -217.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language return")
 focus_neighbor_bottom = NodePath("../true button_language estonia")
@@ -2891,10 +3325,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 49.0
-offset_right = 391.0
-offset_bottom = 57.0
+offset_left = -77.00005
+offset_top = -199.0
+offset_right = -69.00005
+offset_bottom = -191.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language english")
 focus_neighbor_bottom = NodePath("../true button_language french")
@@ -2917,10 +3351,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 75.0
-offset_right = 391.0
-offset_bottom = 83.0
+offset_left = -77.00005
+offset_top = -173.0
+offset_right = -69.00005
+offset_bottom = -165.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language estonia")
 focus_neighbor_bottom = NodePath("../true button_language spanish")
@@ -2943,10 +3377,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 101.0
-offset_right = 391.0
-offset_bottom = 109.0
+offset_left = -77.00005
+offset_top = -147.0
+offset_right = -69.00005
+offset_bottom = -139.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language french")
 focus_neighbor_bottom = NodePath("../true button_language spanish (latin america)")
@@ -2969,10 +3403,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 128.0
-offset_right = 391.0
-offset_bottom = 136.0
+offset_left = -77.00005
+offset_top = -120.0
+offset_right = -69.00005
+offset_bottom = -112.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language spanish")
 focus_neighbor_bottom = NodePath("../true button_language italian")
@@ -2995,10 +3429,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 153.0
-offset_right = 391.0
-offset_bottom = 161.0
+offset_left = -77.00005
+offset_top = -95.0
+offset_right = -69.00005
+offset_bottom = -87.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language spanish (latin america)")
 focus_neighbor_bottom = NodePath("../true button_language german")
@@ -3021,10 +3455,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 180.0
-offset_right = 391.0
-offset_bottom = 188.0
+offset_left = -77.00005
+offset_top = -68.0
+offset_right = -69.00005
+offset_bottom = -60.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language italian")
 focus_neighbor_bottom = NodePath("../true button_language portuguese (brazil)")
@@ -3047,10 +3481,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 207.0
-offset_right = 391.0
-offset_bottom = 215.0
+offset_left = -77.00005
+offset_top = -41.0
+offset_right = -69.00005
+offset_bottom = -33.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language german")
 focus_neighbor_bottom = NodePath("../true button_language portuguese (portugal)")
@@ -3073,10 +3507,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 235.0
-offset_right = 391.0
-offset_bottom = 243.0
+offset_left = -77.00005
+offset_top = -13.0
+offset_right = -69.00005
+offset_bottom = -5.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language portuguese (brazil)")
 focus_neighbor_bottom = NodePath("../true button_language chinese (simplified)")
@@ -3099,10 +3533,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 262.0
-offset_right = 391.0
-offset_bottom = 270.0
+offset_left = -77.00005
+offset_top = 14.0
+offset_right = -69.00005
+offset_bottom = 22.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language portuguese (portugal)")
 focus_neighbor_bottom = NodePath("../true button_language chinese (traditional)")
@@ -3125,10 +3559,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 289.0
-offset_right = 391.0
-offset_bottom = 297.0
+offset_left = -77.00005
+offset_top = 41.0
+offset_right = -69.00005
+offset_bottom = 49.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language chinese (simplified)")
 focus_neighbor_bottom = NodePath("../true button_language japanese")
@@ -3151,10 +3585,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 315.0
-offset_right = 391.0
-offset_bottom = 323.0
+offset_left = -77.00005
+offset_top = 67.0
+offset_right = -69.00005
+offset_bottom = 75.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language chinese (traditional)")
 focus_neighbor_bottom = NodePath("../true button_language korean")
@@ -3177,10 +3611,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 344.0
-offset_right = 391.0
-offset_bottom = 352.0
+offset_left = -77.00005
+offset_top = 96.0
+offset_right = -69.00005
+offset_bottom = 104.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language japanese")
 focus_neighbor_bottom = NodePath("../true button_language russian")
@@ -3203,10 +3637,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 370.0
-offset_right = 391.0
-offset_bottom = 378.0
+offset_left = -77.00005
+offset_top = 122.0
+offset_right = -69.00005
+offset_bottom = 130.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language korean")
 focus_neighbor_bottom = NodePath("../true button_language ukranian")
@@ -3229,10 +3663,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 398.0
-offset_right = 391.0
-offset_bottom = 406.0
+offset_left = -77.00005
+offset_top = 150.0
+offset_right = -69.00005
+offset_bottom = 158.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language russian")
 focus_neighbor_bottom = NodePath("../true button_language turkish")
@@ -3255,10 +3689,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 426.0
-offset_right = 391.0
-offset_bottom = 434.0
+offset_left = -77.00005
+offset_top = 178.0
+offset_right = -69.00005
+offset_bottom = 186.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language ukranian")
 focus_neighbor_bottom = NodePath("../true button_language polish")
@@ -3281,10 +3715,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 383.0
-offset_top = 454.0
-offset_right = 391.0
-offset_bottom = 462.0
+offset_left = -77.00005
+offset_top = 206.0
+offset_right = -69.00005
+offset_bottom = 214.0
 scale = Vector2(23.5873, 2.85885)
 focus_neighbor_top = NodePath("../true button_language turkish")
 focus_neighbor_bottom = NodePath("../true button_language return")
@@ -3307,10 +3741,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 398.0
-offset_top = 497.0
-offset_right = 406.0
-offset_bottom = 505.0
+offset_left = -62.0
+offset_top = 249.0
+offset_right = -54.0
+offset_bottom = 257.0
 scale = Vector2(21.742, 3.01166)
 focus_neighbor_top = NodePath("../true button_language polish")
 focus_neighbor_bottom = NodePath("../button_language english")
@@ -3329,16 +3763,25 @@ ui_opacity_active = 0.5
 
 [node name="controller rebinding" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=954835476]
 visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="rebind_free look toggle" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=1415495896]
 anchors_preset = 0
-offset_left = -2.0
-offset_top = 20.0
-offset_right = 38.0
-offset_bottom = 60.0
+offset_left = -460.0
+offset_top = -228.0
+offset_right = -420.0
+offset_bottom = -188.0
 
 [node name="free look toggle" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_free look toggle" unique_id=669874110]
 layout_mode = 0
@@ -3372,10 +3815,10 @@ script = ExtResource("45")
 
 [node name="rebind_navigate up" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=819605420]
 anchors_preset = 0
-offset_left = -2.0
-offset_top = 46.0
-offset_right = 38.0
-offset_bottom = 86.0
+offset_left = -460.0
+offset_top = -202.0
+offset_right = -420.0
+offset_bottom = -162.0
 
 [node name="ui_up" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_navigate up" unique_id=1729028114]
 layout_mode = 0
@@ -3409,10 +3852,10 @@ script = ExtResource("45")
 
 [node name="rebind_navigate down" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=1941111129]
 anchors_preset = 0
-offset_left = -117.0
-offset_top = 46.0
-offset_right = -77.0
-offset_bottom = 86.0
+offset_left = -575.0
+offset_top = -202.0
+offset_right = -535.0
+offset_bottom = -162.0
 
 [node name="ui_down" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_navigate down" unique_id=276733489]
 layout_mode = 0
@@ -3446,10 +3889,10 @@ script = ExtResource("45")
 
 [node name="rebind_navigate left" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=238504463]
 anchors_preset = 0
-offset_left = -117.0
-offset_top = 46.0
-offset_right = -77.0
-offset_bottom = 86.0
+offset_left = -575.0
+offset_top = -202.0
+offset_right = -535.0
+offset_bottom = -162.0
 
 [node name="ui_left" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_navigate left" unique_id=139026593]
 layout_mode = 0
@@ -3483,10 +3926,10 @@ script = ExtResource("45")
 
 [node name="rebind_navigate right" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=678468547]
 anchors_preset = 0
-offset_left = -117.0
-offset_top = 46.0
-offset_right = -77.0
-offset_bottom = 86.0
+offset_left = -575.0
+offset_top = -202.0
+offset_right = -535.0
+offset_bottom = -162.0
 
 [node name="ui_right" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_navigate right" unique_id=1001850052]
 layout_mode = 0
@@ -3520,10 +3963,10 @@ script = ExtResource("45")
 
 [node name="rebind_select" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=1217399564]
 anchors_preset = 0
-offset_left = -117.0
-offset_top = 46.0
-offset_right = -77.0
-offset_bottom = 86.0
+offset_left = -575.0
+offset_top = -202.0
+offset_right = -535.0
+offset_bottom = -162.0
 
 [node name="ui_accept" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_select" unique_id=250534931]
 layout_mode = 0
@@ -3557,10 +4000,10 @@ script = ExtResource("45")
 
 [node name="rebind_restart" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=1018251918]
 anchors_preset = 0
-offset_left = -117.0
-offset_top = 46.0
-offset_right = -77.0
-offset_bottom = 86.0
+offset_left = -575.0
+offset_top = -202.0
+offset_right = -535.0
+offset_bottom = -162.0
 
 [node name="reset" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_restart" unique_id=220114886]
 layout_mode = 0
@@ -3594,10 +4037,10 @@ script = ExtResource("45")
 
 [node name="rebind_back" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=1754254888]
 anchors_preset = 0
-offset_left = -117.0
-offset_top = 46.0
-offset_right = -77.0
-offset_bottom = 86.0
+offset_left = -575.0
+offset_top = -202.0
+offset_right = -535.0
+offset_bottom = -162.0
 
 [node name="ui_cancel" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_back" unique_id=1120095879]
 layout_mode = 0
@@ -3631,10 +4074,10 @@ script = ExtResource("45")
 
 [node name="rebind_exit" type="Control" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=1309232164]
 anchors_preset = 0
-offset_left = -117.0
-offset_top = 46.0
-offset_right = -77.0
-offset_bottom = 86.0
+offset_left = -575.0
+offset_top = -202.0
+offset_right = -535.0
+offset_bottom = -162.0
 
 [node name="exit game" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding/rebind_exit" unique_id=1269048372]
 layout_mode = 0
@@ -3668,9 +4111,10 @@ script = ExtResource("45")
 
 [node name="return rebinidng" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=256570877]
 layout_mode = 0
-offset_top = 409.0
-offset_right = 960.0
-offset_bottom = 444.0
+offset_left = -458.00006
+offset_top = 161.0
+offset_right = 501.99994
+offset_bottom = 200.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -3681,9 +4125,10 @@ horizontal_alignment = 1
 
 [node name="reset keybinds" type="Label" parent="Camera/dialogue UI/menu ui/controller rebinding" unique_id=1592095632]
 layout_mode = 0
-offset_top = 379.0
-offset_right = 960.0
-offset_bottom = 418.0
+offset_left = -458.00006
+offset_top = 131.0
+offset_right = 501.99994
+offset_bottom = 170.0
 scale = Vector2(0.760005, 1)
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -3696,10 +4141,10 @@ horizontal_alignment = 1
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 93.0
-offset_right = 494.0
-offset_bottom = 101.0
+offset_left = 27.99997
+offset_top = -154.99998
+offset_right = 35.99997
+offset_bottom = -146.99998
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_free look toggle" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_free look toggle" unique_id=1121180010 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3719,10 +4164,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 119.0
-offset_right = 494.0
-offset_bottom = 127.0
+offset_left = 27.99997
+offset_top = -128.99998
+offset_right = 35.99997
+offset_bottom = -120.999985
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind nav up" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav up" unique_id=1438567267 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3742,10 +4187,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 144.0
-offset_right = 494.0
-offset_bottom = 152.0
+offset_left = 27.99997
+offset_top = -103.999985
+offset_right = 35.99997
+offset_bottom = -95.999985
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind nav down" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav down" unique_id=1459450452 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3765,10 +4210,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 172.0
-offset_right = 494.0
-offset_bottom = 180.0
+offset_left = 27.99997
+offset_top = -75.999985
+offset_right = 35.99997
+offset_bottom = -67.999985
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind nav left" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav left" unique_id=966418821 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3788,10 +4233,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 200.0
-offset_right = 494.0
-offset_bottom = 208.0
+offset_left = 27.99997
+offset_top = -48.0
+offset_right = 35.99997
+offset_bottom = -40.0
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind nav right" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind nav right" unique_id=1767205473 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3811,10 +4256,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 226.0
-offset_right = 494.0
-offset_bottom = 234.0
+offset_left = 27.99997
+offset_top = -21.999985
+offset_right = 35.99997
+offset_bottom = -13.999985
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind select" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind select" unique_id=1102316337 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3834,10 +4279,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 254.0
-offset_right = 494.0
-offset_bottom = 262.0
+offset_left = 27.99997
+offset_top = 6.0
+offset_right = 35.99997
+offset_bottom = 14.0
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind restart" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind restart" unique_id=1866878429 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3857,10 +4302,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 280.0
-offset_right = 494.0
-offset_bottom = 288.0
+offset_left = 27.99997
+offset_top = 32.0
+offset_right = 35.99997
+offset_bottom = 40.0
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind back" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind back" unique_id=924272302 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3880,10 +4325,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 486.0
-offset_top = 308.0
-offset_right = 494.0
-offset_bottom = 316.0
+offset_left = 27.99997
+offset_top = 60.0
+offset_right = 35.99997
+offset_bottom = 68.0
 scale = Vector2(16.822, 3.01166)
 
 [node name="button class_rebind exit" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_rebind exit" unique_id=478354019 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover", "rebind", "rebindManager")]
@@ -3903,10 +4348,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 370.0
-offset_top = 382.0
-offset_right = 378.0
-offset_bottom = 390.0
+offset_left = -88.0
+offset_top = 134.00003
+offset_right = -80.0
+offset_bottom = 142.00003
 scale = Vector2(28.0068, 3.27373)
 
 [node name="button class_reset keybinds" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_reset keybinds" unique_id=1871970826 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -3924,10 +4369,10 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 438.0
-offset_top = 414.0
-offset_right = 446.0
-offset_bottom = 422.0
+offset_left = -20.0
+offset_top = 166.00002
+offset_right = -12.0
+offset_bottom = 174.00002
 scale = Vector2(10.3772, 3.01166)
 
 [node name="button class_return keybinding" type="Node" parent="Camera/dialogue UI/menu ui/controller rebinding/true button_return keybinding" unique_id=874798962 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]

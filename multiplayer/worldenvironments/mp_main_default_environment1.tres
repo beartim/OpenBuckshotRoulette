@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=4 format=3 uid="uid://cpkhqcisqkqju"]
+[gd_resource type="Environment" format=3 uid="uid://cpkhqcisqkqju"]
 
 [ext_resource type="Texture2D" uid="uid://cceywvgyfdetk" path="res://multiplayer/misc/stars.png" id="1"]
 

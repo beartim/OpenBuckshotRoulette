@@ -10,6 +10,7 @@ var versuffix_itch = " (ITCH.IO)"
 var versuffix_community = " (OPEN SOURCE)"
 
 var discord_link = "https://discord.gg/UdjMNaKkQe"
+var github_link = "https://github.com/1503Dev/OpenBuckshotRoulette"
 
 var using_gl = false
 var controllerEnabled = false

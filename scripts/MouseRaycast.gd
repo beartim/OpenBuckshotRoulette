@@ -26,3 +26,17 @@ func GetRaycastOverride(pos_override : Vector2):
 
 func StopRaycastOverride():
 	controller_overriding = false
+
+func force_raycast_update():
+	var space_state = get_world_3d().direct_space_state
+	var mouse_pos = get_viewport().get_mouse_position()
+	var camera = get_viewport().get_camera_3d()
+	var origin = camera.project_ray_origin(mouse_pos)
+	var end = origin + camera.project_ray_normal(mouse_pos) * 1000
+	var query = PhysicsRayQueryParameters3D.create(origin, end)
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	result = space_state.intersect_ray(query)
+
+func get_collider_result():
+	return result

@@ -65,3 +65,4 @@ func OnPress():
 		if (language): options.AdjustLanguage(alias)
 		if (pipe != null): pipe.Pipe(alias)
 		emit_signal("is_pressed")
+		print(alias)

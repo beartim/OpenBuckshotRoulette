@@ -5,6 +5,7 @@ export_presets.cfg
 *.import
 # *.uid
 *.tmp
+android/
 
 # VS Code
 .vscode/

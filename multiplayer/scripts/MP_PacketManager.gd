@@ -19,7 +19,6 @@ func GetTime():
 	return str(Time.get_time_string_from_system())
 
 func _process(_delta) -> void:
-	# If the player is connected, read packets
 	if GlobalSteam.LOBBY_ID != 0:
 		read_p2p_packet()
 
@@ -52,22 +51,16 @@ func send_p2p_packet_through_host(sending_From_id : int, packet_data : Dictionar
 
 func send_p2p_packet(target: int, packet_data: Dictionary) -> void:
 	if GlobalVariables.mp_debugging: return
-	# Set the send_type and channel
 	var send_type: int = Steam.P2P_SEND_RELIABLE
 	var channel: int = 0
 	
-	# Create a data array to send the data through
 	var this_data: PackedByteArray
 	
-	# Compress the PackedByteArray we create from our dictionary  using the GZIP compression method
 	var compressed_data: PackedByteArray = var_to_bytes(packet_data).compress(FileAccess.COMPRESSION_GZIP)
 	this_data.append_array(compressed_data)
 	
-	# If sending a packet to everyone
 	if target == 0:
-		# If there is one or more users, send packets
 		if GlobalSteam.LOBBY_MEMBERS.size() >= 1:
-			# Loop through all members that aren't you
 			for this_member in GlobalSteam.LOBBY_MEMBERS:
 				if this_member['steam_id'] != GlobalSteam.STEAM_ID:
 					if GlobalVariables.using_steam:
@@ -75,17 +68,14 @@ func send_p2p_packet(target: int, packet_data: Dictionary) -> void:
 					if GlobalVariables.printing_packets: print("sending packet with target 0: ", packet_data)
 		if not GlobalVariables.using_steam and GlobalSteam.connected:
 			GlobalSteam.send_packet(this_data)
-
-	# Else send it to someone specific
 	else:
 		if GlobalVariables.using_steam:
 			Steam.sendP2PPacket(target, this_data, send_type, channel)
-		# For custom server, since it's relayed, send to server
 		if not GlobalVariables.using_steam and GlobalSteam.connected:
 			GlobalSteam.send_packet(this_data)
 
 func _on_packet_received(readable_data: Dictionary):
-	var sender_id: int = GlobalSteam.HOST_ID  # Assume from host
+	var sender_id: int = GlobalSteam.HOST_ID
 	
 	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
 		if sender_id != GlobalSteam.HOST_ID: 
@@ -116,17 +106,14 @@ var temp_id = 0
 func read_p2p_packet() -> void:
 	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
 	
-	# There is a packet
 	if packet_size > 0:
 		var this_packet: Dictionary = Steam.readP2PPacket(packet_size, 0)
 		
 		if this_packet.is_empty() or this_packet == null:
 			print("WARNING: read an empty packet with non-zero size!")
 		
-		# Get the remote user's ID
 		var packet_sender: int = this_packet['steam_id_remote']
 		
-		# Make the packet data readable
 		var packet_code: PackedByteArray = this_packet['data']
 		var readable_data: Dictionary = bytes_to_var(packet_code.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP))
 		
@@ -171,7 +158,7 @@ func PipeData(dict : Dictionary):
 	var value_alias = dict.values()[1]
 	match value_category:
 		"MP_UserInstanceHandler": 
-			instance_handler.PacketSort(dict)
+			if (instance_handler): instance_handler.PacketSort(dict)
 		"MP_RoundManager":
 			round_manager.PacketSort(dict)
 		"MP_UserInstanceProperties":
@@ -231,7 +218,6 @@ func PipeData(dict : Dictionary):
 		"update match customization":
 			match_customization.ReceivePacket_MatchCustomization(dict)
 		"request player list sync":
-			# Host should handle this request and broadcast player list
 			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
 				print("Host received player list sync request from client: ", dict.get("requesting_player_id"))
 				lobby.BroadcastPlayerListSync()
@@ -248,25 +234,23 @@ func PipeData(dict : Dictionary):
 				if instance_handler != null:
 					instance_handler.current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
 					instance_handler.CheckLobbyMemberArray()
+				if memberChecker != null:
+					memberChecker.UpdateExpectedTotal(GlobalSteam.LOBBY_MEMBERS.size())
+					memberChecker.UpdateMemberList()
 			if lobby_ui != null:
 				lobby_ui.UpdatePlayerList()
 
 func _on_p2p_session_request(remote_id: int) -> void:
-	# Get the requester's name
 	var this_requester: String = Steam.getFriendPersonaName(remote_id)
 	print("%s is requesting a P2P session" % this_requester)
 	
-	# Accept the P2P session; can apply logic to deny this request if needed
 	Steam.acceptP2PSessionWithUser(remote_id)
 	
-	# Make the initial handshake
 	make_p2p_handshake()
 
 func make_p2p_handshake() -> void:
 	print("Sending P2P handshake to the lobby in packet manager")
 	
-	#temp steam id for lobby of 1 member: 76561198358844980 Mike
-	#set to 0 for handshake with rest of lobby
 	var packet = {
 		"packet category": "lobby",
 		"packet alias": "handshake",
@@ -276,30 +260,23 @@ func make_p2p_handshake() -> void:
 	send_p2p_packet(0, packet)
 
 func _on_p2p_session_connect_fail(steam_id: int, session_error: int) -> void:
-	# If no error was given
 	if session_error == 0:
 		print("WARNING: Session failure with %s: no error given" % steam_id)
 	
-	# Else if target user was not running the same game
 	elif session_error == 1:
 		print("WARNING: Session failure with %s: target user not running the same game" % steam_id)
 	
-	# Else if local user doesn't own app / game
 	elif session_error == 2:
 		print("WARNING: Session failure with %s: local user doesn't own app / game" % steam_id)
 	
-	# Else if target user isn't connected to Steam
 	elif session_error == 3:
 		print("WARNING: Session failure with %s: target user isn't connected to Steam" % steam_id)
 	
-	# Else if connection timed out
 	elif session_error == 4:
 		print("WARNING: Session failure with %s: connection timed out" % steam_id)
 	
-	# Else if unused
 	elif session_error == 5:
 		print("WARNING: Session failure with %s: unused" % steam_id)
 	
-	# Else no known error
 	else:
 		print("WARNING: Session failure with %s: unknown error %s" % [steam_id, session_error])
