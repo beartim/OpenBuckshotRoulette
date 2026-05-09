@@ -222,14 +222,23 @@ func InitialInstanceSetup_Host():
 func InitialInstanceSetup_Peer(packet : Dictionary):
 	var p = packet
 	intermediary.game_state.MAIN_active_environmental_event = packet.environmental_event
+	ClearAllInstances()
 	SetupInstances(p.instance_dict)
+	previous_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate(true)
+	current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate(true)
 	SnapshotLobbyMembersForDisconnectSync()
+
+func ClearAllInstances():
+	for instance in instance_property_array:
+		if instance.instance_root != null:
+			instance.instance_root.queue_free()
+	instance_property_array.clear()
 
 func SetupDictionary():
 	var lobby_dict_array = GlobalSteam.LOBBY_MEMBERS
 	lobby_dict_array.shuffle()
 	var socket_index = 0
-	var setting_opposite = lobby_dict_array.size() == 2
+	var setting_opposite = lobby_dict_array.size() == 2	
 	for i in range(lobby_dict_array.size()):
 		var member_entry = lobby_dict_array[i]
 		var pid: int = int(member_entry["steam_id"])
@@ -276,6 +285,15 @@ func _resolve_display_name_from_slot_dict(user: Variant) -> String:
 
 func SetupInstances(dictionary_array):
 	for user in dictionary_array:
+		var already_exists = false
+		for existing in instance_property_array:
+			if existing.user_id == user.user_id:
+				already_exists = true
+				print("WARNING: Instance for user_id ", user.user_id, " already exists, skipping")
+				break
+		if already_exists:
+			continue
+			
 		var setting_active = false
 		var active_id = GlobalSteam.STEAM_ID
 		if user.user_id == active_id: user.active_user_id = user.user_id; setting_active = true

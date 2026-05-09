@@ -5,6 +5,9 @@ var frames_render_2: float = 0.0
 var frames_physics: int = 0
 var frames_physics_2: float = 0.0
 
+var text_fps := 'Loading...'
+var text_renderer3d_info := 'Loading'
+
 func _physics_process(delta: float) -> void:
 	frames_physics += 1
 	frames_physics_2 = 1.0 / delta
@@ -14,6 +17,13 @@ func _process(delta: float) -> void:
 	frames_render_2 = 1.0 / delta
 
 func _on_timer_fps_timeout() -> void:
-	text = 'FPS: ' + str(frames_render) + 'r ' + str(frames_physics) + 'p\n     ' + str("%.2f" % frames_render_2) + 'r ' + str("%.2f" % frames_physics_2) + 'p'
+	text_fps = str(frames_render) + '/' + str("%.2f" % frames_render_2) + 'r, ' + str(frames_physics) + '/' + str("%.2f" % frames_physics_2) + 'p'
 	frames_physics = 0
 	frames_render = 0
+	var renderer_name = RenderingServer.get_video_adapter_name()
+	var v_size = get_viewport().get_visible_rect().size
+	var render_scale = get_viewport().scaling_3d_scale
+	var engine_method = RenderingServer.get_video_adapter_api_version()
+	text_renderer3d_info = renderer_name + ', ' + engine_method + ', v-size: ' + str(v_size) + ', scale: ' + str(render_scale)
+	
+	text = 'FPS: ' + text_fps + '\nRenderer3D: ' + text_renderer3d_info

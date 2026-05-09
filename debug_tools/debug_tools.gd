@@ -6,6 +6,7 @@ extends Node
 @onready var label_game_speed: Label = $CanvasLayer/Control/Panel_System/HSlider_GameSpeed/Label_GameSpeed
 @onready var label_player_health: Label = $CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth
 @onready var label_dealer_health: Label = $CanvasLayer/Control/Panel_Gambling/Label_DealerHealth
+@onready var button_open: Button = %Button_Open
 
 var _forcing_mouse_mode := false
 var _forced_mouse_mode := Input.MOUSE_MODE_VISIBLE
@@ -18,7 +19,6 @@ var has_next_bullet := false
 var player_health:= 0
 var dealer_health:= 0
 
-## Multiplayer: hide dealer HP in tools and read shells from MAIN_active_sequence_dict instead of ShellSpawner
 var _mp_hide_dealer_in_debug_panel := false
 var mp_gambling_refresh_ttl := 0.0
 
@@ -28,6 +28,10 @@ const SKIP_SPLASH_ANIM := true
 func  _ready() -> void:
 	add_to_group("debug_tools")
 	canvas_layer.hide()
+	if (DEBUG_TOOLS_ENABLED):
+		button_open.show()
+	else:
+		button_open.hide()
 
 func _input(event: InputEvent) -> void:
 	if (!DEBUG_TOOLS_ENABLED): return
@@ -56,6 +60,7 @@ func _set_debug_visible(visible: bool) -> void:
 	if (!DEBUG_TOOLS_ENABLED): return
 	canvas_layer.visible = visible
 	if visible:
+		button_open.hide()
 		_begin_forcing_mouse_mode()
 		var gs: MP_GameStateManager = _find_mp_game_state()
 		if gs != null:
@@ -64,6 +69,7 @@ func _set_debug_visible(visible: bool) -> void:
 		else:
 			update_gambling_status()
 	else:
+		button_open.show()
 		_mp_hide_dealer_in_debug_panel = false
 		_end_forcing_mouse_mode()
 
@@ -272,3 +278,6 @@ func _adjust_mp_local_player_health(gs: MP_GameStateManager, delta: int) -> void
 
 func _on_button_close_pressed() -> void:
 	_set_debug_visible(false)
+
+func _on_button_open_pressed() -> void:
+	_set_debug_visible(true)

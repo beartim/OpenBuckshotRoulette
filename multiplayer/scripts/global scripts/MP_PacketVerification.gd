@@ -115,6 +115,8 @@ func PacketSort(dict : Dictionary):
 				game_state.MAIN_active_num_of_users_finished_item_grabbing += 1
 				game_state.CheckIfItemGrabbingFinishedForAllUsers()
 				sockets_ending_item_grabbing = game_state.GetSocketArrayToEndItemGrabbingOn(dict.sent_from_socket)
+			else:
+				sockets_ending_item_grabbing = []
 			packet = {
 				"packet category": "MP_UserInstanceProperties",
 				"packet alias": "place item",

@@ -1,15 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://domnxegwr6444"]
+[gd_scene format=3 uid="uid://domnxegwr6444"]
 
-[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_ItemProperties.gd" id="1"]
+[ext_resource type="Script" uid="uid://c7dsotr1vbaq1" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_ItemProperties.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://cylsdupptnccs" path="res://multiplayer/textures/green1.png" id="2"]
 [ext_resource type="Theme" uid="uid://byh50rlarrsdb" path="res://misc/button_theme1.tres" id="3"]
-[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="4"]
-[ext_resource type="Script" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_Branch.gd" id="5"]
+[ext_resource type="Script" uid="uid://cf5hrjfhx7dbi" path="res://multiplayer/scripts/global scripts/MP_ButtonClassMain.gd" id="4"]
+[ext_resource type="Script" uid="uid://bf273mixdj13j" path="res://multiplayer/scripts/global scripts/MP_MatchCustomization_Branch.gd" id="5"]
 [ext_resource type="FontFile" uid="uid://b0df1ns6fwvs4" path="res://fonts/fonts language/RobotoSlab-Medium_cyrillic.ttf" id="6"]
 [ext_resource type="Texture2D" uid="uid://c0p4n4w7j4du" path="res://multiplayer/misc/mp_icon checkmark.png" id="7"]
 [ext_resource type="FontFile" uid="uid://vhj3kkn6yn8o" path="res://fonts/fake receipt.otf" id="8"]
 
-[node name="custom item variable properties" type="Control" node_paths=PackedStringArray("label_item_name", "label_max_per_player", "label_max_on_table", "checkmark_ingame")]
+[node name="custom item variable properties" type="Control" unique_id=935997967 node_paths=PackedStringArray("label_item_name", "label_max_per_player", "label_max_on_table", "checkmark_ingame")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 1.0
@@ -22,7 +22,7 @@ label_max_per_player = NodePath("var per player/var label visible per player")
 label_max_on_table = NodePath("var max on table/var label visible max on table")
 checkmark_ingame = NodePath("var ingame/var checkbox in game")
 
-[node name="var per player" type="NinePatchRect" parent="."]
+[node name="var per player" type="NinePatchRect" parent="." unique_id=1330092141]
 layout_mode = 0
 offset_left = 3.0
 offset_top = 1.0
@@ -35,14 +35,14 @@ patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
 
-[node name="button_var per player" type="Button" parent="var per player"]
+[node name="button_var per player" type="Button" parent="var per player" unique_id=899605698]
 layout_mode = 0
 offset_right = 474.0
 offset_bottom = 37.0
 scale = Vector2(0.0316404, 0.436859)
 theme = ExtResource("3")
 
-[node name="button class_var per player" type="Node" parent="var per player/button_var per player" node_paths=PackedStringArray("ui_element_to_affect")]
+[node name="button class_var per player" type="Node" parent="var per player/button_var per player" unique_id=1619996072 node_paths=PackedStringArray("ui_element_to_affect")]
 script = ExtResource("4")
 is_lobby_scene = true
 ui_element_to_affect = NodePath("../..")
@@ -55,7 +55,7 @@ is_related_to_customization = true
 right_click_enabled = true
 mouse_wheel_enabled = true
 
-[node name="match customization branch_var per player" type="Node" parent="var per player/button_var per player/button class_var per player" node_paths=PackedStringArray("item_properties")]
+[node name="match customization branch_var per player" type="Node" parent="var per player/button_var per player/button class_var per player" unique_id=100426244 node_paths=PackedStringArray("item_properties")]
 script = ExtResource("5")
 alias = "item per player plus"
 alias_right_click = "item per player minus"
@@ -63,7 +63,7 @@ alias_scroll_up = "item per player plus"
 alias_scroll_down = "item per player minus"
 item_properties = NodePath("../../../..")
 
-[node name="var label visible per player" type="Label" parent="var per player"]
+[node name="var label visible per player" type="Label" parent="var per player" unique_id=779498779]
 layout_mode = 0
 offset_left = 1.0
 offset_right = 222.0
@@ -77,7 +77,7 @@ theme_override_font_sizes/font_size = 171
 text = "1"
 horizontal_alignment = 1
 
-[node name="var max on table" type="NinePatchRect" parent="."]
+[node name="var max on table" type="NinePatchRect" parent="." unique_id=384940206]
 layout_mode = 0
 offset_left = 21.0
 offset_top = 1.0
@@ -90,14 +90,14 @@ patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
 
-[node name="button_var max on table" type="Button" parent="var max on table"]
+[node name="button_var max on table" type="Button" parent="var max on table" unique_id=1167317050]
 layout_mode = 0
 offset_right = 474.0
 offset_bottom = 37.0
 scale = Vector2(0.0316404, 0.436859)
 theme = ExtResource("3")
 
-[node name="button class_var max on table" type="Node" parent="var max on table/button_var max on table" node_paths=PackedStringArray("ui_element_to_affect")]
+[node name="button class_var max on table" type="Node" parent="var max on table/button_var max on table" unique_id=366465622 node_paths=PackedStringArray("ui_element_to_affect")]
 script = ExtResource("4")
 is_lobby_scene = true
 ui_element_to_affect = NodePath("../..")
@@ -110,7 +110,7 @@ is_related_to_customization = true
 right_click_enabled = true
 mouse_wheel_enabled = true
 
-[node name="match customization branch_var max on table" type="Node" parent="var max on table/button_var max on table/button class_var max on table" node_paths=PackedStringArray("item_properties")]
+[node name="match customization branch_var max on table" type="Node" parent="var max on table/button_var max on table/button class_var max on table" unique_id=1165991808 node_paths=PackedStringArray("item_properties")]
 script = ExtResource("5")
 alias = "item max on table plus"
 alias_right_click = "item max on table minus"
@@ -118,7 +118,7 @@ alias_scroll_up = "item max on table plus"
 alias_scroll_down = "item max on table minus"
 item_properties = NodePath("../../../..")
 
-[node name="var label visible max on table" type="Label" parent="var max on table"]
+[node name="var label visible max on table" type="Label" parent="var max on table" unique_id=2078767837]
 layout_mode = 0
 offset_left = 1.0
 offset_right = 222.0
@@ -132,7 +132,7 @@ theme_override_font_sizes/font_size = 171
 text = "3"
 horizontal_alignment = 1
 
-[node name="var ingame" type="NinePatchRect" parent="."]
+[node name="var ingame" type="NinePatchRect" parent="." unique_id=666509743]
 layout_mode = 0
 offset_left = 39.0
 offset_top = 1.0
@@ -145,14 +145,14 @@ patch_margin_top = 1
 patch_margin_right = 1
 patch_margin_bottom = 1
 
-[node name="button_var ingame" type="Button" parent="var ingame"]
+[node name="button_var ingame" type="Button" parent="var ingame" unique_id=1307842591]
 layout_mode = 0
 offset_right = 474.0
 offset_bottom = 37.0
 scale = Vector2(0.0316404, 0.436859)
 theme = ExtResource("3")
 
-[node name="button class_var ingame" type="Node" parent="var ingame/button_var ingame" node_paths=PackedStringArray("ui_element_to_affect")]
+[node name="button class_var ingame" type="Node" parent="var ingame/button_var ingame" unique_id=1426371247 node_paths=PackedStringArray("ui_element_to_affect")]
 script = ExtResource("4")
 is_lobby_scene = true
 ui_element_to_affect = NodePath("../..")
@@ -161,12 +161,12 @@ dont_set_cursor_to_point_after_press = true
 separated_from_lobby_scene = true
 is_related_to_customization = true
 
-[node name="match customization branch_var ingame" type="Node" parent="var ingame/button_var ingame/button class_var ingame" node_paths=PackedStringArray("item_properties")]
+[node name="match customization branch_var ingame" type="Node" parent="var ingame/button_var ingame/button class_var ingame" unique_id=1022273516 node_paths=PackedStringArray("item_properties")]
 script = ExtResource("5")
 alias = "is ingame"
 item_properties = NodePath("../../../..")
 
-[node name="var checkbox in game" type="TextureRect" parent="var ingame"]
+[node name="var checkbox in game" type="TextureRect" parent="var ingame" unique_id=1492010167]
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
@@ -176,7 +176,7 @@ scale = Vector2(0.249802, 0.263945)
 mouse_filter = 2
 texture = ExtResource("7")
 
-[node name="item name label" type="Label" parent="."]
+[node name="item name label" type="Label" parent="." unique_id=359429669]
 layout_mode = 0
 offset_left = 58.8686
 offset_top = -2.10643

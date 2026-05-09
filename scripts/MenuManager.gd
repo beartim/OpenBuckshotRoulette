@@ -235,6 +235,7 @@ func StartMultiplayer():
 	savefile.ClearSave()
 	await GlobalVariables.tree.create_timer(4, false).timeout
 	print("changing scene to: lobby")
+	OS.alert('3、4 人游戏因较多 Bug 暂时不可用，请勿创建 3、4 人的对局')
 	GlobalVariables.tree.change_scene_to_file("res://multiplayer/scenes/mp_lobby.tscn")
 
 func Credits():

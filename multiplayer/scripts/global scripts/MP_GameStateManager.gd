@@ -191,6 +191,16 @@ func GetItemToGrab(for_user : MP_UserInstanceProperties, incrementing_inventory 
 		if for_user.user_inventory_count_by_item_id[res.id] < res.max_amount_on_table:
 			if res.id in id_pool_globally_eligible:
 				id_pool_available_to_grab.append(res.id)
+				
+	if (DebugTools.DEBUG_TOOLS_ENABLED):
+		print("=== GetItemToGrab ===")
+		print("DEBUG GetItemToGrab socket:", for_user.socket_number, " increment:", incrementing_inventory)
+		print("socket: ", for_user.socket_number, " incrementing: ", incrementing_inventory)
+		print("global_item_count_on_table_by_id: ", global_item_count_on_table_by_id)
+		print("user_inventory_count_by_item_id: ", for_user.user_inventory_count_by_item_id)
+		print("id_pool_globally_eligible: ", id_pool_globally_eligible)
+		print("id_pool_available_to_grab: ", id_pool_available_to_grab)
+				
 	var item_id_to_grab
 	if id_pool_available_to_grab != []:
 		if id_pool_available_to_grab.size() == 1:
@@ -272,7 +282,10 @@ func CheckIfEndingTurnAfterItemUse(item_id : int, for_socket_number : int):
 
 func IsPlacingLastItem(user_properties : MP_UserInstanceProperties):
 	var count = 0
-	if GetItemToGrab(user_properties, false) == null:
+	var result = GetItemToGrab(user_properties, false)
+	if (DebugTools.DEBUG_TOOLS_ENABLED):
+		print("DEBUG IsPlacingLastItem socket:", user_properties.socket_number, " result:", result)
+	if result == null:
 		user_properties.is_grabbing_items = false
 		return true
 	for dict in user_properties.user_inventory:
@@ -666,16 +679,3 @@ func GetMinDictionary_Name(dict_array):
 		return dict_to_return.user_id
 	else:
 		return -1
-
-
-
-
-
-
-
-
-
-
-
-
-

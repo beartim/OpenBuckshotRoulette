@@ -91,17 +91,33 @@ func OnLobbyList(list):
 	var index = 0
 	var invalid_list_array = []
 	for lobby in list:
-		if Steam.getLobbyData(lobby, "member_count") == "" or Steam.getLobbyData(lobby, "player_limit") == "":
+		var lobby_id = lobby.get("lobby_id", 0)
+		if lobby_id == 0:
+			print("found invalid lobby (no lobby_id), skipping")
+			invalid_list_array.append(0)
+			continue
+		
+		var member_count = str(lobby.get("members", ""))
+		var player_limit = str(lobby.get("max_members", ""))
+		
+		if member_count == "":
+			member_count = Steam.getLobbyData(lobby_id, "members")
+		if player_limit == "":
+			player_limit = Steam.getLobbyData(lobby_id, "max_members")
+		
+		if member_count == "" or player_limit == "":
 			print("found invalid lobby, skipping")
 			invalid_list_array.append(0)
 			continue
+		
 		index += 1
-		print("result: ", index, " - ", lobby, " with member count: ", Steam.getLobbyData(lobby, "member_count"), " and player limit: ", Steam.getLobbyData(lobby, "player_limit"))
+		print("result: ", index, " - ", lobby_id, " with member count: ", member_count, " and player limit: ", player_limit)
 		var result = result_instance.instantiate()
 		result_parent.add_child(result)
 		var result_branch : MP_Matchmaking_Result = result.get_child(0)
-		result_branch.Set(index, Steam.getLobbyData(lobby, "member_count"), Steam.getLobbyData(lobby, "player_limit"))
-		result_branch.AssignLobbyID(lobby)
+		result_branch.Set(index, member_count, player_limit)
+		result_branch.AssignLobbyID(lobby_id)
+	
 	if list == [] or invalid_list_array.size() == list.size():
 		search_console.text = tr("MP_NO LOBBIES FOUND")
 	else:

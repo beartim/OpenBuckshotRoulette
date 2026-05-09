@@ -51,7 +51,7 @@ var setting_controllerEnabled = false
 var setting_colorblind = false
 var setting_greyscale_death = true
 var setting_music_enabled = true
-var setting_server_address = "ws://192.160.0.101:14122"
+var setting_server_address = "ws://buckds.1503dev.top:14122"
 
 func _ready():
 	LoadSettings()

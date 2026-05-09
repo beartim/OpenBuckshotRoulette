@@ -14,9 +14,24 @@ font = ExtResource("2_fpd2w")
 process_mode = 3
 script = ExtResource("1_u2hdw")
 
+[node name="CanvasLayer_Aways" type="CanvasLayer" parent="." unique_id=661829885]
+
+[node name="Button_Open" type="Button" parent="CanvasLayer_Aways" unique_id=1598260091]
+unique_name_in_owner = true
+top_level = true
+z_index = 4096
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -63.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "DEBUG"
+
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1279942368]
 process_mode = 3
 layer = 4095
+visible = false
 
 [node name="Control" type="Control" parent="CanvasLayer" unique_id=1372348555]
 process_mode = 3
@@ -243,6 +258,7 @@ script = ExtResource("3_n84is")
 autostart = true
 ignore_time_scale = true
 
+[connection signal="pressed" from="CanvasLayer_Aways/Button_Open" to="." method="_on_button_open_pressed"]
 [connection signal="value_changed" from="CanvasLayer/Control/Panel_System/HSlider_GameSpeed" to="." method="_on_h_slider_game_speed_value_changed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth/Button_AddPlayerHealth" to="." method="_on_button_add_player_health_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth/Button_ReducePlayerHealth2" to="." method="_on_button_reduce_player_health_2_pressed"]

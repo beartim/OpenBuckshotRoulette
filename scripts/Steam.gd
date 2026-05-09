@@ -184,6 +184,16 @@ func handle_server_message(data):
 					break
 			print("Player left: ", data.playerId)
 			emit_signal("lobby_members_changed")
+		"roomList":
+			var lobby_list = []
+			for room in data.rooms:
+				lobby_list.append({
+					"lobby_id": int(room.roomId),
+					"owner": room.hostId,
+					"members": room.memberCount,
+					"max_members": lobby_player_limit
+				})
+			Steam.lobby_match_list.emit(lobby_list)
 		_:
 			pass
 

@@ -46,6 +46,8 @@ function handleMessage(clientId, data) {
     const client = clients.get(clientId);
     if (!client) return;
 
+    console.log('Received packet:', data.type);
+
     switch (data.type) {
         case 'createRoom':
             createRoom(clientId, data);
@@ -55,6 +57,9 @@ function handleMessage(clientId, data) {
             break;
         case 'leaveRoom':
             leaveRoom(clientId);
+            break;
+        case 'listRooms':
+            listRooms(clientId);
             break;
         default:
             console.log('Unknown message type:', data.type);
@@ -74,6 +79,30 @@ function handlePacket(clientId, buffer) {
         // Broadcast to room
         broadcastPacketToRoom(client.roomId, decompressed, clientId);
     });
+}
+
+function listRooms(clientId) {
+    const client = clients.get(clientId);
+    if (!client) return;
+    
+    const roomList = [];
+    for (const [roomId, room] of rooms.entries()) {
+        const members = Array.from(room.clients).map(id => {
+            const roomClient = clients.get(id);
+            return {playerId: roomClient.playerId, playerName: roomClient.playerName};
+        });
+        roomList.push({
+            roomId: roomId.toString(),
+            hostId: room.hostId,
+            memberCount: room.clients.size,
+            members: members
+        });
+    }
+    
+    client.ws.send(JSON.stringify({
+        type: 'roomList',
+        rooms: roomList
+    }));
 }
 
 function createRoom(clientId, data) {

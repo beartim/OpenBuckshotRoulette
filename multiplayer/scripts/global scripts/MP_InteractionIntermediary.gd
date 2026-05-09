@@ -83,36 +83,3 @@ func InteractionPipe(alias : String, button_class_main : MP_ButtonClassMain):
 		"kick button":
 			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID and ingame_lobby_ui != null and ingame_lobby_ui.lobby != null:
 				ingame_lobby_ui.lobby.KickPlayerInLobby(button_class_main.segment.user_id)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
