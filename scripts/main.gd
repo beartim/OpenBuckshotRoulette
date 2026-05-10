@@ -4,6 +4,13 @@ extends Node3D
 @onready var text_you: Label3D = $"ui parent_shooting decision/text you"
 @onready var posterization_test: Control = $"Camera/post processing/posterization test"
 @onready var viewblocker_parent: Control = $"Camera/dialogue UI/viewblocker parent"
+@onready var brackets_tabletop: Control = $"Camera/dialogue UI/bracket ui/tabletop"
+@onready var brackets_money_briefcase: Control = $"Camera/dialogue UI/bracket ui/money briefcase"
+@onready var brackets_double_or_nothing_choice: Control = $"Camera/dialogue UI/bracket ui/double or nothing choice"
+@onready var brackets_item_stealing: Control = $"Camera/dialogue UI/bracket ui/item stealing"
+@onready var brackets_item_grabbing: Control = $"Camera/dialogue UI/bracket ui/item grabbing"
+@onready var brackets_shooting_choice: Control = $"Camera/dialogue UI/bracket ui/shooting choice"
+@onready var brackets_waiver_pickup: Control = $"Camera/dialogue UI/bracket ui/waiver pickup"
 
 func _ready() -> void:
 	GlobalVariables.set_tree(self)

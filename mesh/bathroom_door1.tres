@@ -1,0 +1,74 @@
+[gd_resource type="ArrayMesh" format=4 uid="uid://bpgk8npgd6gkq"]
+
+[ext_resource type="Texture2D" uid="uid://biitidovpcxox" path="res://models/restroom1/restroom1_metal sheet albedo darker.png" id="1_0u5w5"]
+[ext_resource type="Texture2D" uid="uid://ft5ql5x0l6uv" path="res://models/restroom1/restroom1_stall door.png" id="2_61mpp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k5csa"]
+resource_name = "heavy rust"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_0u5w5")
+roughness = 0.740909
+texture_filter = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uanks"]
+resource_name = "stall door"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_61mpp")
+roughness = 0.740909
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_knule"]
+_surfaces = [{
+"aabb": AABB(-0.373037, -10.5537, -0.84039, 13.2081, 20.9722, 0.832783),
+"format": 34359742465,
+"index_count": 108,
+"index_data": PackedByteArray("CAADAAEACAAJAAMACQAHAAMACQAKAAcACgAFAAcACgALAAUABQARAAEABQAVABEAAgAEAAYAAgAAAAQABwABAAMABwAFAAEAAAAMAA8AAAACAAwAAgANAAwAAgAGAA0ABgAOAA0ABgAEAA4ACwAVAAUACwAWABUAFgARABUAFgAQABEAEwAXABIAEwAUABcABAASAA4ABAATABIADgAXAA8ADgASABcACAAWAAsACAAQABYADwAUAAAADwAXABQAAQAQAAgAAQARABAAAAATAAQAAAAUABMA"),
+"name": "heavy rust",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("sP6+vs7bKMGCYp2+sP6+vlCyJkGCYp2+sP6+vs7bKMHTI1e/sP6+vlCyJkHTI1e/llxNQc7bKMGCYp2+llxNQVCyJkGCYp2+llxNQc7bKMHTI1e/llxNQVCyJkHTI1e/sP6+vtTnGUGCYp2+sP6+vtTnGUHTI1e/llxNQdTnGUHTI1e/llxNQdTnGUGCYp2+sP6+vuaqG8HTI1e/llxNQeaqG8HTI1e/llxNQeaqG8GCYp2+sP6+vuaqG8GCYp2+sP6+vtTnGUFARvm7sP6+vlCyJkFARvm7llxNQeaqG8FARvm7llxNQc7bKMFARvm7sP6+vs7bKMFARvm7llxNQVCyJkFARvm7llxNQdTnGUFARvm7sP6+vuaqG8FARvm7")
+}, {
+"aabb": AABB(-0.373037, -9.72922, -0.84039, 13.2081, 19.3483, 0.533008),
+"format": 34359742465,
+"index_count": 24,
+"index_data": PackedByteArray("BgAAAAMABgAHAAAABQADAAIABQAGAAMABAACAAEABAAFAAIABwABAAAABwAEAAEA"),
+"name": "stall door",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("sP6+vtTnGUGCYp2+sP6+vtTnGUHTI1e/llxNQdTnGUHTI1e/llxNQdTnGUGCYp2+sP6+vuaqG8HTI1e/llxNQeaqG8HTI1e/llxNQeaqG8GCYp2+sP6+vuaqG8GCYp2+")
+}]
+blend_shape_mode = 0
+
+[resource]
+resource_name = "restroom1_Cube_134"
+_surfaces = [{
+"aabb": AABB(-0.373037, -10.5537, -0.84039, 13.2081, 20.9722, 0.832783),
+"attribute_data": PackedByteArray("gHKePICJfz+Acp48gIl/P8S6bz9BYQ8/xLpvP0FhDz9gcp48oNedPsS6bz9AThA/xLpvP0BOED8A/Ow6gIl/P9o3dD9BYQ8/IFdkP4CJfz8A+uw6oNedPiBXZD+g150+2jd0P0BOED/Eum8/6JcAPsS6bz/olwA+ZspnP4CJfz9mymc/gIl/P8S6bz+AiX8/xLpvP4CJfz9lymc/oNedPto3dD/olwA+wDfqPoCJfz98R2w/gIl/P8A36j6g150+2jd0P4CJfz96R2w/oNedPmBynjygTqs+nFN/P0FhDz8A+uw6oE6rPiBXZD+gTqs+wDfqPqBOqz56R2w/oE6rPpxTfz/olwA+ZcpnP6BOqz4A/Ow6IJh4PyBXZD8gmHg/wDfqPiCYeD98R2w/IJh4P4SJfz+AiX8/ZspnPyCYeD9mymc/IJh4P4BynjwgmHg/gHKePCCYeD+EiX8/QE4QPyA87zygTqs+Ts18P0FhDz9Q4Hs/QWEPPwA87zyg150+0CR1P0FhDz92NG0/QE4QP9AkdT88ThA/NwN9P4CJfz8YRGU/IJh4P3Y0bT/olwA+MBZ8PzxOED8YRGU/gIl/PyA87zyAiX8/djRtP0FhDz8wFnw/g4l/P9AkdT/olwA+dzRtP4CJfz8XRGU/oNedPk7NfD/olwA+UOB7P+iXAD4YRGU/oE6rPiA87zwgmHg/0CR1P4OJfz82A30/QE4QPw=="),
+"format": 34359742487,
+"index_count": 108,
+"index_data": PackedByteArray("GgAKAAQAGgAcAAoAHQAXAAsAHQAeABcAHwATABkAHwAhABMAEQAxAAUAEQA8ADEACAANABQACAACAA0AGAAGAAwAGAASAAYAAAAiACkAAAAHACIACQAkACMACQAVACQAFgAoACUAFgAQACgAIQA9ABMAIQBAAD0APwAwADsAPwAuADAANgBCADIANgA6AEIADwA0ACcADwA3ADQAJgBDACsAJgAzAEMAGwA+ACAAGwAtAD4AKgA4AAEAKgBBADgABAAsABoABAAvACwAAwA1AA4AAwA5ADUA"),
+"material": SubResource("StandardMaterial3D_k5csa"),
+"name": "heavy rust",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 68,
+"vertex_data": PackedByteArray("sP6+vs7bKMGCYp2+sP6+vs7bKMGCYp2+sP6+vs7bKMGCYp2+sP6+vs7bKMGCYp2+sP6+vlCyJkGCYp2+sP6+vlCyJkGCYp2+sP6+vlCyJkGCYp2+sP6+vs7bKMHTI1e/sP6+vs7bKMHTI1e/sP6+vs7bKMHTI1e/sP6+vlCyJkHTI1e/sP6+vlCyJkHTI1e/sP6+vlCyJkHTI1e/llxNQc7bKMGCYp2+llxNQc7bKMGCYp2+llxNQc7bKMGCYp2+llxNQc7bKMGCYp2+llxNQVCyJkGCYp2+llxNQVCyJkGCYp2+llxNQVCyJkGCYp2+llxNQc7bKMHTI1e/llxNQc7bKMHTI1e/llxNQc7bKMHTI1e/llxNQVCyJkHTI1e/llxNQVCyJkHTI1e/llxNQVCyJkHTI1e/sP6+vtTnGUGCYp2+sP6+vtTnGUGCYp2+sP6+vtTnGUHTI1e/sP6+vtTnGUHTI1e/llxNQdTnGUHTI1e/llxNQdTnGUHTI1e/llxNQdTnGUGCYp2+llxNQdTnGUGCYp2+sP6+vuaqG8HTI1e/sP6+vuaqG8HTI1e/llxNQeaqG8HTI1e/llxNQeaqG8HTI1e/llxNQeaqG8GCYp2+llxNQeaqG8GCYp2+llxNQeaqG8GCYp2+sP6+vuaqG8GCYp2+sP6+vuaqG8GCYp2+sP6+vuaqG8GCYp2+sP6+vtTnGUFARvm7sP6+vtTnGUFARvm7sP6+vtTnGUFARvm7sP6+vlCyJkFARvm7sP6+vlCyJkFARvm7sP6+vlCyJkFARvm7llxNQeaqG8FARvm7llxNQeaqG8FARvm7llxNQeaqG8FARvm7llxNQc7bKMFARvm7llxNQc7bKMFARvm7llxNQc7bKMFARvm7sP6+vs7bKMFARvm7sP6+vs7bKMFARvm7sP6+vs7bKMFARvm7llxNQVCyJkFARvm7llxNQVCyJkFARvm7llxNQVCyJkFARvm7llxNQdTnGUFARvm7llxNQdTnGUFARvm7llxNQdTnGUFARvm7sP6+vuaqG8FARvm7sP6+vuaqG8FARvm7sP6+vuaqG8FARvm7AAD/f/9//78AAP9//3//v/9/AAD//////38AAP////8AAP9//3//v/9//////////3////////8AAP9//3//v/9/AAD//////////wAA/78AAP9//3//v/////8AAP+//3//////////fwAA//////9/AAD/////////f/////////9///////9//////////3////////////9///////9/AAD//////////wAA/7////9///////////8AAP+//3////////////9//////wAA/3//f/+//38AAP////8AAP9//3//v/////8AAP+//////wAA/7////9///////9/AAD/////////f/////8AAP9//3//v/////8AAP+//////wAA/7////9///////9/////////////f/////////9//////wAA/3//f/+/AAD/f/9//7//f////////wAA/3//f/+//38AAP//////f/9//38AgAAA/3//f/+//3//f/9/AID/f/////////9//3//fwCA/3////////////9///////9/AAD//////3//f/9/AID///9//////wAA/3//f/+//38AAP//////f/9//38AgP9//3//fwCA/3////////////9///////9/AAD//////3//f/9/AID///9//////wAA/3//f/+//3//f/9/AID/f////////w==")
+}, {
+"aabb": AABB(-0.373037, -9.72922, -0.84039, 13.2081, 19.3483, 0.533008),
+"attribute_data": PackedByteArray("YHKePKBOqz6AYKs9YAZDPQD67DqgTqs+EOVgP8gzrD181/g9yDOsPXpHbD+gTqs+6JNqP2AGQz1lymc/oE6rPgD87DogmHg/EOVgPwJmaj981/g9AmZqP3xHbD8gmHg/6JNqPw3Ccz9mymc/IJh4P4BynjwgmHg/gGCrPQ3Ccz8="),
+"format": 34359742487,
+"index_count": 24,
+"index_data": PackedByteArray("DAABAAYADAAPAAEACwAHAAUACwANAAcACQAEAAMACQAKAAQADgACAAAADgAIAAIA"),
+"material": SubResource("StandardMaterial3D_uanks"),
+"name": "stall door",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("sP6+vtTnGUGCYp2+sP6+vtTnGUGCYp2+sP6+vtTnGUHTI1e/sP6+vtTnGUHTI1e/llxNQdTnGUHTI1e/llxNQdTnGUHTI1e/llxNQdTnGUGCYp2+llxNQdTnGUGCYp2+sP6+vuaqG8HTI1e/sP6+vuaqG8HTI1e/llxNQeaqG8HTI1e/llxNQeaqG8HTI1e/llxNQeaqG8GCYp2+llxNQeaqG8GCYp2+sP6+vuaqG8GCYp2+sP6+vuaqG8GCYp2+AAD/f/9//7//f/9/////vwAA/3//f/+//////wAA/7//////AAD/v////3///////3//f////7////9//////wAA/3//f/+//////wAA/7//////AAD/v////3///////3//f////7////9//////wAA/3//f/+//3//f////78=")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_knule")

@@ -1,0 +1,42 @@
+[gd_resource type="ArrayMesh" format=4 uid="uid://cffe4yrskv6vn"]
+
+[ext_resource type="Texture2D" uid="uid://cqgfg2r0i7y2u" path="res://models/restroom1/restroom1_TCom_Grungemaps0164_1_S.png" id="1_tptfr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y2egs"]
+resource_name = "mirror"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_tptfr")
+roughness = 0.686364
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_d0yii"]
+_surfaces = [{
+"aabb": AABB(-16.2558, -2.32197e-09, -6.6395, 32.5116, 1.00046e-05, 13.279),
+"format": 34359742465,
+"index_count": 6,
+"index_data": PackedByteArray("AAADAAEAAAACAAMA"),
+"name": "mirror",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("1guCwYqQHzHMdtRA1guCQYqQHzHMdtRA1guCwYqQH7HMdtTA1guCQYqQH7HMdtTA")
+}]
+blend_shape_mode = 0
+
+[resource]
+resource_name = "restroom1_Plane_002"
+_surfaces = [{
+"aabb": AABB(-16.2558, -2.32197e-09, -6.6395, 32.5116, 1.00046e-05, 13.279),
+"attribute_data": PackedByteArray("jLNzP6gzdT4D7Ew9nDN1Poyzcz+ZtEg/DuxMPZa0SD8="),
+"format": 34359742487,
+"index_count": 6,
+"index_data": PackedByteArray("AAADAAEAAAACAAMA"),
+"material": SubResource("StandardMaterial3D_y2egs"),
+"name": "mirror",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("1guCwYqQHzHMdtRA1guCQYqQHzHMdtRA1guCwYqQH7HMdtTA1guCQYqQH7HMdtTA/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/78=")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_d0yii")

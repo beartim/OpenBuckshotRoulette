@@ -1,0 +1,72 @@
+[gd_resource type="ArrayMesh" format=4 uid="uid://dhbkir11b87qj"]
+
+[ext_resource type="Texture2D" uid="uid://cb5q3pnqcp35s" path="res://models/player vehicle/player vehicle1_money4.png" id="1_chcuy"]
+[ext_resource type="Texture2D" uid="uid://b7qiowicxftbc" path="res://models/player vehicle/player vehicle1_paper stack side money.png" id="2_yv43f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mvnfo"]
+resource_name = "dollar_1.001"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_chcuy")
+roughness = 0.790909
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1rwo0"]
+resource_name = "paper side money.001"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_yv43f")
+roughness = 0.709091
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5jf8u"]
+_surfaces = [{
+"aabb": AABB(-0.880859, -0.236311, -0.5, 1.76172, 0.472633, 1.00001),
+"format": 34359742465,
+"index_count": 12,
+"index_data": PackedByteArray("AAAHAAIAAAABAAcAAwAGAAQAAwAFAAYA"),
+"name": "dollar_1.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AIBhv577cT4IAAA/AIBhv577cT7w//++AIBhP577cT4IAAA/AIBhv577cb4IAAA/AIBhv577cb7w//++AIBhP577cb4IAAA/AIBhP577cb7w//++AIBhP577cT7w//++")
+}, {
+"aabb": AABB(-0.880859, -0.236311, -0.5, 1.76172, 0.472633, 1.00001),
+"format": 34359742465,
+"index_count": 24,
+"index_data": PackedByteArray("AQADAAQAAQAAAAMAAAAFAAMAAAACAAUAAgAGAAUAAgAHAAYABwAEAAYABwABAAQA"),
+"name": "paper side money.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AIBhv577cT4IAAA/AIBhv577cT7w//++AIBhP577cT4IAAA/AIBhv577cb4IAAA/AIBhv577cb7w//++AIBhP577cb4IAAA/AIBhP577cb7w//++AIBhP577cT7w//++")
+}]
+blend_shape_mode = 0
+
+[resource]
+resource_name = "player vehicle1_dollar_1_014"
+_surfaces = [{
+"aabb": AABB(-0.880859, -0.236311, -0.5, 1.76172, 0.472633, 1.00001),
+"attribute_data": PackedByteArray("AAAAAAAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAIA/AAAAAA=="),
+"format": 34359742487,
+"index_count": 12,
+"index_data": PackedByteArray("AAAHAAIAAAABAAcAAwAGAAQAAwAFAAYA"),
+"material": SubResource("StandardMaterial3D_mvnfo"),
+"name": "dollar_1.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AIBhv577cT4IAAA/AIBhv577cT7w//++AIBhP577cT4IAAA/AIBhv577cb4IAAA/AIBhv577cb7w//++AIBhP577cb4IAAA/AIBhP577cb7w//++AIBhP577cT7w//++/3///////7//f///////v/9///////+//38AAP///z//fwAA////P/9/AAD///8//38AAP///z//f///////vw==")
+}, {
+"aabb": AABB(-0.880859, -0.236311, -0.5, 1.76172, 0.472633, 1.00001),
+"attribute_data": PackedByteArray("UA48vQAAAD8bP3Q/YA48PSSPBT8AAAA/VA48veTAiz5IDjy9QA48PSSPBT+OHzo/UA48vY0fOj8cP3Q/5sCLPiSPBT+NHzo/UA48vQAAAD9QDjy95MCLPiSPBT8bP3Q/Gz90PwAAAD9QDjy9Gj90Pxw/dD/mwIs+UA48vY4fOj8="),
+"format": 34359742487,
+"index_count": 24,
+"index_data": PackedByteArray("AgAGAAgAAgAAAAYAAQAKAAcAAQAEAAoABQANAAsABQAPAA0ADgAJAAwADgADAAkA"),
+"material": SubResource("StandardMaterial3D_1rwo0"),
+"name": "paper side money.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("AIBhv577cT4IAAA/AIBhv577cT4IAAA/AIBhv577cT7w//++AIBhv577cT7w//++AIBhP577cT4IAAA/AIBhP577cT4IAAA/AIBhv577cb4IAAA/AIBhv577cb4IAAA/AIBhv577cb7w//++AIBhv577cb7w//++AIBhP577cb4IAAA/AIBhP577cb4IAAA/AIBhP577cb7w//++AIBhP577cb7w//++AIBhP577cT7w//++AIBhP577cT7w//++AAD/f///AAD/f/9/AAD/PwAA/3///wAA//////7//z//f/9/AAD/P////3//f/8/AAD/f///AAD/f/9/AAD/PwAA/3///wAA/////////z//f/9/AAD/P////3//f/8//////////z////9//3//P/////////8/////f/9//z8=")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_5jf8u")

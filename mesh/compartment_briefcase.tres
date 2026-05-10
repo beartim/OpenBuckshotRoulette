@@ -1,0 +1,112 @@
+[gd_resource type="ArrayMesh" format=4 uid="uid://d3l5a61y4wfus"]
+
+[ext_resource type="Texture2D" uid="uid://dwwavyerahrg1" path="res://models/tabletop compartment origins2/tabletop compartment origins fix2_worn bare darkened.png" id="1_ei0ft"]
+[ext_resource type="Texture2D" uid="uid://dejv3nyeyrj08" path="res://models/tabletop compartment origins2/tabletop compartment origins fix2_TexturesCom_WornMetal_512_normal.png" id="2_0qp0v"]
+[ext_resource type="Texture2D" uid="uid://bgmcq7n1unsec" path="res://models/tabletop compartment origins2/tabletop compartment origins fix2_tabletop felt shotgun radius wo lines.png" id="3_0ib3f"]
+[ext_resource type="Texture2D" uid="uid://p246toxvepwt" path="res://models/tabletop compartment origins2/tabletop compartment origins fix2_tabletop felt normal.png" id="4_sgwco"]
+[ext_resource type="Texture2D" uid="uid://bx14mq2jdto51" path="res://models/tabletop compartment origins2/tabletop compartment origins fix2_tabletop felt shotgun radius compartment2.png" id="5_1bh1o"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1wuq2"]
+resource_name = "bare metal darkeneed"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_ei0ft")
+roughness = 0.772727
+normal_enabled = true
+normal_texture = ExtResource("2_0qp0v")
+texture_filter = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4jur6"]
+resource_name = "tabletop felt radius wo lines"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("3_0ib3f")
+roughness = 0.8
+normal_enabled = true
+normal_texture = ExtResource("4_sgwco")
+texture_filter = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5g5gt"]
+resource_name = "tabletop felt radius compartment"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("5_1bh1o")
+roughness = 0.8
+normal_texture = ExtResource("4_sgwco")
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_pef7r"]
+_surfaces = [{
+"aabb": AABB(-1.25257, -0.209233, -2.40318, 2.70595, 0.272398, 4.80641),
+"format": 34359742465,
+"index_count": 36,
+"index_data": PackedByteArray("BwAFAAQABwAGAAUACAAEAAIACAAHAAQACQACAAMACQAIAAIACgADAAEACgAJAAMABgAAAAUABgALAAAACwABAAAACwAKAAEA"),
+"name": "bare metal darkeneed",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("QItNvkRBVr7IxhlA8Pi5P0RBVr6hzhlAAE9NvkRBVr6wyBnAOAi6P0RBVr7dwBnAkFGgv0RBVr6ozRnAMFSgv0RBVr7LwRlAMFSgv4dcgT3LwRlAkFGgv4dcgT2ozRnAAE9NvodcgT2wyBnAOAi6P4dcgT3dwBnA8Pi5P4dcgT2hzhlAQItNvodcgT3IxhlA")
+}, {
+"aabb": AABB(-1.25257, 0.0631648, -2.40318, 2.70595, 0.0829138, 4.80641),
+"format": 34359742465,
+"index_count": 36,
+"index_data": PackedByteArray("AQAKAAsAAQAEAAoAAwALAAYAAwABAAsABAAJAAoABAAFAAkABQAIAAkABQAAAAgAAAAHAAgAAAACAAcAAgAGAAcAAgADAAYA"),
+"name": "tabletop felt radius wo lines",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("AE9Nvv2SFT6wyBnAQItNvv2SFT7IxhlAkFGgv/2SFT6ozRnAMFSgv/2SFT7LwRlA8Pi5P/2SFT6hzhlAOAi6P/2SFT7dwBnAMFSgv4dcgT3LwRlAkFGgv4dcgT2ozRnAAE9NvodcgT2wyBnAOAi6P4dcgT3dwBnA8Pi5P4dcgT2hzhlAQItNvodcgT3IxhlA")
+}, {
+"aabb": AABB(-1.25257, -0.209233, -2.40318, 2.70595, 0.355312, 4.80641),
+"format": 34359742465,
+"index_count": 24,
+"index_data": PackedByteArray("AAADAAIAAAABAAMABQABAAAABQAEAAEACAALAAYACAAKAAsACQAGAAcACQAIAAYA"),
+"name": "tabletop felt radius compartment",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("AE9Nvv2SFT6wyBnAQItNvv2SFT7IxhlAkFGgv/2SFT6ozRnAMFSgv/2SFT7LwRlA8Pi5P/2SFT6hzhlAOAi6P/2SFT7dwBnAQItNvkRBVr7IxhlA8Pi5P0RBVr6hzhlAAE9NvkRBVr6wyBnAOAi6P0RBVr7dwBnAkFGgv0RBVr6ozRnAMFSgv0RBVr7LwRlA")
+}]
+blend_shape_mode = 0
+
+[resource]
+resource_name = "tabletop compartment origins fix2_Plane_037"
+_surfaces = [{
+"aabb": AABB(-1.25257, -0.209233, -2.40318, 2.70595, 0.272398, 4.80641),
+"attribute_data": PackedByteArray("UnWUPrCjPz9SdZQ+sKM/P1J1lD5GfOM+U3WUPRIwcT/6r14+rEcjP/qvXj6sRyM/+69ePhIwcT9PdZQ94P5sPVJ1FD4SMHE/+q9ePvxy4z5QdRQ+UP9sPVJ1lD4SMHE/UnWUPVD/bD38r14+EjBxP1R1lD0SMHE/UnUUPvxy4z5SdRQ+rEcjP1J1FD6sRyM/UnUUPhIwcT8AAAAA4P5sPfuvXj5GfOM+AACAMhIwcT/7r14+sKM/P/uvXj6woz8/"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("DgAKAAgADgAMAAoAEAAJAAQAEAAPAAkAEgAFAAYAEgARAAUAFQAHAAMAFQATAAcADQABAAsADQAXAAEAFgACAAAAFgAUAAIA"),
+"material": SubResource("StandardMaterial3D_1wuq2"),
+"name": "bare metal darkeneed",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("QItNvkRBVr7IxhlAQItNvkRBVr7IxhlA8Pi5P0RBVr6hzhlA8Pi5P0RBVr6hzhlAAE9NvkRBVr6wyBnAAE9NvkRBVr6wyBnAOAi6P0RBVr7dwBnAOAi6P0RBVr7dwBnAkFGgv0RBVr6ozRnAkFGgv0RBVr6ozRnAMFSgv0RBVr7LwRlAMFSgv0RBVr7LwRlAMFSgv4dcgT3LwRlAMFSgv4dcgT3LwRlAkFGgv4dcgT2ozRnAkFGgv4dcgT2ozRnAAE9NvodcgT2wyBnAAE9NvodcgT2wyBnAOAi6P4dcgT3dwBnAOAi6P4dcgT3dwBnA8Pi5P4dcgT2hzhlA8Pi5P4dcgT2hzhlAQItNvodcgT3IxhlAQItNvodcgT3IxhlA9n//f/9/AID2f/9//38AgPZ//3//fwCA+///f/9/AID///X//38AgP//9f//fwCA///1//9/AID7//9//38AgAAAAID/fwCA///1//9/AIAAAACA/38AgPZ//3//fwCAAAAAgP9/AID2f/9//38AgAAAAID/fwCA///1//9/AID///X//38AgP//9f//fwCA///1//9/AID7//9//38AgPZ//3//fwCA+///f/9/AID2f/9//38AgPZ//3//fwCA")
+}, {
+"aabb": AABB(-1.25257, 0.0631648, -2.40318, 2.70595, 0.0829138, 4.80641),
+"attribute_data": PackedByteArray("Xbs0PaxHIz9duzQ9rEcjP4WMhz2woz8/hYyHPbCjPz9ku7Q8EjBxP1y7ND38cuM+XLu0PFD/bD2FjIc9EjBxP4SMhz1GfOM+gK1nMhIwcT9fuzQ9EjBxPwAAAADg/mw9WLs0PVD/bD1bu7Q9EjBxP1y7ND0SMHE/hIyHPfxy4z6EjIc9rEcjP4SMhz2sRyM/hIyHPRIwcT9Uu7Q84P5sPVq7tD1GfOM+XLu0PBIwcT9au7Q9sKM/P1q7tD2woz8/"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AgAUABYAAgAIABQABwAXAA0ABwADABcACQATABUACQALABMACgARABIACgABABEAAAAPABAAAAAFAA8ABAAMAA4ABAAGAAwA"),
+"material": SubResource("StandardMaterial3D_4jur6"),
+"name": "tabletop felt radius wo lines",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AE9Nvv2SFT6wyBnAAE9Nvv2SFT6wyBnAQItNvv2SFT7IxhlAQItNvv2SFT7IxhlAkFGgv/2SFT6ozRnAkFGgv/2SFT6ozRnAMFSgv/2SFT7LwRlAMFSgv/2SFT7LwRlA8Pi5P/2SFT6hzhlA8Pi5P/2SFT6hzhlAOAi6P/2SFT7dwBnAOAi6P/2SFT7dwBnAMFSgv4dcgT3LwRlAMFSgv4dcgT3LwRlAkFGgv4dcgT2ozRnAkFGgv4dcgT2ozRnAAE9NvodcgT2wyBnAAE9NvodcgT2wyBnAOAi6P4dcgT3dwBnAOAi6P4dcgT3dwBnA8Pi5P4dcgT2hzhlA8Pi5P4dcgT2hzhlAQItNvodcgT3IxhlAQItNvodcgT3IxhlA///1//9/AID///X//38AgPZ//3//fwCA9n//f/9/AIAAAACA/38AgP//9f//fwCAAAAAgP9/AID2f/9//38AgPZ//3//fwCA+///f/9/AID///X//38AgPv//3//fwCAAAAAgP9/AID2f/9//38AgAAAAID/fwCA///1//9/AID///X//38AgP//9f//fwCA///1//9/AID7//9//38AgPZ//3//fwCA+///f/9/AID2f/9//38AgPZ//3//fwCA")
+}, {
+"aabb": AABB(-1.25257, -0.209233, -2.40318, 2.70595, 0.355312, 4.80641),
+"attribute_data": PackedByteArray("vuYgP4BtbD++5iA/gG1sP5HcvT43bmw/kdy9PjdubD/P5yA/dzR5P7bevT62NHk/Mtm9Po5YWD8Q5SA/GldYP5HcvT43bmw/kdy9PjdubD8y2b0+jlhYP77mID+AbWw/vuYgP4BtbD8Q5SA/GldYP8/nID93NHk/tt69PrY0eT8="),
+"format": 34359742487,
+"index_count": 24,
+"index_data": PackedByteArray("AAAFAAQAAAACAAUABwADAAEABwAGAAMACwAPAAgACwAOAA8ADQAJAAoADQAMAAkA"),
+"material": SubResource("StandardMaterial3D_5g5gt"),
+"name": "tabletop felt radius compartment",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("AE9Nvv2SFT6wyBnAAE9Nvv2SFT6wyBnAQItNvv2SFT7IxhlAQItNvv2SFT7IxhlAkFGgv/2SFT6ozRnAMFSgv/2SFT7LwRlA8Pi5P/2SFT6hzhlAOAi6P/2SFT7dwBnAQItNvkRBVr7IxhlAQItNvkRBVr7IxhlA8Pi5P0RBVr6hzhlAAE9NvkRBVr6wyBnAAE9NvkRBVr6wyBnAOAi6P0RBVr7dwBnAkFGgv0RBVr6ozRnAMFSgv0RBVr7LwRlA/3///////n//f///AAAAAP9///8AAAAA/3///wAAAAD/f//////+f/9///////5//3///wAAAAD/f///AAAAAP9/AAAAAP///38AAAAAAID/fwAAAAAAgP9/AAD///7//38AAAAAAID/fwAAAAAAgP9/AAD///7//38AAP////8=")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_pef7r")
