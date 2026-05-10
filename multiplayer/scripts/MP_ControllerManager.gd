@@ -13,7 +13,7 @@ func _ready():
 	get_viewport().connect("gui_focus_changed", _on_focus_changed)
 	var controllers = Input.get_connected_joypads()
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if (settingVisibility): SetVisibility()
 
 func _on_focus_changed(control : Control):

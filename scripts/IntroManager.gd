@@ -66,7 +66,7 @@ var counting = false
 var count_current = 0
 var count_max = 60
 var fs1 = false
-func _process(delta):
+func _process(_delta: float) -> void:
 	if (counting): CountTimer()
 	
 func CountTimer():
@@ -90,12 +90,12 @@ func MainBathroomStart():
 	intbranch_bathroomdoor.interactionAllowed = true
 	if (allowingPills): 
 		intbranch_pillbottle.interactionAllowed = true
-		if (GlobalVariables.using_steam): intbranch_crt.interactionAllowed = true
+		if (GlobalVariables.using_steam || GlobalVariables.all_steam_features_enabled): intbranch_crt.interactionAllowed = true
 	if (cursor.controller_active): btn_bathroomdoor.grab_focus()
 	controller.previousFocus = btn_bathroomdoor
 	if (allowingPills): 
 		btn_pills.visible = true
-		if (GlobalVariables.using_steam): btn_screen.visible = true
+		if (GlobalVariables.using_steam || GlobalVariables.all_steam_features_enabled): btn_screen.visible = true
 	btn_bathroomdoor.visible = true
 	anim_pillflicker.play("flicker pill")
 
@@ -141,7 +141,7 @@ func RevivalBathroomStart():
 	cursor.SetCursor(true, true)
 	if (allowingPills): 
 		intbranch_pillbottle.interactionAllowed = true
-		if (GlobalVariables.using_steam):
+		if (GlobalVariables.using_steam || GlobalVariables.all_steam_features_enabled):
 			intbranch_crt.interactionAllowed = true
 			btn_screen.visible = true
 		btn_pills.visible = true

@@ -8,7 +8,7 @@ var current_timeout_length
 var current_timeout_count
 var counting_timeout = false
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	CountTimeout()
 
 func StartTimeoutOnBranch(timeout_length : float):

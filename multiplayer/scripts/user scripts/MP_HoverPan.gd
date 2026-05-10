@@ -15,7 +15,7 @@ var is_hovering = false
 func _ready():
 	if properties.is_active: intermediary = get_node("/root/mp_main/standalone managers/interactions/interaction intermediary")
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if (properties.is_active):
 		CheckHover()
 

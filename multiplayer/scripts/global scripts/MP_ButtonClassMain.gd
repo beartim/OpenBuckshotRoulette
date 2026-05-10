@@ -66,7 +66,7 @@ func _ready():
 	button.connect("button_down", OnButtonDown)
 	button.connect("button_up", OnButtonUp)
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if !is_lobby_scene:
 		SetupInMainScene()
 	if cursor != null:

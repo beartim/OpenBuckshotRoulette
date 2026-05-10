@@ -65,7 +65,7 @@ func _ready():
 	Intro()
 	
 
-func _process(delta):
+func _process(_delta: float):
 	T()
 
 func CheckCommandLine():

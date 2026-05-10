@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dda8qsbvtpk26"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dda8qsbvtpk26"]
 
 [ext_resource type="Texture2D" uid="uid://b123038h2hpys" path="res://models/heaven1/heaven1_TCom_Ground_MudWet_512_normal.png" id="1"]
 

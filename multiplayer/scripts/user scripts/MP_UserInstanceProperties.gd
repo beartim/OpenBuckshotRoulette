@@ -112,7 +112,7 @@ func _ready():
 	SetOscillators()
 	Debugging() 
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpBus()
 
 func _unhandled_input(event):

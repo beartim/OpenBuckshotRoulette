@@ -17,7 +17,7 @@ func Shake():
 	if camera_to_shake:
 		shake_timer = duration
 
-func _process(delta):
+func _process(delta: float) -> void:
 	if shake_timer > 0:
 		if camera_to_shake:
 			var h_offset = randf() * intensity - intensity / 2.0

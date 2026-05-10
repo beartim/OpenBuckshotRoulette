@@ -14,7 +14,7 @@ var started = false
 func _ready():
 	HideText()
 
-func _process(delta):
+func _process(_delta: float):
 	LerpText()
 	CheckInteraction()
 

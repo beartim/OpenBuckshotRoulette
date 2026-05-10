@@ -32,7 +32,7 @@ func _ready():
 	await GlobalVariables.tree.create_timer(3, false).timeout
 	fs2 = true
 
-func _process(delta):
+func _process(_delta: float):
 	LerpMovement()
 
 var fs = false
@@ -100,18 +100,3 @@ func GetDefibPosition(fov : float):
 		69.0: pos = Vector3(0.239, -2.385, -1.18)
 		69.5: pos = Vector3(0.239, -2.385, -1.18)
 	return pos
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

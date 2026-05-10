@@ -351,8 +351,8 @@ func EndTurnMain():
 func Shoot(who : String):
 	var currentRoundInChamber = shellSpawner.sequenceArray[0]
 	dealerCanGoAgain = false
-	var playerDied = false
-	var dealerDied = false
+	#var playerDied = false
+	#var dealerDied = false
 	ejectManager.FadeOutShell()
 	#ANIMATION DEPENDING ON WHO IS SHOT
 	match(who):
@@ -384,7 +384,7 @@ func Shoot(who : String):
 		cameraShaker.Shake()
 		smoke.SpawnSmoke("barrel")
 		await(death.Kill("player", false, false))
-		playerDied = true
+		#playerDied = true
 	if (currentRoundInChamber == "blank" && who == "self"): dealerCanGoAgain = true
 	#EJECTING SHELLS
 	await GlobalVariables.tree.create_timer(.4, false).timeout

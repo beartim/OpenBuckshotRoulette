@@ -9,7 +9,7 @@ class_name Rebinding extends Node
 
 
 func UpdateBindList():
-	var map = InputMap
+	#var map = InputMap
 	for action in InputMap.get_actions():
 		var action_bindname = action
 		var bindkeys = InputMap.action_get_events(action)
@@ -40,7 +40,7 @@ func GetRebind(parent : Node):
 	globalparent = parent
 	controller.checkingForInput = false
 	controller.SetRebindFocus(false)
-	var ui_inputName = parent.get_child(0)
+	#var ui_inputName = parent.get_child(0)
 	var ui_inputKey = parent.get_child(1)
 	previousKey = ui_inputKey.text
 	mouseblocker.visible = true
@@ -66,14 +66,14 @@ func _input(event):
 		var branch = parent.get_child(2)
 		var originalkey_keyboard = branch.originalBind_keyboard
 		var originalkey_controller = branch.originalBind_controller
-		var activeKeyName = originalkey_controller
-		var actionIndex = 1
+		#var activeKeyName = originalkey_controller
+		#var actionIndex = 1
 		var assigningKeyboard = !event is InputEventJoypadButton and !event is InputEventJoypadMotion
-		var checkingMouse = event is InputEventMouseButton
-		if (assigningKeyboard): 
-			activeKeyName = originalkey_keyboard
-			actionIndex = 0
-		var binds = InputMap.action_get_events(ui_inputName)
+		#var checkingMouse = event is InputEventMouseButton
+		#if (assigningKeyboard): 
+			#activeKeyName = originalkey_keyboard
+			#actionIndex = 0
+		#var binds = InputMap.action_get_events(ui_inputName)
 		var firstEvent = originalkey_keyboard
 		var secondEvent = originalkey_controller
 		if (assigningKeyboard): firstEvent = newEventToBind
@@ -109,7 +109,7 @@ func SwapBind(firstevent : InputEvent, secondevent : InputEvent, _action : Strin
 func ReturnFromRebind():
 	waitingForAnyInput = false
 	await GlobalVariables.tree.create_timer(.1, false).timeout
-	var parent = globalparent
+	#var parent = globalparent
 	controller.checkingForInput = true
 	controller.SetRebindFocus(true)
 	mouseblocker.visible = false

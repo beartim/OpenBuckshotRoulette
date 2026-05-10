@@ -26,7 +26,7 @@ var jump_vel: Vector3 # Jumping velocity
 func _ready() -> void:
 	capture_mouse()
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	CheckIfMoving()
 
 func CheckIfMoving():

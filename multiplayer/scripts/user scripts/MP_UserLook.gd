@@ -16,7 +16,7 @@ var elapsed = 0
 var moving = false
 var checking = false
 
-func _process(delta):
+func _process(_delta: float):
 	Lerp()
 	CheckDirection()
 

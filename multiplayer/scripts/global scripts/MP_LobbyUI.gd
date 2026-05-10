@@ -94,7 +94,7 @@ func _ready():
 	else:
 		match_customization.UpdateMatchCustomizationUI(GlobalVariables.previous_match_customization_differences)
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	CheckHostLeave()
 	CheckLobbyCopyPaste()
 	CheckHostUI()

@@ -25,7 +25,7 @@ func _ready():
 	pass
 
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	pass
 
 var skipDialoguePresented = false
@@ -159,17 +159,3 @@ func PlayAudioIndicators():
 		else: speaker_audioIndicator.stream = soundArray_indicators[1]
 		speaker_audioIndicator.play()
 		await GlobalVariables.tree.create_timer(.07, false).timeout
-
-
-
-
-
-
-
-
-
-
-
-
-
-

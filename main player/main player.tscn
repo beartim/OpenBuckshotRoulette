@@ -1,9 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://bned5bhebd3v"]
+[gd_scene format=3 uid="uid://bned5bhebd3v"]
 
 [ext_resource type="FontFile" uid="uid://hrejemmcbefs" path="res://main player/hydrogen.ttf" id="1"]
 [ext_resource type="Texture2D" uid="uid://dw1sjbgkgwqx6" path="res://main player/yuletide machine logo1.png" id="2"]
-[ext_resource type="Shader" path="res://main player/vignette.gdshader" id="3"]
-[ext_resource type="Shader" path="res://main player/posterization test.gdshader" id="4"]
+[ext_resource type="Shader" uid="uid://biv0yaosseb2a" path="res://main player/vignette.gdshader" id="3"]
+[ext_resource type="Shader" uid="uid://dkjefugsrp3b8" path="res://main player/posterization test.gdshader" id="4"]
 [ext_resource type="Material" uid="uid://1cc5f0tvkdn5" path="res://main player/mat_color precision.tres" id="5"]
 [ext_resource type="Material" uid="uid://cbt5cvhck0euq" path="res://main player/mat_dithering.tres" id="6"]
 [ext_resource type="Material" uid="uid://cdrlcynkcj7w6" path="res://main player/test shader.tres" id="7"]
@@ -26,12 +26,12 @@ shader_parameter/RED_COMPONENT = 15.0
 shader_parameter/GREEN_COMPONENT = 15.0
 shader_parameter/BLUE_COMPONENT = 15.0
 
-[node name="Camera" type="Camera3D"]
+[node name="Camera" type="Camera3D" unique_id=686743416]
 transform = Transform3D(0.999455, -0.0137876, -0.0299864, -0.0239283, 0.323054, -0.946078, 0.0227314, 0.94628, 0.322548, 0.202415, 6.12824, 2.06749)
 current = true
 fov = 62.1
 
-[node name="viewblocker" type="Control" parent="."]
+[node name="viewblocker" type="Control" parent="." unique_id=2024094527]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -45,7 +45,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="press enter" type="Label" parent="viewblocker"]
+[node name="press enter" type="Label" parent="viewblocker" unique_id=1136596645]
 layout_mode = 0
 offset_left = -520.0
 offset_top = 222.0
@@ -58,7 +58,7 @@ theme_override_font_sizes/font_size = 46
 text = "PRESS ENTER"
 horizontal_alignment = 1
 
-[node name="press enter2" type="Label" parent="viewblocker"]
+[node name="press enter2" type="Label" parent="viewblocker" unique_id=1470230150]
 layout_mode = 0
 offset_left = -518.0
 offset_top = 219.0
@@ -71,7 +71,7 @@ theme_override_font_sizes/font_size = 46
 text = "PRESS ENTER"
 horizontal_alignment = 1
 
-[node name="yuletide machine" type="Label" parent="viewblocker"]
+[node name="yuletide machine" type="Label" parent="viewblocker" unique_id=1743509397]
 layout_mode = 0
 offset_left = -523.0
 offset_top = 193.0
@@ -85,7 +85,7 @@ theme_override_font_sizes/font_size = 46
 text = "YULETIDE MACHINE"
 horizontal_alignment = 1
 
-[node name="yuletide machine2" type="Label" parent="viewblocker"]
+[node name="yuletide machine2" type="Label" parent="viewblocker" unique_id=1644847200]
 layout_mode = 0
 offset_left = -521.0
 offset_top = 191.0
@@ -98,7 +98,7 @@ theme_override_font_sizes/font_size = 46
 text = "YULETIDE MACHINE"
 horizontal_alignment = 1
 
-[node name="ColorRect" type="ColorRect" parent="viewblocker"]
+[node name="ColorRect" type="ColorRect" parent="viewblocker" unique_id=909356437]
 layout_mode = 0
 offset_left = -465.0
 offset_top = -265.0
@@ -106,7 +106,7 @@ offset_right = 511.0
 offset_bottom = 302.0
 color = Color(0, 0, 0, 1)
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="." unique_id=1783254852]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -120,7 +120,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="logo" type="TextureRect" parent="Control"]
+[node name="logo" type="TextureRect" parent="Control" unique_id=1969508353]
 visible = false
 layout_mode = 0
 offset_left = -960.0
@@ -131,9 +131,9 @@ scale = Vector2(0.23019, 0.23019)
 pivot_offset = Vector2(960, 540)
 texture = ExtResource("2")
 
-[node name="post processing" type="Node" parent="."]
+[node name="post processing" type="Node" parent="." unique_id=151487739]
 
-[node name="vignette" type="Control" parent="post processing"]
+[node name="vignette" type="Control" parent="post processing" unique_id=560637475]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -3.05176e-05
@@ -141,12 +141,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/vignette"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/vignette" unique_id=1893879762]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="post processing/vignette/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="post processing/vignette/BackBufferCopy" unique_id=84417942]
 material = SubResource("ShaderMaterial_t87el")
 offset_left = -99.0
 offset_top = -98.0
@@ -155,19 +155,19 @@ offset_bottom = 105.0
 rotation = 0.00159616
 mouse_filter = 2
 
-[node name="posterization test" type="Control" parent="post processing"]
+[node name="posterization test" type="Control" parent="post processing" unique_id=1148466370]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/posterization test"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/posterization test" unique_id=503746427]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="post processing/posterization test/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="post processing/posterization test/BackBufferCopy" unique_id=881491856]
 material = SubResource("ShaderMaterial_w58bp")
 offset_left = -99.0
 offset_top = -98.0
@@ -175,7 +175,7 @@ offset_right = 102.0
 offset_bottom = 107.0
 mouse_filter = 2
 
-[node name="color precision" type="Control" parent="post processing"]
+[node name="color precision" type="Control" parent="post processing" unique_id=1164208315]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -183,12 +183,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/color precision"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/color precision" unique_id=1543384461]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="post processing/color precision/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="post processing/color precision/BackBufferCopy" unique_id=265947194]
 material = ExtResource("5")
 offset_left = -98.9733
 offset_top = -98.1818
@@ -196,7 +196,7 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="dithering" type="Control" parent="post processing"]
+[node name="dithering" type="Control" parent="post processing" unique_id=1601415441]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -204,13 +204,13 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/dithering"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/dithering" unique_id=844886117]
 visible = false
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="post processing/dithering/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="post processing/dithering/BackBufferCopy" unique_id=687215174]
 visible = false
 material = ExtResource("6")
 offset_left = -98.9733
@@ -219,7 +219,7 @@ offset_right = 865.027
 offset_bottom = 446.818
 mouse_filter = 2
 
-[node name="test" type="Control" parent="post processing"]
+[node name="test" type="Control" parent="post processing" unique_id=311104793]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -227,12 +227,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/test"]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="post processing/test" unique_id=844860266]
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="post processing/test/BackBufferCopy"]
+[node name="ColorRect" type="ColorRect" parent="post processing/test/BackBufferCopy" unique_id=1811758888]
 material = ExtResource("7")
 offset_left = -98.9733
 offset_top = -98.1818

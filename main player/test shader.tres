@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cdrlcynkcj7w6"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cdrlcynkcj7w6"]
 
-[ext_resource type="Shader" path="res://GodotRetro/Screen Shaders/Aditional Shaders/B&W.gdshader" id="1"]
+[ext_resource type="Shader" uid="uid://cjhp0mk3o8bts" path="res://GodotRetro/Screen Shaders/Aditional Shaders/B&W.gdshader" id="1"]
 
 [resource]
 shader = ExtResource("1")

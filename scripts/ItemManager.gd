@@ -69,7 +69,7 @@ func _ready():
 	#availableItemsToGrabArray_dealer = availableItemArray
 	ResetDealerGrid()
 
-func _process(delta):
+func _process(_delta: float):
 	LerpItem()
 	CheckTimer()
 	ItemStealTimeout()
@@ -80,17 +80,17 @@ func _process(delta):
 func SetIntakeFocus(state : bool):
 	btnParent_intake.visible = true
 	if (state):
-		for grid in btn_grids: grid.visible = false
+		for m_grid in btn_grids: m_grid.visible = false
 		btn_intake.visible = true
 		if (cursor.controller_active): btn_intake.grab_focus()
 		controller.previousFocus = btn_intake
 	else:
-		for grid in btn_grids: grid.visible = true
+		for m_grid in btn_grids: m_grid.visible = true
 		#btn_intake.visible = false
 
 func ClearIntakeFocus():
 	btnParent_intake.visible = false
-	for grid in btn_grids: grid.visible = false
+	for m_grid in btn_grids: m_grid.visible = false
 	btn_intake.visible = false
 
 func ItemClear_Remote():
@@ -425,10 +425,10 @@ func SetupItemSteal():
 	btnParent_stealing.visible = true
 	if (cursor.controller_active): btnparent_ff_stealing.grab_focus()
 	controller.previousFocus = btnparent_ff_stealing
-	for c in ch.size():
-		if(ch[c].get_child(0) is PickupIndicator):
-			var temp_indicator : PickupIndicator = ch[c].get_child(0)
-			var temp_interaction : InteractionBranch = ch[c].get_child(1)
+	#for c in ch.size():
+		#if(ch[c].get_child(0) is PickupIndicator):
+			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
+			#var temp_interaction : InteractionBranch = ch[c].get_child(1)
 	Counter(true)
 
 func RevertItemSteal(): 

@@ -7,6 +7,9 @@ extends Node
 @onready var label_player_health: Label = $CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth
 @onready var label_dealer_health: Label = $CanvasLayer/Control/Panel_Gambling/Label_DealerHealth
 @onready var button_open: Button = %Button_Open
+@onready var label_performance_level: Label = $CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel
+@onready var label_ambient_filter: Label = $CanvasLayer/Control/Panel_Performance/Label_AmbientFilter
+@onready var check_button_ambient_filter: CheckButton = $CanvasLayer/Control/Panel_Performance/Label_AmbientFilter/CheckButton_AmbientFilter
 
 var _forcing_mouse_mode := false
 var _forced_mouse_mode := Input.MOUSE_MODE_VISIBLE
@@ -30,15 +33,17 @@ func  _ready() -> void:
 	canvas_layer.hide()
 	if (DEBUG_TOOLS_ENABLED):
 		button_open.show()
+		GlobalVariables.SetDebugTimeScaleMultiplier(2)
 	else:
 		button_open.hide()
 
-func _input(event: InputEvent) -> void:
+func _input(_event: InputEvent) -> void:
 	if (!DEBUG_TOOLS_ENABLED): return
 	if (Input.is_action_just_pressed("debug_tools")):
 		_set_debug_visible(!canvas_layer.visible)
 
 func _process(delta: float) -> void:
+	if (!DEBUG_TOOLS_ENABLED): return
 	if !_forcing_mouse_mode:
 		return
 	var gs_mp: MP_GameStateManager = _find_mp_game_state()
@@ -51,6 +56,8 @@ func _process(delta: float) -> void:
 	if current_mode != _forced_mouse_mode:
 		_mouse_mode_to_restore = current_mode
 		Input.set_mouse_mode(_forced_mouse_mode)
+	label_performance_level.text = 'Level: ' + str(NeoSettings.fetch("performance/level", 0))
+	check_button_ambient_filter.button_pressed = NeoSettings.fetch("performance/ambient_filter_enabled", true)
 
 func _exit_tree() -> void:
 	if (!DEBUG_TOOLS_ENABLED): return
@@ -281,3 +288,15 @@ func _on_button_close_pressed() -> void:
 
 func _on_button_open_pressed() -> void:
 	_set_debug_visible(true)
+
+
+func _on_button_add_performance_level_pressed() -> void:
+	NeoSettings.put("performance/level", NeoSettings.fetch("performance/level") + 1)
+
+
+func _on_button_reduce_performance_level_pressed() -> void:
+	NeoSettings.put("performance/level", NeoSettings.fetch("performance/level") - 1)
+
+
+func _on_check_button_ambient_filter_pressed() -> void:
+	NeoSettings.put("performance/ambient_filter_enabled", !NeoSettings.fetch("performance/ambient_filter_enabled"))	

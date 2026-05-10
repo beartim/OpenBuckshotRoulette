@@ -11,7 +11,7 @@ func _ready():
 	await GlobalVariables.tree.create_timer(.5, false).timeout
 	exitAllowed = true
 
-func _process(delta):
+func _process(delta: float) -> void:
 	if exitAllowed:
 		if (Input.is_action_just_pressed("exit game")):
 			ShowUI()

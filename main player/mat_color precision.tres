@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://1cc5f0tvkdn5"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://1cc5f0tvkdn5"]
 
-[ext_resource type="Shader" path="res://GodotRetro/Screen Shaders/Aditional Shaders/ColorPrecission.gdshader" id="1"]
+[ext_resource type="Shader" uid="uid://bkmfj0xy0k354" path="res://GodotRetro/Screen Shaders/Aditional Shaders/ColorPrecission.gdshader" id="1"]
 
 [resource]
 shader = ExtResource("1")

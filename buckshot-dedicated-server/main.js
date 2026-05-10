@@ -45,9 +45,6 @@ server.on('connection', (ws) => {
 function handleMessage(clientId, data) {
     const client = clients.get(clientId);
     if (!client) return;
-
-    console.log('Received packet:', data.type);
-
     switch (data.type) {
         case 'createRoom':
             createRoom(clientId, data);
@@ -61,6 +58,8 @@ function handleMessage(clientId, data) {
         case 'listRooms':
             listRooms(clientId);
             break;
+        case 'heartbeat':
+            break
         default:
             console.log('Unknown message type:', data.type);
     }

@@ -15,7 +15,7 @@ var activeParent
 var activeInteractionBranch
 var checking = true
 
-func _process(delta):
+func _process(_delta: float):
 	UpdateRaycastAndHover()
 	CheckPickupLerp()
 

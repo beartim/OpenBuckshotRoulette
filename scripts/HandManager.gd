@@ -45,7 +45,7 @@ var orig_rot
 var activeHandParent
 var activeItemToGrab
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpHandMovement()
 
 var stealing = false
@@ -149,14 +149,14 @@ func PlaySound(itemName : String):
 			speaker_interaction.play()
 
 func RemoveItem_Remote(activeInstance : Node3D):
-	var activeIndex
-	var whichHandToGrabWith
-	var whichGridSide
-	var matchIndex
+	#var activeIndex
+	#var whichHandToGrabWith
+	#var whichGridSide
+	#var matchIndex
 	itemManager.itemArray_dealer.erase(activeInstance.get_child(1).itemName.to_lower())
 	itemManager.numberOfItemsGrabbed_enemy -= 1
-	activeIndex = activeInstance.get_child(0).dealerGridIndex
-	whichGridSide = activeInstance.get_child(0).whichSide
+	#activeIndex = activeInstance.get_child(0).dealerGridIndex
+	#whichGridSide = activeInstance.get_child(0).whichSide
 	itemManager.itemArray_instances_dealer.erase(activeInstance)
 	var tempindicator = activeInstance.get_child(0)
 	var gridname = tempindicator.dealerGridName
@@ -220,27 +220,3 @@ func LerpHandMovement():
 			handParent_R.transform.origin = pos
 			handParent_R.rotation_degrees = rot
 		pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

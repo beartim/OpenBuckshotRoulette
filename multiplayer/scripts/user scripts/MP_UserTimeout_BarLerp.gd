@@ -14,7 +14,7 @@ func _ready():
 	mesh = get_parent()
 	ResetToDefault()
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	Lerp()
 
 func ResetToDefault():

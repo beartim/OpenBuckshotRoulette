@@ -41,7 +41,7 @@ func _ready():
 	description = get_node("/root/main/standalone managers/description manager")
 	itemManager = get_node("/root/main/standalone managers/item manager")
 
-func _process(delta):
+func _process(_delta: float):
 	if (lerpEnabled): LerpMovement()
 	CheckIfActive()
 	pass
@@ -120,14 +120,3 @@ func SnapToMin():
 			obj.transform.origin = Vector3(obj.transform.origin.x, originalAxis, obj.transform.origin.z)
 		"z":
 			obj.transform.origin = Vector3(obj.transform.origin.x, obj.transform.origin.y, originalAxis)
-
-
-
-
-
-
-
-
-
-
-

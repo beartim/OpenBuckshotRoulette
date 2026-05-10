@@ -3,8 +3,8 @@
 [resource]
 emission_shape = 3
 emission_box_extents = Vector3(-4.245, 33.74, 58.1)
-gravity = Vector3(-27.955, 0, 0)
 initial_velocity_min = 3.7
 initial_velocity_max = 3.7
+gravity = Vector3(-27.955, 0, 0)
 scale_min = 0.1
 scale_max = 0.1

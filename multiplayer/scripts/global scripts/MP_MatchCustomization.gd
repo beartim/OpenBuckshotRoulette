@@ -255,7 +255,7 @@ func _input(event):
 		if GlobalVariables.current_button_hovered_over != null:
 			GlobalVariables.current_button_hovered_over.get_child(0).OnMouseWheelDown()
 
-func _process(delta):
+func _process(_delta: float):
 	if GlobalVariables.current_button_hovered_over == null:
 		right_click_down = false
 	checking = right_click_down

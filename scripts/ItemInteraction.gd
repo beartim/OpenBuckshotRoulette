@@ -43,7 +43,7 @@ func _ready():
 	pos_hand_main = pos_hand
 	rot_hand_main = rot_hand
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpMovement()
 
 var stealing = false

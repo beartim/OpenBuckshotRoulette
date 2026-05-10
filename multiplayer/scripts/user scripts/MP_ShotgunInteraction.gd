@@ -77,7 +77,7 @@ func _ready():
 	globalparent_shotgun_window = intermediary.globalparent_shotgun_window
 	globalparent_shotgun_cut_segment_mesh = intermediary.globalparent_shotgun_cut_segment_mesh
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	Lerp_ShotgunTransparency()
 
 func _unhandled_input(event):

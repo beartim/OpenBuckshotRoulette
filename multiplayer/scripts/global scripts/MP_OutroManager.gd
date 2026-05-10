@@ -29,7 +29,7 @@ class_name MP_OutroManager extends Node
 func _ready():
 	dialogue_results.get_parent().get_child(0).text = ""
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	ExitTimer()
 
 func Outro():

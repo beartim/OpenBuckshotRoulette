@@ -22,7 +22,7 @@ var prev_y = 0
 func _ready():
 	initial_y = parent.transform.origin.y
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	OscillateAxis()
 	LerpOriginalAxis()
 	if properties != null:

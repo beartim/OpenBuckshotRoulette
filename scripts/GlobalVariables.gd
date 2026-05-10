@@ -1,20 +1,21 @@
 extends Node
 
-var currentVersion_nr = "v1.0.0.12-beta EXTENDS v2.2.0"
-var currentVersion_hotfix = 6
-var using_steam = false
+var currentVersion_nr:= "v1.0.0.12-beta EXTENDS v2.2.0"
+var currentVersion_hotfix:= 6
+var using_steam:= false
+var all_steam_features_enabled:= true
 
-var currentVersion = ""
-var versuffix_steam = " (STEAM)"
-var versuffix_itch = " (ITCH.IO)"
-var versuffix_community = " (OPEN SOURCE)"
+var currentVersion:= ""
+var versuffix_steam:= " (STEAM)"
+var versuffix_itch:= " (ITCH.IO)"
+var versuffix_community:= " (OPEN SOURCE)"
 
-var discord_link = "https://discord.gg/UdjMNaKkQe"
-var github_link = "https://github.com/1503Dev/OpenBuckshotRoulette"
+var discord_link:= "https://discord.gg/UdjMNaKkQe"
+var github_link:= "https://github.com/1503Dev/OpenBuckshotRoulette"
 
-var using_gl = false
-var controllerEnabled = false
-var music_enabled = true
+var using_gl:= false
+var controllerEnabled:= false
+var music_enabled:= true
 var current_button_hovered_over : Control
 
 var base_time_scale := 1.0
@@ -337,8 +338,4 @@ func set_tree(node: Node):
 		tree = new_tree
 		print('使用新的场景树')
 	else:
-		printerr('场景树设置失败: 场景树不存在')
-
-const performance_option : Dictionary = {
-	show_ambient_filter = true,
-}
+		print('场景树设置失败: 场景树不存在')

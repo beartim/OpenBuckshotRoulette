@@ -1526,7 +1526,7 @@ libraries/ = SubResource("AnimationLibrary_vvkk5")
 autoplay = &"bird fly"
 
 [node name="Camera" type="Camera3D" parent="." unique_id=910328149]
-transform = Transform3D(0.039118085, 0.931403, 0.36188388, -0.16916099, 0.36310688, -0.91626304, -0.98481196, -0.025374169, 0.1717609, 3.47932, 1.009, 2.00394)
+transform = Transform3D(0.039118085, 0.931403, 0.36188385, -0.16916099, 0.36310688, -0.916263, -0.98481196, -0.025374169, 0.17176089, 3.47932, 1.009, 2.00394)
 fov = 65.5
 script = ExtResource("15")
 
@@ -2018,7 +2018,6 @@ transform = Transform3D(1.29947, 0, 0, 0, 6.61216, 0, 0, 0, 5.92511, -11.1371, 2
 visible = false
 layers = 0
 mesh = SubResource("BoxMesh_bv48e")
-skeleton = NodePath("")
 
 [node name="interaction branch" type="Node" parent="trig_door" unique_id=365759797]
 script = ExtResource("28")
@@ -2041,12 +2040,10 @@ transform = Transform3D(1.29947, 0, 0, 0, 1.29947, 0, 0, 0, 1.29947, -11.0602, 0
 [node name="door left" type="MeshInstance3D" parent="heaven1" unique_id=487143028]
 transform = Transform3D(0.993733, 0, 0, 0, 0.993733, 0, 0, 0, 0.993733, 0.00829506, 1.57899, 2.46781)
 mesh = SubResource("ArrayMesh_jglmy")
-skeleton = NodePath("")
 
 [node name="door right" type="MeshInstance3D" parent="heaven1" unique_id=1583339794]
 transform = Transform3D(0.993733, 0, 0, 0, 0.993733, 0, 0, 0, 0.993733, 0.0420427, 1.57899, -1.77337)
 mesh = SubResource("ArrayMesh_6q4mt")
-skeleton = NodePath("")
 
 [node name="door pivot_right" type="Node3D" parent="heaven1" unique_id=221080339]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.133054, 1.56612, -1.82423)
@@ -2054,69 +2051,56 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.133054, 1.56612, -1.82423)
 [node name="Cylinder" type="MeshInstance3D" parent="heaven1" unique_id=1775519762]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00253689, 5.53981, 0.312658)
 mesh = SubResource("ArrayMesh_01gu1")
-skeleton = NodePath("")
 
 [node name="Cube_006" type="MeshInstance3D" parent="heaven1" unique_id=1310285613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_77pld")
-skeleton = NodePath("")
 
 [node name="BezierCurve_012" type="MeshInstance3D" parent="heaven1" unique_id=710211473]
 transform = Transform3D(6.55651e-07, 1, 1.19209e-07, -0.0840718, 1.19209e-07, -0.99646, -0.99646, 6.85453e-07, 0.0840718, -0.0665883, 1.76234, 20.3477)
 mesh = SubResource("ArrayMesh_13sxv")
-skeleton = NodePath("")
 
 [node name="Cube_019" type="MeshInstance3D" parent="heaven1" unique_id=1873240238]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_gsh26")
-skeleton = NodePath("")
 
 [node name="Cube_028" type="MeshInstance3D" parent="heaven1" unique_id=1489261816]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_i0n1x")
-skeleton = NodePath("")
 
 [node name="Cube_029" type="MeshInstance3D" parent="heaven1" unique_id=700965370]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_w1xv5")
-skeleton = NodePath("")
 
 [node name="Cube_030" type="MeshInstance3D" parent="heaven1" unique_id=479053611]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_hg6qx")
-skeleton = NodePath("")
 
 [node name="Cube_031" type="MeshInstance3D" parent="heaven1" unique_id=759072666]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_qhh3a")
-skeleton = NodePath("")
 
 [node name="Cube_032" type="MeshInstance3D" parent="heaven1" unique_id=62131020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0216751, 1.2468, 10.7134)
 mesh = SubResource("ArrayMesh_j1rj8")
-skeleton = NodePath("")
 
 [node name="Cube_083" type="MeshInstance3D" parent="heaven1" unique_id=902512358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00227584, 1.04905, -4.23808)
 mesh = SubResource("ArrayMesh_ftkwq")
-skeleton = NodePath("")
 
 [node name="BezierCurve_043" type="MeshInstance3D" parent="heaven1" unique_id=1336286394]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.133055, 1.56612, -0.790645)
 mesh = SubResource("ArrayMesh_r0q11")
-skeleton = NodePath("")
 
 [node name="Plane" type="MeshInstance3D" parent="heaven1" unique_id=353048076]
 transform = Transform3D(75.1221, 0, 0, 0, 75.1221, 0, 0, 0, 75.1221, -0.0223436, -0.265245, 0.329748)
 material_override = ExtResource("34")
 mesh = SubResource("ArrayMesh_485xs")
-skeleton = NodePath("")
 
 [node name="Plane2" type="MeshInstance3D" parent="heaven1" unique_id=1497316659]
 transform = Transform3D(75.1221, 0, 0, 0, 75.1221, 0, 0, 0, 75.1221, -149.771, -0.265245, 0.329748)
 material_override = ExtResource("34")
 mesh = SubResource("ArrayMesh_485xs")
-skeleton = NodePath("")
 
 [node name="heaven pokers reimport1" parent="." unique_id=1983871117 instance=ExtResource("36")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -130.561, 0, -1.58656)
@@ -2283,15 +2267,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1217840609]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D" unique_id=2002045541]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent/bird copy1/bird parent/Skeleton3D" unique_id=1302825845]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent/bird copy1" unique_id=1858192378]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -2413,15 +2398,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=715931127]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D" unique_id=1819381689]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent2/bird copy1/bird parent/Skeleton3D" unique_id=145915160]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent2/bird copy1" unique_id=286365728]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -2543,15 +2529,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1321120196]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D" unique_id=110320934]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent3/bird copy1/bird parent/Skeleton3D" unique_id=1065643130]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent3/bird copy1" unique_id=1743499212]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -2673,15 +2660,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1144068790]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D" unique_id=1637520284]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent4/bird copy1/bird parent/Skeleton3D" unique_id=1397057219]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent4/bird copy1" unique_id=694166246]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -2803,15 +2791,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=35638479]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D" unique_id=2084772136]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent5/bird copy1/bird parent/Skeleton3D" unique_id=248698247]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent5/bird copy1" unique_id=583406290]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -2933,15 +2922,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=27470650]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D" unique_id=956070956]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent6/bird copy1/bird parent/Skeleton3D" unique_id=711111685]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent6/bird copy1" unique_id=141664794]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -3063,15 +3053,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1098469200]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D" unique_id=1255097755]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent7/bird copy1/bird parent/Skeleton3D" unique_id=1868114893]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent7/bird copy1" unique_id=1090793083]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -3193,15 +3184,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=69334603]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D" unique_id=33897610]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent8/bird copy1/bird parent/Skeleton3D" unique_id=1502335613]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent8/bird copy1" unique_id=1371941535]
 libraries/ = SubResource("AnimationLibrary_k0np4")
@@ -3323,15 +3315,16 @@ bone_idx = 8
 
 [node name="Cube_002" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D/Cube_002" unique_id=1002791728]
 mesh = SubResource("ArrayMesh_ue4jh")
-skeleton = NodePath("")
 
 [node name="Cube" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D" unique_id=585245104]
 mesh = SubResource("ArrayMesh_p0bk8")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="Cube_001" type="MeshInstance3D" parent="main bird parent/bird parent9/bird copy1/bird parent/Skeleton3D" unique_id=1642200361]
 mesh = SubResource("ArrayMesh_o14kk")
 skin = SubResource("Skin_5cn8b")
+skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="main bird parent/bird parent9/bird copy1" unique_id=859705177]
 libraries/ = SubResource("AnimationLibrary_k0np4")

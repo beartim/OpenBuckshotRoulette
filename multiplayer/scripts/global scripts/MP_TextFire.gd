@@ -26,7 +26,7 @@ func Reset():
 	ui.scale.x = max_x
 	ui.scale.y = max_y
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	Lerp()
 
 func Fire():

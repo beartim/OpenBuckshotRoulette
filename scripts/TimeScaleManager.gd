@@ -8,7 +8,7 @@ var elapsed = 0
 var from
 var to
 
-func _process(delta):
+func _process(_delta: float):
 	LerpTimeScale()
 
 func BeginTimeScaleLerp(start : float, end : float):

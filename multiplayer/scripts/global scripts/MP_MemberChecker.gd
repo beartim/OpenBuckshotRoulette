@@ -58,7 +58,7 @@ func CheckMembers():
 		TriggerGameStart()
 		return
 
-func _process(delta):
+func _process(delta: float) -> void:
 	if game_started:
 		return
 		

@@ -69,7 +69,7 @@ func _ready():
 	#await GlobalVariables.tree.create_timer(.2, false).timeout
 	pass
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpScore()
 	InitialTimer()
 	_sync_debug_tools_health_if_changed()

@@ -20,7 +20,7 @@ func _ready():
 	originalVolumeDB = speaker.volume_db
 	originalPitch = speaker.pitch_scale
 
-func _process(delta):
+func _process(_delta: float):
 	LerpVolume()
 	LerpPitch()
 
@@ -62,20 +62,3 @@ func LerpPitch():
 		c = ease(c, 0.4)
 		var pitch = lerpf(currentPitch, nextPitch, c)
 		speaker.pitch_scale = pitch
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

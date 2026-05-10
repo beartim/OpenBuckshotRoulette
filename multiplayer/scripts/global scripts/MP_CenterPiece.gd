@@ -38,7 +38,7 @@ func _ready():
 	AssignArmClosedRotations()
 	MoveToLoadingDock()
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpMovement()
 	CheckMovement()
 

@@ -14,7 +14,7 @@ func _ready():
 	parent = get_parent()
 	intbranch = parent.get_child(0)
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	Lerp()
 
 func Press():

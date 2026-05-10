@@ -13,7 +13,11 @@ func _ready() -> void:
 	vhs_grain.show()
 	viewblocker_join_from_search_result.show()
 	viewblocker.show()
-	posterization.show()
 	ui_parent_lobby_home.show()
 	ui_parent_match_customization.hide()
 	ui_parent_lobby_search.hide()
+	NeoSettings.fetch("performance/ambient_filter_enabled", true)
+	_update_performance_options()
+
+func _update_performance_options(_key: String = "", _value: Variant = null) -> void:
+	posterization.visible = NeoSettings.fetch("performance/ambient_filter_enabled", true)

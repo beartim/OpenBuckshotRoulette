@@ -27,6 +27,12 @@ var connected = false
 var is_active_connection = false
 var client_id = 0
 
+var connection_attempts = 0
+var reconnection_attempts = 0
+var had_successful_connection = false
+var retry_timer = 0.0
+var heartbeat_timer = 0.0
+
 func _ready():
 	process_priority = 1000
 	set_process_internal(true)
@@ -37,7 +43,6 @@ func _ready():
 		STEAM_ID = Steam.getSteamID()
 		STEAM_NAME = Steam.getPersonaName()
 	else:
-		# ONLINE = true
 		STEAM_ID = randi() % 1000000 + 1000
 		STEAM_NAME = generate_random_name()
 	
@@ -47,32 +52,49 @@ func _ready():
 	call_deferred("_ensure_steam_lobby_mirror_connected")
 
 func connect_to_server():
-	if is_active_connection:
-		print("Closing existing connection...")
+	if is_active_connection and ws_peer.get_ready_state() != WebSocketPeer.STATE_CLOSED:
 		ws_peer.close()
-		connected = false
-		is_active_connection = false
 	
+	connected = false
 	var err = ws_peer.connect_to_url(Steam.server_address)
 	if err != OK:
 		print("Failed to initiate connection to ", Steam.server_address)
 		is_active_connection = false
+		_handle_connection_failure()
 	else:
 		print("Connecting to server at ", Steam.server_address, "...")
 		is_active_connection = true
 
+func _handle_connection_failure():
+	if not had_successful_connection:
+		if connection_attempts < 3:
+			connection_attempts += 1
+			retry_timer = 3.0
+			print("Initial connection failed, retrying in 3s... Attempt: ", connection_attempts)
+	else:
+		if reconnection_attempts < 10:
+			reconnection_attempts += 1
+			retry_timer = 3.0
+			print("Reconnection failed, retrying in 3s... Attempt: ", reconnection_attempts)
+
 func generate_random_name() -> String:
 	var length = randi() % 5 + 6
-	var name = ""
+	var m_name = ""
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	for i in range(length):
-		name += chars[randi() % chars.length()]
-	return name
+		m_name += chars[randi() % chars.length()]
+	return m_name
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if GlobalVariables.using_steam:
 		Steam.run_callbacks()
 	
+	if retry_timer > 0:
+		retry_timer -= delta
+		if retry_timer <= 0:
+			connect_to_server()
+		return
+
 	if not is_active_connection:
 		return
 
@@ -83,7 +105,17 @@ func _process(_delta: float) -> void:
 		ONLINE = true
 		if not connected:
 			connected = true
+			had_successful_connection = true
+			connection_attempts = 0
+			reconnection_attempts = 0
+			heartbeat_timer = 0.0
 			print("Connected to server")
+		
+		heartbeat_timer += delta
+		if heartbeat_timer >= 15.0:
+			heartbeat_timer = 0.0
+			ws_peer.send_text(JSON.stringify({"type": "heartbeat"}))
+
 		while ws_peer.get_available_packet_count() > 0:
 			var packet = ws_peer.get_packet()
 			if ws_peer.was_string_packet():
@@ -95,9 +127,12 @@ func _process(_delta: float) -> void:
 		ONLINE = false
 		if connected:
 			connected = false
-			is_active_connection = false
-			print("Disconnected from server")
-	else: ONLINE = false
+			print("Disconnected from server, attempting immediate reconnect")
+			connect_to_server()
+		elif not retry_timer > 0:
+			_handle_connection_failure()
+	else: 
+		ONLINE = false
 
 func handle_binary_packet(packet: PackedByteArray):
 	if packet.is_empty():

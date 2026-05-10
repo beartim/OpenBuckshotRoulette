@@ -33,14 +33,15 @@ func _ready() -> void:
 		viewblocker_parent.hide()
 		mouse_blocker.hide()
 		$"standalone managers/cursor manager".SetCursor(true, false)
+	NeoSettings.connect('value_changed', update_performance_options)
 	update_performance_options()
 
 func bind_events():
 	button_class_pause_server_address.connect("is_pressed", _on_button_class_pause_server_address_is_pressed)
 	button_class_reconnect_to_ws.connect('is_pressed', _on_button_class_reconnect_to_ws_is_pressed)
 
-func update_performance_options():
-	posterization_test.visible = GlobalVariables.performance_option.show_ambient_filter
+func update_performance_options(_key: String = "", _value: Variant = null):
+	posterization_test.visible = NeoSettings.fetch("performance/ambient_filter_enabled", true)
 
 func get_server_address_from_clipboard() -> String:
 	var text = DisplayServer.clipboard_get()
@@ -78,7 +79,7 @@ func update_server_address_label():
 func _on_button_class_reconnect_to_ws_is_pressed():
 	GlobalSteam.connect_to_server()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if options_online_service.visible:
 		var state = GlobalSteam.ws_peer.get_ready_state()
 		

@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://ch4esqsrw42r4"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ch4esqsrw42r4"]
 
 [ext_resource type="Texture2D" uid="uid://cd8nsen3fsvnh" path="res://models/shotgun new/shotgun with hands2_metal24 pump action painted2.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://bg3xpljxh4tgt" path="res://models/shotgun new/shotgun with hands2_metal024 pump action painted normal2.png" id="2"]

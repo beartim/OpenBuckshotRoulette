@@ -99,7 +99,7 @@ func _input(event):
 					_alt = event.pressed
 
 # Updates mouselook and movement every frame
-func _process(delta):
+func _process(delta: float) -> void:
 	if enabled:
 		_update_mouselook()
 		_update_movement(delta)

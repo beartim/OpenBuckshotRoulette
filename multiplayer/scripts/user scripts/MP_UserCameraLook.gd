@@ -21,7 +21,7 @@ var y_past = false
 var enabled = false
 var using_mouse_for_input = false
 
-func _process(delta):
+func _process(_delta: float):
 	if properties.is_active:
 		UpdateMouseLook()
 		CheckCameraReturn()

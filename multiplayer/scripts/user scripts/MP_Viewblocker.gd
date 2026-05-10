@@ -12,7 +12,7 @@ var elapsed = 0
 var active_color_start
 var active_color_end
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	Lerp()
 
 func Set():

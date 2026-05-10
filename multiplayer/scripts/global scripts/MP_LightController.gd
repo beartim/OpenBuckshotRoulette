@@ -9,7 +9,7 @@ var energy_start = 0
 var energy_end = 0
 var active_curve = 0
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	Lerp()
 
 func LerpEnergy(from : float, to : float, curve : float, duration : float):

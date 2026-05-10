@@ -11,7 +11,7 @@ func _input(event):
 	if event is InputEventMouse:
 		if(!controller_overriding): mouse = event.position
 
-func _process(delta):
+func _process(_delta: float):
 	get_selection()
 
 func get_selection():

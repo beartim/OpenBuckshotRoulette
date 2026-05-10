@@ -32,7 +32,7 @@ func _ready():
 	speaker_indicatorCheck = get_node("/root/mp_main/speaker parent/speakers_interaction/speaker_indicator check")
 	intermediary = get_node("/root/mp_main/standalone managers/interactions/interaction intermediary")
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	CheckIfActive()
 	if (lerpEnabled && lerping_on_hover): LerpMovement()
 

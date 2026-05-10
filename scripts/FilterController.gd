@@ -14,7 +14,7 @@ func _ready():
 	effect_lowPass = AudioServer.get_bus_effect(1, 0)
 	effect_lowPass.cutoff_hz = lowPassDefaultValue
 
-func _process(delta):
+func _process(_delta: float):
 	PanLowPass_HighLow()
 
 func BeginSnap(valueTo : float):

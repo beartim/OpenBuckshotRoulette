@@ -13,7 +13,7 @@ var fs2 = false
 var colorvalue_current = 0.0
 var colorvalue_next = 0.0
 
-func _process(delta):
+func _process(_delta: float):
 	CheckStatus()
 	LerpOpacity()
 

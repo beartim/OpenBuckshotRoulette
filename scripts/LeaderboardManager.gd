@@ -25,7 +25,7 @@ func _ready():
 	Steam.leaderboard_scores_downloaded.connect(_on_leaderboard_scores_downloaded)
 	GetLeaderboard()
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	CheckTimeout()
 
 func PassLeaderboard(range1 : int, range2 : int, alias : String):
@@ -88,7 +88,7 @@ func UpdateDisplay():
 	lock.material_override.albedo_color = Color(1, 1, 1, 0)
 	display_instances_act = display_instances
 	var temp_rank = 0
-	var array = active_result_array
+	#var array = active_result_array
 	
 	if (checking_friends):
 		for result in active_result_array:
@@ -111,7 +111,7 @@ func UpdateDisplay():
 		text_globalpos.text = "(" + str(pos_current) + "/" + str(pos_max) + ")"
 		display_instances_act = display_instances_alt
 	
-	var incrementer = 0
+	#var incrementer = 0
 	for i in range(display_instances_act.size()):
 		if i >= active_result_array.size() or active_result_array[i] == null: continue
 		
@@ -125,7 +125,7 @@ func UpdateDisplay():
 		var beaten = details[1]
 		var sc = init
 		for s in range(beaten - 1): sc *= 2
-		var check = 0
+		#var check = 0
 		active_score = sc
 		
 		if (!fs):

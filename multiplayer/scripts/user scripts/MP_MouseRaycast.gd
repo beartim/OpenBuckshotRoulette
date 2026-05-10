@@ -25,7 +25,7 @@ func _unhandled_input(event):
 		if event.is_action_pressed("debug_b"):
 			print("mouse pos: ", mouse)
 
-func _process(delta):
+func _process(_delta: float):
 	if properties.is_active && getting_selection:
 		get_selection()
 

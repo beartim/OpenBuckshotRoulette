@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dnf6a2nmc4q4b"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dnf6a2nmc4q4b"]
 
 [ext_resource type="Texture2D" uid="uid://cbthxfddj8u5h" path="res://misc/bracket selection_square2.png" id="1"]
 

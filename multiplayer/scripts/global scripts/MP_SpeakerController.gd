@@ -20,7 +20,7 @@ func _ready():
 	originalVolumeDB = speaker.volume_db
 	originalPitch = speaker.pitch_scale
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpVolume()
 	LerpPitch()
 

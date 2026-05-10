@@ -28,7 +28,7 @@ func _ready():
 		await GlobalVariables.tree.create_timer(3, false).timeout
 	print("properties is active: ", properties.is_active)
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	#if properties.is_active: print("cursor on ui: ", cursor.on_ui)
 	pass
 

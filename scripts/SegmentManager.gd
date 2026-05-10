@@ -8,7 +8,7 @@ var dur = 2
 var elapsed = 0
 var moving = false
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpSegment()
 
 func GrowBarrel():

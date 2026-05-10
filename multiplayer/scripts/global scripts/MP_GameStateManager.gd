@@ -79,7 +79,7 @@ func _ready():
 		PingMousePosition()
 	await GlobalVariables.tree.create_timer(5, false).timeout
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if GlobalVariables.exiting_to_lobby_after_inactivity:
 		CountInactivity()
 
@@ -144,9 +144,9 @@ func IncrementActiveSequenceIndex(overriding_with_value : int = -1):
 
 func SetItemDistributionVariablesFromCustomization(for_round_index : int):
 	var active = GlobalVariables.active_match_customization_dictionary.duplicate(true)
-	for round in active.round_property_array:
-		if round.round_index == for_round_index:
-			for item_property in round.item_properties:
+	for m_round in active.round_property_array:
+		if m_round.round_index == for_round_index:
+			for item_property in m_round.item_properties:
 				for item_resource in MAIN_item_resource_array:
 					if item_property.item_id == item_resource.id:
 						item_resource.max_amount_on_table = item_property.max_per_player
@@ -281,7 +281,7 @@ func CheckIfEndingTurnAfterItemUse(item_id : int, for_socket_number : int):
 	return false
 
 func IsPlacingLastItem(user_properties : MP_UserInstanceProperties):
-	var count = 0
+	var m_count = 0
 	var result = GetItemToGrab(user_properties, false)
 	if (DebugTools.DEBUG_TOOLS_ENABLED):
 		print("DEBUG IsPlacingLastItem socket:", user_properties.socket_number, " result:", result)
@@ -290,9 +290,9 @@ func IsPlacingLastItem(user_properties : MP_UserInstanceProperties):
 		return true
 	for dict in user_properties.user_inventory:
 		if dict != {}:
-			count += 1
-	count += 1
-	if count == 8: 
+			m_count += 1
+	m_count += 1
+	if m_count == 8: 
 		user_properties.is_grabbing_items = false
 		print(user_properties.socket_number, " is placing last item.")
 		return true
@@ -465,8 +465,8 @@ func CheckIfShooterEndingTurnAfterShot(active_shooter_socket_target : int, activ
 	if GetSocketProperties(active_shooter_socket_self).user_id in MAIN_active_user_id_exceeded_secondary_timeout_array:
 		return true
 	var ending_turn = true
-	var handing_turn_over = true
-	var sequence_empty = false
+	#var handing_turn_over = true
+	#var sequence_empty = false
 	var user_has_won_with_socket = -1
 	var future_health_for_shot_socket
 	var shotgun_damage = 1
@@ -490,8 +490,12 @@ func CheckIfShooterEndingTurnAfterShot(active_shooter_socket_target : int, activ
 	if num_of_users_alive == 1:
 		user_has_won_with_socket = user_alive_socket
 	
-	if active_shooter_socket_target == active_shooter_socket_self && active_shooter_shell == "blank": ending_turn = true; handing_turn_over = false
-	if active_shooter_sequence_length_after_eject == 0: ending_turn = true; sequence_empty = true
+	if active_shooter_socket_target == active_shooter_socket_self && active_shooter_shell == "blank":
+		ending_turn = true
+		#handing_turn_over = false
+	if active_shooter_sequence_length_after_eject == 0:
+		ending_turn = true
+		#sequence_empty = true
 	if user_has_won_with_socket != -1: ending_turn = true
 	
 	return ending_turn

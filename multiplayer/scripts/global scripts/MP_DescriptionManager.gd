@@ -18,7 +18,7 @@ func _ready():
 	intermediary = get_node("/root/mp_main/standalone managers/interactions/interaction intermediary")
 	HideText()
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	LerpText()
 	CheckInteraction()
 

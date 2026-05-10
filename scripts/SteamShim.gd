@@ -100,8 +100,8 @@ func _on_real_join_requested(this_lobby_id: int, friend_id: int) -> void:
 func _on_real_lobby_chat_update(this_lobby_id: int, change_id: int, making_change_id: int, chat_state: int) -> void:
 	lobby_chat_update.emit(this_lobby_id, change_id, making_change_id, chat_state)
 
-func _on_real_lobby_created(connect: int, this_lobby_id: int) -> void:
-	lobby_created.emit(connect, this_lobby_id)
+func _on_real_lobby_created(m_connect: int, this_lobby_id: int) -> void:
+	lobby_created.emit(m_connect, this_lobby_id)
 
 func _on_real_lobby_joined(this_lobby_id: int, permissions: int, locked: bool, response: int) -> void:
 	lobby_joined.emit(this_lobby_id, permissions, locked, response)

@@ -31,7 +31,6 @@ text = "DEBUG"
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1279942368]
 process_mode = 3
 layer = 4095
-visible = false
 
 [node name="Control" type="Control" parent="CanvasLayer" unique_id=1372348555]
 process_mode = 3
@@ -53,6 +52,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.3764706)
+
+[node name="Button_Close" type="Button" parent="CanvasLayer/Control" unique_id=1087308912]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -77.0
+offset_top = 19.0
+offset_right = -46.0
+offset_bottom = 50.0
+grow_horizontal = 0
+text = "×"
 
 [node name="Panel_System" type="Panel" parent="CanvasLayer/Control" unique_id=1318199934]
 layout_mode = 0
@@ -231,17 +242,97 @@ text = "-"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_Close" type="Button" parent="CanvasLayer/Control" unique_id=1087308912]
+[node name="Panel_Performance" type="Panel" parent="CanvasLayer/Control" unique_id=1198491831]
+layout_mode = 0
+offset_left = 397.0
+offset_top = 19.0
+offset_right = 555.0
+offset_bottom = 92.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Panel_Performance" unique_id=566274017]
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Performance"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="Label_PerformanceLevel" type="Label" parent="CanvasLayer/Control/Panel_Performance" unique_id=1310590540]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 25.0
+offset_right = 104.0
+offset_bottom = 48.0
+text = "Level: 0"
+horizontal_alignment = 3
+
+[node name="Button_AddPerformanceLevel" type="Button" parent="CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel" unique_id=1003658458]
+layout_mode = 1
+anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -77.0
-offset_top = 19.0
-offset_right = -46.0
-offset_bottom = 50.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = 28.0
 grow_horizontal = 0
-text = "×"
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel/Button_AddPerformanceLevel" unique_id=1129780845]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button_ReducePerformanceLevel" type="Button" parent="CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel" unique_id=1690833566]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_right = 52.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel/Button_ReducePerformanceLevel" unique_id=1417026185]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "-"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label_AmbientFilter" type="Label" parent="CanvasLayer/Control/Panel_Performance" unique_id=564591620]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 47.0
+offset_right = 109.0
+offset_bottom = 70.0
+text = "AmbientFilter"
+horizontal_alignment = 3
+
+[node name="CheckButton_AmbientFilter" type="CheckButton" parent="CanvasLayer/Control/Panel_Performance/Label_AmbientFilter" unique_id=1321473450]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -0.5
+offset_right = 47.0
+offset_bottom = 0.5
+grow_horizontal = 0
+grow_vertical = 2
 
 [node name="Label_FPS" type="Label" parent="." unique_id=590897100]
 process_mode = 3
@@ -259,10 +350,13 @@ autostart = true
 ignore_time_scale = true
 
 [connection signal="pressed" from="CanvasLayer_Aways/Button_Open" to="." method="_on_button_open_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Button_Close" to="." method="_on_button_close_pressed"]
 [connection signal="value_changed" from="CanvasLayer/Control/Panel_System/HSlider_GameSpeed" to="." method="_on_h_slider_game_speed_value_changed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth/Button_AddPlayerHealth" to="." method="_on_button_add_player_health_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_PlayerHealth/Button_ReducePlayerHealth2" to="." method="_on_button_reduce_player_health_2_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_DealerHealth/Button_AddDealerHealth" to="." method="_on_button_add_dealer_health_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Panel_Gambling/Label_DealerHealth/Button_ReduceDealerHealth" to="." method="_on_button_reduce_dealer_health_pressed"]
-[connection signal="pressed" from="CanvasLayer/Control/Button_Close" to="." method="_on_button_close_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel/Button_AddPerformanceLevel" to="." method="_on_button_add_performance_level_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel/Button_ReducePerformanceLevel" to="." method="_on_button_reduce_performance_level_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Panel_Performance/Label_AmbientFilter/CheckButton_AmbientFilter" to="." method="_on_check_button_ambient_filter_pressed"]
 [connection signal="timeout" from="Label_FPS/Timer_FPS" to="Label_FPS" method="_on_timer_fps_timeout"]

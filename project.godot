@@ -8,10 +8,6 @@
 
 config_version=5
 
-[animation]
-
-compatibility/default_parent_skeleton_in_mesh_instance_3d=true
-
 [application]
 
 config/name="Open Buckshot Roulette"
@@ -36,6 +32,7 @@ buses/default_bus_layout="uid://dw7csbbx06yrf"
 GlobalVariables="*res://scripts/GlobalVariables.gd"
 GlobalSteam="*res://scripts/Steam.gd"
 Steam="*res://scripts/SteamShim.gd"
+NeoSettings="*uid://bav3buhtigr4v"
 DebugTools="*uid://0rkffdwpvpro"
 
 [debug]

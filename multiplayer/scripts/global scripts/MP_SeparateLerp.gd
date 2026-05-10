@@ -39,7 +39,7 @@ func Failsafe():
 	counting = false
 	timer = 0
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	Lerp()
 	Timeout()
 

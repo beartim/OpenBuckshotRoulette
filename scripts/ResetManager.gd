@@ -13,7 +13,7 @@ func _unhandled_input(event):
 		reset_timer = 0
 		reset_pressed = false
 
-func _process(delta):
+func _process(delta: float) -> void:
 	if reset_pressed:
 		reset_timer += delta
 		if reset_timer >= 0.8:
