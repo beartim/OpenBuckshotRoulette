@@ -79,6 +79,8 @@ func update_performance_options(_key: String = "", _value: Variant = null):
 		lp_spot_light_1.hide()
 		camera.far = 280
 	if level >= 2:
+		for node in p1should_be_hides:
+			node.hide()
 		for node in p2should_be_hides:
 			node.hide()
 		camera.far = 200

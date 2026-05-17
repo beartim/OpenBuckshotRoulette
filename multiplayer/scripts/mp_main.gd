@@ -31,7 +31,15 @@ extends Node3D
 	$"interior environment main1/interior environment parent/cloth prop",
 	$"exterior environment main/exterior environment parent/exterior environment prop parent/food can_013",
 	$"exterior environment main/exterior environment parent/exterior environment prop parent/food can_012",
-	$"exterior environment main/exterior environment parent/exterior environment prop parent/food can_011"
+	$"exterior environment main/exterior environment parent/exterior environment prop parent/food can_011",
+	$"interior environment main1/interior environment parent/fan parent",
+	$"interior environment main1/interior environment parent/device voltmeter",
+	$"interior environment main1/interior environment parent/food can_001",
+	$"interior environment main1/interior environment parent/food can_002",
+	$"interior environment main1/interior environment parent/food can",
+	$"interior environment main1/interior environment parent/fan parent2",
+	$"interior environment main1/interior environment parent/wood pallet",
+	$"interior environment main1/interior environment parent/pen"
 ]
 @onready var p2should_be_hides: Array[Node3D] = [
 	$"interior environment main1/interior environment parent/estonia speaker",
@@ -41,7 +49,6 @@ extends Node3D
 	$"interior environment main1/interior environment parent/sponge",
 	$"dancers parent",
 	$"interior environment main1/interior environment parent/wooden pallet",
-	$"interior environment main1/interior environment parent/fan parent",
 	$"interior environment main1/interior environment parent/device audio",
 	$"interior environment main1/interior environment parent/subwoofer",
 	$"light parent/light_test2",
@@ -55,6 +62,29 @@ extends Node3D
 
 ]
 
+@onready var p3should_be_hides: Array[Node3D] = [
+	$"interior environment main1/interior environment parent/theater light top parent",
+	$"interior environment main1/interior environment parent/theater light top parent_001",
+	$"interior environment main1/interior environment parent/power supply cart",
+	$"interior environment main1/interior environment parent/wires",
+	$"interior environment main1/interior environment parent/chair",
+	$"interior environment main1/interior environment parent/speaker tall",
+	$"interior environment main1/interior environment parent/plastic crate", $"interior environment main1/interior environment parent/plastic crate_001", $"interior environment main1/interior environment parent/plastic crate_002",
+	$"interior environment main1/interior environment parent/subwoofer_001",
+	$"interior environment main1/interior environment parent/stool",
+	$"interior environment main1/interior environment parent/device combinator",
+	$"exterior environment main/exterior environment parent/exterior environment prop parent/exterior foliage_002",
+	$"exterior environment main/exterior environment parent/exterior environment prop parent/exterior foliage_003",
+	$"exterior environment main/exterior environment parent/exterior environment prop parent/trash container",
+	$"exterior environment main/exterior environment parent/exterior environment prop parent/wood pallet_001", $"exterior environment main/exterior environment parent/exterior environment prop parent/wood pallet_002", $"exterior environment main/exterior environment parent/exterior environment prop parent/wood pallet_003", $"exterior environment main/exterior environment parent/exterior environment prop parent/wood pallet_004",
+	$"exterior environment main/exterior environment parent/exterior environment prop parent/van",
+	$"exterior environment main/exterior environment parent/hustler_armature/Skeleton3D",
+	$"interior environment main1/interior environment parent/wire ties",
+	$"light parent/light_interior club upper light hit1",
+	$"light parent/light_interior club upper light hit2",
+	$"exterior environment main/exterior environment parent/exterior environment prop parent/wood pallet_005"
+]
+
 func _ready() -> void:
 	viewblocker_global.show()
 	input_blocker.show()
@@ -63,9 +93,11 @@ func _ready() -> void:
 
 func _update_performance_options(_key: String = "", _value: Variant = null) -> void:
 	if $"user instance_main1/user ui/posterization":
-		$"user instance_main1/user ui/posterization".visible = NeoSettings.fetch('performance/ambient_filter_enabled', true)
+		$"user instance_main1/user ui/posterization".visible = false
 	var level:int = NeoSettings.fetch("performance/level", 0)
 	if level >= 1:
+		for node in p3should_be_hides:
+			node.show()
 		for node in p2should_be_hides:
 			node.show()
 		for node in p1should_be_hides:
@@ -75,22 +107,28 @@ func _update_performance_options(_key: String = "", _value: Variant = null) -> v
 		
 		light_center.omni_attenuation = 1
 		light_center.shadow_opacity = 1
-		global_camera.far = 1000
+		global_camera.far = 800
 	if level >= 2:
 		for node in p2should_be_hides:
 			node.hide()
-		for dancer in some_dancers:
-			dancer.hide()
+		for node in p3should_be_hides:
+			node.show()
 		global_camera.far = 500
 		light_center.omni_attenuation = 0.6
 		light_center.shadow_opacity = 0.65
+	if level >= 3:
+		for node in p3should_be_hides:
+			node.hide()
+		global_camera.far = 120
 	if level <= 0:
 		for dancer in some_dancers:
 			dancer.show()
 		global_camera.far = 4000
 		light_center.omni_attenuation = 1
 		light_center.shadow_opacity = 1
+		for node in p3should_be_hides:
+			node.show()
 		for node in p2should_be_hides:
 			node.show()
 		for node in p1should_be_hides:
-			node.hide()
+			node.show()
