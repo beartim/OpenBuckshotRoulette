@@ -218,9 +218,11 @@ func Start():
 
 func StartMultiplayer():
 	if !GlobalSteam.ONLINE:
-		GlobalVariables.message_to_forward = tr("MP_UI LOBBY NO CONNECTION")
+		OS.alert(tr('MP_UI LOBBY NO CONNECTION'), tr('MP_UI MULTIPLAYER'))
+		#GlobalVariables.message_to_forward = tr("MP_UI LOBBY NO CONNECTION")
 		GlobalVariables.returning_to_main_menu_on_popup_close = true
 		GlobalVariables.running_short_intro_in_lobby_scene = true
+		return
 	
 	Buttons(false)
 	ResetButtons()
@@ -235,7 +237,6 @@ func StartMultiplayer():
 	savefile.ClearSave()
 	if !DebugTools.DEBUG_TOOLS_ENABLED or !DebugTools.SKIP_SPLASH_ANIM: await GlobalVariables.tree.create_timer(4, false).timeout
 	print("changing scene to: lobby")
-	OS.alert('3、4 人游戏因较多 Bug 暂时不可用，请勿创建 3、4 人的对局')
 	GlobalVariables.tree.change_scene_to_file("res://multiplayer/scenes/mp_lobby.tscn")
 
 func Credits():

@@ -119,7 +119,7 @@ func _update_performance_options(_key: String = "", _value: Variant = null) -> v
 	if level >= 3:
 		for node in p3should_be_hides:
 			node.hide()
-		global_camera.far = 120
+		global_camera.far = 384
 	if level <= 0:
 		for dancer in some_dancers:
 			dancer.show()
