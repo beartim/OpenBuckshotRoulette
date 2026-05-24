@@ -33,7 +33,7 @@ func  _ready() -> void:
 	canvas_layer.hide()
 	if (DEBUG_TOOLS_ENABLED):
 		button_open.show()
-		GlobalVariables.SetDebugTimeScaleMultiplier(1.2)
+		#GlobalVariables.SetDebugTimeScaleMultiplier(1.2)
 	else:
 		button_open.hide()
 

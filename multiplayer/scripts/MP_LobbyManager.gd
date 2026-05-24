@@ -359,6 +359,7 @@ func check_version():
 			"packet alias": "check version",
 			"sent_from": "client",
 			"packet_id": 32,
+			"protocol": GlobalVariables.PROTOCOL,
 			"version": GlobalVariables.version_to_check,
 			# Relay/WebSocket packets do not expose the real Steam remote id in PacketManager; host must read this explicitly
 			"client_steam_id": GlobalSteam.STEAM_ID,
@@ -540,7 +541,7 @@ func ReceivePacket_KickPlayer(packet : Dictionary):
 func ReceivePacket_VersionCheck(packet : Dictionary, user_id : int):
 	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
 		var client_sid: int = int(packet.get("client_steam_id", user_id))
-		var allowed = GlobalVariables.version_to_check == packet.version
+		var allowed = GlobalVariables.PROTOCOL == packet.get("protocol", 0)
 		if allowed:
 			print("version check with %s successful." % client_sid)
 			if not (client_sid in GlobalVariables.steam_id_version_checked_array):
@@ -601,7 +602,7 @@ func CheckCommandLine():
 	for argument in arguments:
 		if (arguments.size() > 0):
 			#if (GlobalSteam.LOBBY_INVITE_ARG):
-			#	join_lobby(int(argument))
+			#   join_lobby(int(argument))
 			pass
 	
 		if argument == "+connect_lobby":

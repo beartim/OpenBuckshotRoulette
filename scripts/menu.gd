@@ -16,6 +16,16 @@ extends Node3D
 @onready var label_server_address: Label = $"Camera/dialogue UI/menu ui/options_online service/Control/Label/Label_ServerAddress"
 @onready var button_class_reconnect_to_ws: ButtonClass = $"Camera/dialogue UI/menu ui/options_online service/Control/Label2/Label_ConnectionStatus/Label/true button/button class_reconnect_to_ws"
 @onready var label_connection_status: Label = $"Camera/dialogue UI/menu ui/options_online service/Control/Label2/Label_ConnectionStatus"
+@onready var label_max_fps_value: Label = $"Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value"
+@onready var label_performance_level_value: Label = $"Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value"
+@onready var shell_waterfall_2: Node3D = $"shell waterfall2"
+@onready var shell_waterfall_4: Node3D = $"shell waterfall4"
+
+@onready var hide_on_android: Array[Node] = [
+	$"Camera/dialogue UI/menu ui/options_audio video/option monitor_windowed", $"Camera/dialogue UI/menu ui/options_audio video/option monitor_fullscreen", $"Camera/dialogue UI/menu ui/options_audio video/bracket selection_windowed", $"Camera/dialogue UI/menu ui/options_audio video/bracket selection_fullscreen", $"Camera/dialogue UI/menu ui/options_audio video/true button_windowed", $"Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen"
+]
+
+var max_fps_values := [10, 20, 30, 45, 60, 90, 120, 144, 240, 0]
 
 func _ready() -> void:
 	GlobalVariables.set_tree(self )
@@ -28,6 +38,11 @@ func _ready() -> void:
 	options_online_service.hide()
 	credits.hide()
 	language.hide()
+	if (OS.has_feature("mobile")):
+		for item in hide_on_android:
+			item.hide()
+	GlobalVariables.on_button_class_interact.connect(_on_button_class_interact)
+
 	bind_events()
 	if DebugTools.DEBUG_TOOLS_ENABLED && DebugTools.SKIP_SPLASH_ANIM:
 		viewblocker_parent.hide()
@@ -42,6 +57,27 @@ func bind_events():
 
 func update_performance_options(_key: String = "", _value: Variant = null):
 	posterization_test.visible = NeoSettings.fetch("performance/ambient_filter_enabled", true)
+
+	var max_fps:int = NeoSettings.fetch("performance/max_fps", 0)
+	if max_fps == 0:
+		label_max_fps_value.text = 'UNLIMITED'
+	else:
+		label_max_fps_value.text = str(max_fps)
+	Engine.max_fps =  max_fps
+
+	var performance_level:int = NeoSettings.fetch("performance/level", 0)
+	label_performance_level_value.text = str(performance_level)
+	if performance_level >= 1:
+		shell_waterfall_2.show()
+		shell_waterfall_4.show()
+	if performance_level >= 2:
+		shell_waterfall_4.show()
+		shell_waterfall_2.hide()
+	if performance_level >= 3:
+		shell_waterfall_4.hide()
+	if performance_level <= 0:
+		shell_waterfall_2.show()
+		shell_waterfall_4.show()
 
 func get_server_address_from_clipboard() -> String:
 	var text = DisplayServer.clipboard_get()
@@ -89,3 +125,22 @@ func _process(_delta: float) -> void:
 			label_connection_status.text = 'CONNECTING'
 		else:
 			label_connection_status.text = 'DISCONNECTED'
+
+func _on_button_class_interact(alias: String):
+	if alias.begins_with('max fps'):
+		var current_fps:int = NeoSettings.fetch("performance/max_fps", 0)
+		var current_index:int = max_fps_values.find(current_fps)
+		if (current_index == -1):
+			current_index = max_fps_values.size() - 1
+		if (alias == 'max fps reduce'):
+			if (current_index > 0): 
+				current_index -= 1
+		elif (alias == 'max fps plus'):
+			if (current_index < max_fps_values.size() - 1): 
+				current_index += 1
+		current_fps = max_fps_values[current_index]
+		NeoSettings.put("performance/max_fps", current_fps)
+	elif alias == 'performance level reduce':
+		NeoSettings.decrease("performance/level", 1, 0)
+	elif alias == 'performance level plus':
+		NeoSettings.increase("performance/level", 1, 3)

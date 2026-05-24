@@ -97,7 +97,8 @@ func OnLobbyList(list):
 			invalid_list_array.append(0)
 			continue
 		
-		var member_count = str(lobby.get("members", ""))
+		var _member_count:int= round(lobby.get("members", 0))
+		var member_count = str(_member_count)
 		var player_limit = str(lobby.get("max_members", ""))
 		
 		if member_count == "":

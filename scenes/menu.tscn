@@ -661,7 +661,7 @@ environment = SubResource("Environment_bh41e")
 libraries/ = SubResource("AnimationLibrary_hryg6")
 
 [node name="Camera" type="Camera3D" parent="." unique_id=1937469724]
-transform = Transform3D(0.0211867, 0.156399, 0.987467, 4.65251e-10, 0.987688, -0.156434, -0.999776, 0.00331432, 0.0209258, 2.30247, -0.618707, 12.1781)
+transform = Transform3D(0.021186758, 0.15639898, 0.9874669, 4.6525098e-10, 0.98768795, -0.15643421, -0.999776, 0.0033143302, 0.020925911, 2.30247, -0.618707, 12.1781)
 fov = 54.0
 script = ExtResource("18")
 
@@ -806,6 +806,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_lock_ = true
 
 [node name="main screen" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=474929423]
 layout_mode = 1
@@ -910,9 +911,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -191.0
+offset_left = -183.0
 offset_top = -85.000244
-offset_right = 279.0
+offset_right = 287.0
 offset_bottom = 366.99976
 scale = Vector2(0.181524, 0.146467)
 texture = ExtResource("25")
@@ -924,9 +925,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -179.0
+offset_left = -171.0
 offset_top = -86.0
-offset_right = 809.0
+offset_right = 817.0
 offset_bottom = 1070.0
 grow_horizontal = 0
 grow_vertical = 0
@@ -942,9 +943,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -189.0
+offset_left = -181.0
 offset_top = -85.99994
-offset_right = -178.13116
+offset_right = -170.13116
 offset_bottom = -77.99994
 grow_horizontal = 0
 grow_vertical = 0
@@ -1452,6 +1453,8 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_top = 16.0
+offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -1533,9 +1536,9 @@ texture = ExtResource("34")
 
 [node name="bracket selection_colorblind mode" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=769892730]
 layout_mode = 0
-offset_left = 70.0
+offset_left = 115.0
 offset_top = -217.0
-offset_right = 232.0
+offset_right = 277.0
 offset_bottom = -74.0
 scale = Vector2(0.311253, 0.235922)
 mouse_filter = 2
@@ -1543,9 +1546,9 @@ texture = ExtResource("34")
 
 [node name="bracket selection_greyscale death" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=304300624]
 layout_mode = 0
-offset_left = 70.0
+offset_left = 115.0
 offset_top = -190.0
-offset_right = 232.0
+offset_right = 277.0
 offset_bottom = -47.0
 scale = Vector2(0.311253, 0.235922)
 mouse_filter = 2
@@ -1606,9 +1609,9 @@ horizontal_alignment = 1
 
 [node name="text_color blind mode" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=442090006]
 layout_mode = 0
-offset_left = -578.2949
+offset_left = -533.295
 offset_top = -213.99997
-offset_right = 71.70508
+offset_right = 116.70502
 offset_bottom = -174.99997
 scale = Vector2(0.574333, 0.755696)
 pivot_offset = Vector2(650, 0)
@@ -1620,9 +1623,9 @@ horizontal_alignment = 2
 
 [node name="text_greyscale death" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1942839242]
 layout_mode = 0
-offset_left = -578.2949
+offset_left = -533.295
 offset_top = -188.99997
-offset_right = 71.70508
+offset_right = 116.70502
 offset_bottom = -149.99997
 scale = Vector2(0.574333, 0.755696)
 pivot_offset = Vector2(650, 0)
@@ -1634,9 +1637,9 @@ horizontal_alignment = 2
 
 [node name="checkmark_colorblind" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1381457796]
 layout_mode = 0
-offset_left = 80.0
+offset_left = 125.0
 offset_top = -214.0
-offset_right = 146.0
+offset_right = 191.0
 offset_bottom = -150.0
 scale = Vector2(0.372295, 0.372295)
 texture = ExtResource("36")
@@ -1649,9 +1652,9 @@ checkmark_ianctive = ExtResource("36")
 
 [node name="checkmark_greyscale" type="TextureRect" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1639530845]
 layout_mode = 0
-offset_left = 80.0
+offset_left = 125.0
 offset_top = -187.0
-offset_right = 146.0
+offset_right = 191.0
 offset_bottom = -123.0
 scale = Vector2(0.372295, 0.372295)
 texture = ExtResource("36")
@@ -1694,9 +1697,9 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 81.0
+offset_left = 126.0
 offset_top = -212.99998
-offset_right = 89.0
+offset_right = 134.0
 offset_bottom = -204.99998
 scale = Vector2(2.80992, 2.8106)
 focus_neighbor_bottom = NodePath("../true button_greyscale death")
@@ -1720,9 +1723,9 @@ resetting = true
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 81.0
+offset_left = 126.0
 offset_top = -186.99998
-offset_right = 89.0
+offset_right = 134.0
 offset_bottom = -178.99998
 scale = Vector2(2.80992, 2.8106)
 focus_neighbor_top = NodePath("../true button_colorblind mode")
@@ -1870,6 +1873,221 @@ playing = true
 altsound = true
 ui_opacity_inactive = 0.0
 ui_opacity_active = 1.0
+
+[node name="Label_MaxFPS" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1193357366]
+layout_mode = 0
+offset_left = -157.68353
+offset_top = -245.99994
+offset_right = -34.683533
+offset_bottom = -206.99994
+scale = Vector2(0.574333, 0.755696)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "MAX FPS"
+
+[node name="Label_MaxFPS_Value" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS" unique_id=471246105]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 4.454
+anchor_top = 0.46600002
+anchor_right = 4.454
+anchor_bottom = 0.46600002
+offset_left = -123.55237
+offset_top = -20.820648
+offset_right = -35.906372
+offset_bottom = 18.179354
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "240"
+horizontal_alignment = 1
+
+[node name="Label_MaxFPS_Reduce" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value" unique_id=1075997596]
+layout_mode = 0
+offset_left = -33.08185
+offset_bottom = 39.000004
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "-"
+
+[node name="true button_MaxFPS_Reduce" type="Button" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value/Label_MaxFPS_Reduce" unique_id=1817405294]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_top = NodePath("../true button_toggle music")
+focus_neighbor_right = NodePath("../true button_fullscreen")
+focus_neighbor_bottom = NodePath("../true button_return audio video")
+
+[node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value/Label_MaxFPS_Reduce/true button_MaxFPS_Reduce" unique_id=560468339 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../../../standalone managers/cursor manager")
+alias = "max fps reduce"
+isActive = true
+isDynamic = true
+ui = NodePath("../..")
+speaker_press = NodePath("../../../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../../../speaker_hover")
+playing = true
+altsound = true
+ui_opacity_active = 0.5
+resetting = true
+
+[node name="Label_MaxFPS_Plus" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value" unique_id=1503185920]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 0.97566223
+offset_right = 34.05751
+offset_bottom = 39.000004
+grow_horizontal = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "+"
+horizontal_alignment = 2
+
+[node name="true button_MaxFPS_Plus" type="Button" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value/Label_MaxFPS_Plus" unique_id=1370645171]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_top = NodePath("../true button_toggle music")
+focus_neighbor_right = NodePath("../true button_fullscreen")
+focus_neighbor_bottom = NodePath("../true button_return audio video")
+
+[node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value/Label_MaxFPS_Plus/true button_MaxFPS_Plus" unique_id=203241911 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../../../standalone managers/cursor manager")
+alias = "max fps plus"
+isActive = true
+isDynamic = true
+ui = NodePath("../..")
+speaker_press = NodePath("../../../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../../../speaker_hover")
+playing = true
+altsound = true
+ui_opacity_active = 0.5
+resetting = true
+
+[node name="Label_PerformanceLevel" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video" unique_id=1743766188]
+layout_mode = 0
+offset_left = -157.68353
+offset_top = -213.99997
+offset_right = -34.683533
+offset_bottom = -174.99997
+scale = Vector2(0.574333, 0.755696)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "PERFORMANCE LEVEL"
+
+[node name="Label_PerformanceLevel_Value" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel" unique_id=407760596]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 37.754295
+offset_top = -3.2713852
+offset_right = 77.80074
+offset_bottom = 35.728615
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "0"
+horizontal_alignment = 1
+
+[node name="Label_Reduce" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value" unique_id=817385558]
+layout_mode = 0
+offset_left = -33.08185
+offset_bottom = 39.000004
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "-"
+
+[node name="true button" type="Button" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value/Label_Reduce" unique_id=1919574703]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_top = NodePath("../true button_toggle music")
+focus_neighbor_right = NodePath("../true button_fullscreen")
+focus_neighbor_bottom = NodePath("../true button_return audio video")
+
+[node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value/Label_Reduce/true button" unique_id=2071377899 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../../../standalone managers/cursor manager")
+alias = "performance level reduce"
+isActive = true
+isDynamic = true
+ui = NodePath("../..")
+speaker_press = NodePath("../../../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../../../speaker_hover")
+playing = true
+altsound = true
+ui_opacity_active = 0.5
+resetting = true
+
+[node name="Label_Plus" type="Label" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value" unique_id=1231652894]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 0.97566223
+offset_right = 34.05751
+offset_bottom = 39.000004
+grow_horizontal = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "+"
+horizontal_alignment = 2
+
+[node name="true button" type="Button" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value/Label_Plus" unique_id=1247002192]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_top = NodePath("../true button_toggle music")
+focus_neighbor_right = NodePath("../true button_fullscreen")
+focus_neighbor_bottom = NodePath("../true button_return audio video")
+
+[node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value/Label_Plus/true button" unique_id=443028516 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../../../standalone managers/cursor manager")
+alias = "performance level plus"
+isActive = true
+isDynamic = true
+ui = NodePath("../..")
+speaker_press = NodePath("../../../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../../../speaker_hover")
+playing = true
+altsound = true
+ui_opacity_active = 0.5
+resetting = true
 
 [node name="options_controller" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=1875652090]
 visible = false
@@ -4112,7 +4330,6 @@ grow_vertical = 2
 metadata/_edit_lock_ = true
 
 [node name="viewblocker parent" type="Control" parent="Camera/dialogue UI" unique_id=1667418873]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -4133,6 +4350,16 @@ mouse_filter = 2
 texture = ExtResource("46")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ColorRect" type="ColorRect" parent="Camera/dialogue UI/viewblocker parent/ratchet" unique_id=966074098]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="viewblocker" type="ColorRect" parent="Camera/dialogue UI/viewblocker parent" unique_id=1366407162]
 layout_mode = 1

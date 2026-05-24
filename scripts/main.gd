@@ -13,7 +13,24 @@ extends Node3D
 @onready var brackets_waiver_pickup: Control = $"Camera/dialogue UI/bracket ui/waiver pickup"
 @onready var camera: MouseRaycast = $Camera
 @onready var lp_spot_light_1: SpotLight3D = $LPSpotLight1
+@onready var light_main_door_2_club_ls: OmniLight3D = $"backroom main parent/light main door2_CLUB LS"
+@onready var light_main_door_club_ls: OmniLight3D = $"backroom main parent/light main door_CLUB LS"
+@onready var club_light_underside_club_us: OmniLight3D = $"backroom main parent/club light underside_CLUB US"
+@onready var omni_light_3d_2_ls: OmniLight3D = $"light parent/OmniLight3D2 LS"
+@onready var omni_light_3d_5_ls: OmniLight3D = $"light parent/OmniLight3D5 LS"
+@onready var omni_light_3d_ls: OmniLight3D = $"light parent/OmniLight3D LS"
 
+@onready var p3should_be_hides: Array[Node3D] = [
+	$"backroom visual parent/TCom_AudioEquipment0039_1_M", $"backroom visual parent/TCom_AudioEquipment0039_1_M_001", $"backroom visual parent/TCom_AudioEquipment0039_1_M_002", $"backroom visual parent/TCom_AudioEquipment0039_1_M_004",
+	$"backroom visual parent/TCom_AudioEquipment0068_S",
+	$"backroom visual parent/Cylinder_004", $"backroom visual parent/Cylinder_005",
+	$"backroom visual parent/Cube_046",
+	$"backroom visual parent/Cube_047",
+	$"backroom visual parent/Plane_023", $"backroom visual parent/Plane_024",
+	$"backroom visual parent/Cube_001", $"backroom visual parent/Cube_003", $"backroom visual parent/Cube_005", $"backroom visual parent/Cube_043",
+	$"backroom visual parent/Cube_039",
+	
+]
 @onready var p2should_be_hides: Array[Node3D] = [
 	$"light parent/OmniLight3D6 LS",
 	$"backroom visual parent/paperwork4_001",
@@ -33,7 +50,13 @@ extends Node3D
 	$"light parent/OmniLight3D6 LS",
 	$"light parent/OmniLight3D3 LS",
 	$"light parent/OmniLight3D4 LS",
-	$restroom_CLUB/Cube_112
+	$restroom_CLUB/Cube_112,
+	$"restroom_CLUB/bathroom wall main_crt hole/crt main parent_002",
+	$"backroom visual parent/magazine1",
+	$"backroom visual parent/circuitboards_001",
+	$"backroom visual parent/BezierCurve_001", $"backroom visual parent/BezierCurve_002", $"backroom visual parent/BezierCurve_003", $"backroom visual parent/BezierCurve_004", $"backroom visual parent/BezierCurve_005", $"backroom visual parent/BezierCurve_006",
+	$"backroom upper cables1",
+	$"backroom visual parent/TCom_AudioEquipment0064_S"
 ]
 @onready var p1should_be_hides: Array[Node3D] = [
 	$restroom_CLUB/BezierCurve_009,
@@ -45,7 +68,9 @@ extends Node3D
 	$"backroom visual parent/cigarette butts",
 	$"backroom visual parent/Cylinder_032",
 	$restroom_CLUB/Cube_116,
-	$restroom_CLUB/Cylinder_026
+	$restroom_CLUB/Cylinder_026,
+	$"backroom visual parent/Cube_006",
+	$"backroom visual parent/Cube", $"backroom visual parent/Cube_002"
 ]
 
 func _ready() -> void:
@@ -72,23 +97,47 @@ func update_performance_options(_key: String = "", _value: Variant = null):
 
 	var level:int = NeoSettings.fetch("performance/level", 0)
 	if level >= 1:
+		for node in p3should_be_hides:
+			node.show()
 		for node in p2should_be_hides:
 			node.show()
 		for node in p1should_be_hides:
 			node.hide()
 		lp_spot_light_1.hide()
+		light_main_door_2_club_ls.shadow_enabled = false
+		light_main_door_club_ls.shadow_enabled = true
+		omni_light_3d_2_ls.shadow_enabled = true
+		omni_light_3d_5_ls.shadow_enabled = true
+		omni_light_3d_ls.shadow_enabled = true
 		camera.far = 280
 	if level >= 2:
-		for node in p1should_be_hides:
-			node.hide()
+		for node in p3should_be_hides:
+			node.show()
 		for node in p2should_be_hides:
 			node.hide()
+		light_main_door_2_club_ls.hide()
 		camera.far = 200
 		lp_spot_light_1.show()
+		light_main_door_club_ls.shadow_enabled = false
+		omni_light_3d_2_ls.shadow_enabled = false
+		omni_light_3d_5_ls.shadow_enabled = false
+		omni_light_3d_ls.shadow_enabled = false
+	if level >= 3:
+		for node in p3should_be_hides:
+			node.hide()
+		club_light_underside_club_us.omni_range = 120
+		club_light_underside_club_us.shadow_enabled = true
+	else:
+		club_light_underside_club_us.omni_range = 186.24
+		club_light_underside_club_us.shadow_enabled = true
 	if level <= 0:
 		for node in p2should_be_hides:
 			node.show()
 		for node in p1should_be_hides:
 			node.show()
+		for node in p3should_be_hides:
+			node.show()
 		camera.far = 2000
 		lp_spot_light_1.hide()
+		light_main_door_2_club_ls.shadow_enabled = true
+		light_main_door_club_ls.shadow_enabled = true

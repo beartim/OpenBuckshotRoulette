@@ -31,7 +31,7 @@ func _ready():
 	get_parent().connect("mouse_entered", OnHover)
 	get_parent().connect("mouse_exited", OnExit)
 	get_parent().connect("pressed", OnPress)
-	if (isDynamic): ui.modulate.a = ui_opacity_inactive
+	if (isDynamic && ui): ui.modulate.a = ui_opacity_inactive
 
 func SetFilter(alias : String):
 	match(alias):
@@ -45,13 +45,13 @@ func OnHover():
 		if (isDynamic):
 			speaker_hover.pitch_scale = randf_range(.95, 1.0)
 			speaker_hover.play()
-			ui.modulate.a = ui_opacity_active
+			if (ui): ui.modulate.a = ui_opacity_active
 		cursor.SetCursorImage("hover")
 		if (adding_cursor): t.text = "<  " + tr(orig) + "  >"
 
 func OnExit():
 	if (isActive && mainActive):
-		if (isDynamic):
+		if (isDynamic && ui):
 			ui.modulate.a = ui_opacity_inactive
 		cursor.SetCursorImage("point")
 		if (adding_cursor): t.text = tr(orig)
@@ -65,4 +65,4 @@ func OnPress():
 		if (language): options.AdjustLanguage(alias)
 		if (pipe != null): pipe.Pipe(alias)
 		emit_signal("is_pressed")
-		print(alias)
+		GlobalVariables.on_button_class_interact.emit(alias)

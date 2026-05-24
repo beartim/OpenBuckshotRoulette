@@ -45,6 +45,18 @@ func put(key: String, value: Variant) -> void:
 	value_changed.emit(key, value)
 	_save()
 
+func decrease(key: String, step: int = 1, min_value: int = -INF) -> void:
+	var current_value = fetch(key)
+	if typeof(current_value) == TYPE_INT:
+		var new_value = max(current_value - step, min_value)
+		put(key, new_value)
+
+func increase(key: String, step: int = 1, max_value: int = INF) -> void:
+	var current_value = fetch(key)
+	if typeof(current_value) == TYPE_INT:
+		var new_value = min(current_value + step, max_value)
+		put(key, new_value)
+
 func _split_key(key: String) -> PackedStringArray:
 	var expression = RegEx.new()
 	expression.compile("[./\\\\]")

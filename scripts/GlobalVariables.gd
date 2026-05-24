@@ -1,9 +1,10 @@
 extends Node
 
-var currentVersion_nr:= "v1.0.0.12-beta EXTENDS v2.2.0"
+var currentVersion_nr:= "v1.0.0.13-beta EXTENDS v2.2.0"
 var currentVersion_hotfix:= 6
 var using_steam:= false
 var all_steam_features_enabled:= true
+const PROTOCOL := 2
 
 var currentVersion:= ""
 var versuffix_steam:= " (STEAM)"
@@ -65,6 +66,8 @@ var active_match_customization_dictionary : Dictionary #match customization dict
 var stashed_match_customization_dictionary : Dictionary #match customization dictionary that will be stored in the current game session
 var previous_match_customization_differences : Dictionary #previously active match customization differences that were received by the host
 var steam_id_version_checked_ayeahrray : Array
+
+signal on_button_class_interact(alias: String)
 
 var debug_match_customization = {
 	"number_of_rounds": 3,
@@ -295,6 +298,8 @@ func _ready():
 	original_volume_linear_music = db_to_linear(AudioServer.get_bus_volume_db(1))
 	version_to_check = currentVersion_nr + "." + str(currentVersion_hotfix)
 	print("running full version name: ", version_to_check)
+	on_button_class_interact.connect(func(alias):
+		print("interacted with button class: ", alias))
 	if GlobalVariables.mp_debugging:
 		TranslationServer.set_locale("EN")
 		active_match_customization_dictionary = debug_match_customization
@@ -336,6 +341,3 @@ func set_tree(node: Node):
 	var new_tree := node.get_tree()
 	if (new_tree):
 		tree = new_tree
-		print('使用新的场景树')
-	else:
-		print('场景树设置失败: 场景树不存在')
