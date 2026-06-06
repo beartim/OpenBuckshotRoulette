@@ -58,6 +58,9 @@ function handleMessage(clientId, data) {
         case 'listRooms':
             listRooms(clientId);
             break;
+        case 'updateRoomSettings':
+            updateRoomSettings(clientId, data);
+            break;
         case 'heartbeat':
             break
         default:
@@ -86,6 +89,7 @@ function listRooms(clientId) {
     
     const roomList = [];
     for (const [roomId, room] of rooms.entries()) {
+        if (room.friendsOnly) continue;
         const members = Array.from(room.clients).map(id => {
             const roomClient = clients.get(id);
             return {playerId: roomClient.playerId, playerName: roomClient.playerName};
@@ -94,6 +98,7 @@ function listRooms(clientId) {
             roomId: roomId.toString(),
             hostId: room.hostId,
             memberCount: room.clients.size,
+            maxMembers: room.playerLimit,
             members: members
         });
     }
@@ -107,19 +112,33 @@ function listRooms(clientId) {
 function createRoom(clientId, data) {
     const roomId = Math.floor(Math.random() * 900000) + 100000;
     const client = clients.get(clientId);
+    const playerLimit = clampPlayerLimit(data.playerLimit);
+    const friendsOnly = Boolean(data.friendsOnly);
     client.roomId = roomId;
     client.playerId = data.playerId || clientId;
     client.playerName = data.playerName || `Player${clientId}`;
-    rooms.set(roomId, {hostId: client.playerId, clients: new Set([clientId])});
+    rooms.set(roomId, {
+        hostId: client.playerId,
+        clients: new Set([clientId]),
+        playerLimit: playerLimit,
+        friendsOnly: friendsOnly
+    });
 
     const roomMembers = Array.from(rooms.get(roomId).clients).map(id => {
         const roomClient = clients.get(id);
         return {playerId: roomClient.playerId, playerName: roomClient.playerName};
     });
 
-    client.ws.send(JSON.stringify({type: 'roomCreated', roomId: roomId.toString(), hostId: client.playerId, members: roomMembers}));
+    client.ws.send(JSON.stringify({
+        type: 'roomCreated',
+        roomId: roomId.toString(),
+        hostId: client.playerId,
+        members: roomMembers,
+        playerLimit: playerLimit,
+        friendsOnly: friendsOnly
+    }));
     broadcastToRoom(roomId, {type: 'playerJoined', playerId: client.playerId, playerName: client.playerName}, clientId);
-    console.log(`Room ${roomId} created by client ${clientId} (${client.playerName})`);
+    console.log(`Room ${roomId} created by client ${clientId} (${client.playerName}) limit=${playerLimit} friendsOnly=${friendsOnly}`);
 }
 
 function joinRoom(clientId, data) {
@@ -130,6 +149,12 @@ function joinRoom(clientId, data) {
     }
 
     const client = clients.get(clientId);
+    const room = rooms.get(roomId);
+    if (room.clients.size >= room.playerLimit) {
+        client.ws.send(JSON.stringify({type: 'error', message: 'Room is full'}));
+        return;
+    }
+
     if (client.roomId) {
         leaveRoom(clientId);
     }
@@ -137,7 +162,6 @@ function joinRoom(clientId, data) {
     client.roomId = roomId;
     client.playerId = data.playerId || clientId;
     client.playerName = data.playerName || `Player${clientId}`;
-    const room = rooms.get(roomId);
     room.clients.add(clientId);
 
     const roomMembers = Array.from(room.clients).map(id => {
@@ -180,6 +204,33 @@ function broadcastToRoom(roomId, message, excludeClientId = null) {
             }
         }
     }
+}
+
+function clampPlayerLimit(value) {
+    const limit = parseInt(value, 10);
+    if (isNaN(limit)) return 4;
+    return Math.max(2, Math.min(4, limit));
+}
+
+function updateRoomSettings(clientId, data) {
+    const client = clients.get(clientId);
+    if (!client || !client.roomId) return;
+
+    const room = rooms.get(client.roomId);
+    if (!room || room.hostId !== client.playerId) return;
+
+    if (data.playerLimit !== undefined) {
+        room.playerLimit = clampPlayerLimit(data.playerLimit);
+    }
+    if (data.friendsOnly !== undefined) {
+        room.friendsOnly = Boolean(data.friendsOnly);
+    }
+
+    client.ws.send(JSON.stringify({
+        type: 'roomSettingsUpdated',
+        playerLimit: room.playerLimit,
+        friendsOnly: room.friendsOnly
+    }));
 }
 
 function broadcastPacketToRoom(roomId, packet, excludeClientId = null) {

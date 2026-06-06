@@ -173,8 +173,7 @@ func CheckToPassTurnAfterUserDisconnect(socket_number_that_disconnected : int):
 		round.MainRoutine_PassTurn(round.GetNextTurn_Socket(round.game_state.MAIN_active_current_turn_socket))
 
 func PacketSort(dict : Dictionary):
-	var value_category = dict.values()[0]
-	var value_alias = dict.values()[1]
+	var value_alias = str(dict.get("packet alias", ""))
 	
 	match value_alias:
 		"initial instance setup": 

@@ -158,47 +158,63 @@ func Console_Copypaste(message : String):
 func ToggleLobbyFriendsOnly():
 	if GlobalSteam.LOBBY_ID != 0 && GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
 		GlobalSteam.is_lobby_friends_only = !GlobalSteam.is_lobby_friends_only
+		_apply_lobby_settings_to_backend()
 		if GlobalSteam.is_lobby_friends_only:
-			Steam.setLobbyType(GlobalSteam.LOBBY_ID, Steam.LOBBY_TYPE_FRIENDS_ONLY)
 			Console_Copypaste(tr("MP_LOBBY SET PRIVATE"))
 		else:
-			Steam.setLobbyType(GlobalSteam.LOBBY_ID, Steam.LOBBY_TYPE_PUBLIC)
 			Console_Copypaste(tr("MP_LOBBY SET PUBLIC"))
+		NeoSettings.put("multiplayer/friends_only", GlobalSteam.is_lobby_friends_only)
 
 func TogglePlayerLimit():
 	if GlobalSteam.LOBBY_ID != 0 && GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
-		if GlobalSteam.lobby_player_limit == 4:
+		if GlobalSteam.lobby_player_limit >= 4:
 			GlobalSteam.lobby_player_limit = 2
 		else:
 			GlobalSteam.lobby_player_limit += 1
-		Steam.setLobbyData(GlobalSteam.LOBBY_ID, "player_limit", str(GlobalSteam.lobby_player_limit))
+		_apply_lobby_settings_to_backend()
+		NeoSettings.put("multiplayer/player_limit", GlobalSteam.lobby_player_limit)
+
+func _apply_lobby_settings_to_backend() -> void:
+	if GlobalSteam.LOBBY_ID == 0 or GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+		return
+	if GlobalVariables.using_steam:
+		if GlobalSteam.is_lobby_friends_only:
+			Steam.setLobbyType(GlobalSteam.LOBBY_ID, Steam.LOBBY_TYPE_FRIENDS_ONLY)
+		else:
+			Steam.setLobbyType(GlobalSteam.LOBBY_ID, Steam.LOBBY_TYPE_PUBLIC)
 		Steam.setLobbyMemberLimit(GlobalSteam.LOBBY_ID, GlobalSteam.lobby_player_limit)
+		Steam.setLobbyData(GlobalSteam.LOBBY_ID, "max_members", str(GlobalSteam.lobby_player_limit))
+		Steam.setLobbyData(GlobalSteam.LOBBY_ID, "members", str(GlobalSteam.LOBBY_MEMBERS.size()))
+	else:
+		GlobalSteam.update_room_settings()
 
 func CreateLobby():
 	print("attempting to create lobby")
 	if (GlobalSteam.LOBBY_ID == 0):
-		GlobalSteam.is_lobby_friends_only = true
-		GlobalSteam.lobby_player_limit = 4
+		# restore last-used multiplayer settings
+		GlobalSteam.is_lobby_friends_only = NeoSettings.fetch("multiplayer/friends_only", true)
+		GlobalSteam.lobby_player_limit = NeoSettings.fetch("multiplayer/player_limit", 4)
 		if GlobalVariables.using_steam:
-			Steam.createLobby(Steam.LOBBY_TYPE_FRIENDS_ONLY, GlobalSteam.lobby_player_limit)
-			Steam.setLobbyData(GlobalSteam.LOBBY_ID, "player_limit", str(GlobalSteam.lobby_player_limit))
+			var lobby_type = Steam.LOBBY_TYPE_FRIENDS_ONLY if GlobalSteam.is_lobby_friends_only else Steam.LOBBY_TYPE_PUBLIC
+			Steam.createLobby(lobby_type, GlobalSteam.lobby_player_limit)
+			# setting lobby data/member limit will be applied once lobby is created in _on_lobby_created
 		else:
 			GlobalSteam.create_room()
 
 func _on_lobby_created(connect: int, this_lobby_id: int) -> void:
 	if connect == 1:
-		GlobalSteam.is_lobby_friends_only = true
-		# Set the lobby ID
+		if GlobalVariables.using_steam:
+			GlobalSteam.is_lobby_friends_only = NeoSettings.fetch("multiplayer/friends_only", true)
+			GlobalSteam.lobby_player_limit = NeoSettings.fetch("multiplayer/player_limit", 4)
 		GlobalSteam.LOBBY_ID = this_lobby_id
 		GlobalVariables.steam_id_version_checked_array.append(GlobalSteam.STEAM_ID)
 		print("Created a lobby: %s" % GlobalSteam.LOBBY_ID)
 
-		# Set this lobby as joinable, just in case, though this should be done by default
 		Steam.setLobbyJoinable(GlobalSteam.LOBBY_ID, true)
 
-		# Allow P2P connections to fallback to being relayed through Steam if needed
 		var set_relay: bool = Steam.allowP2PPacketRelay(true)
 		print("Allowing Steam to be relay backup: %s" % set_relay)
+		_apply_lobby_settings_to_backend()
 	if GlobalVariables.sending_lobby_change_alerts_to_console: Console("created lobby with connection: " + str(connect) + " and id: " + str(this_lobby_id))
 	if GlobalVariables.controllerEnabled:
 		lobby_ui.GetFirstUIFocus()
@@ -454,7 +470,8 @@ func get_lobby_members() -> void:
 		if instance_handler != null:
 			instance_handler.current_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
 		if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID and GlobalSteam.LOBBY_ID != 0:
-			Steam.setLobbyData(GlobalSteam.LOBBY_ID, "member_count", str(GlobalSteam.LOBBY_MEMBERS.size()))
+			Steam.setLobbyData(GlobalSteam.LOBBY_ID, "members", str(GlobalSteam.LOBBY_MEMBERS.size()))
+			Steam.setLobbyData(GlobalSteam.LOBBY_ID, "max_members", str(GlobalSteam.lobby_player_limit))
 			if not (GlobalSteam.HOST_ID in GlobalVariables.steam_id_version_checked_array):
 				GlobalVariables.steam_id_version_checked_array.append(GlobalSteam.HOST_ID)
 		if instance_handler != null:
@@ -488,15 +505,15 @@ func get_lobby_members() -> void:
 	prune_version_checked_to_current_members()
 
 	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
-		Steam.setLobbyData(GlobalSteam.LOBBY_ID, "member_count", str(GlobalSteam.LOBBY_MEMBERS.size()))
+		Steam.setLobbyData(GlobalSteam.LOBBY_ID, "members", str(GlobalSteam.LOBBY_MEMBERS.size()))
+		Steam.setLobbyData(GlobalSteam.LOBBY_ID, "max_members", str(GlobalSteam.lobby_player_limit))
 		if !(GlobalSteam.HOST_ID in GlobalVariables.steam_id_version_checked_array):
 			GlobalVariables.steam_id_version_checked_array.append(GlobalSteam.HOST_ID)
 
 	if (previous_host != GlobalSteam.HOST_ID) && (GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID):
-		if match_customization != null:
-			GlobalSteam.lobby_player_limit = 4
-			Steam.setLobbyMemberLimit(GlobalSteam.LOBBY_ID, GlobalSteam.lobby_player_limit)
-			Steam.setLobbyData(GlobalSteam.LOBBY_ID, "player_limit", str(GlobalSteam.lobby_player_limit))
+		GlobalSteam.lobby_player_limit = NeoSettings.fetch("multiplayer/player_limit", 4)
+		GlobalSteam.is_lobby_friends_only = NeoSettings.fetch("multiplayer/friends_only", true)
+		_apply_lobby_settings_to_backend()
 		if match_customization != null:
 			match_customization.CheckMatchCustomizationDifferences()
 	previous_host = GlobalSteam.HOST_ID

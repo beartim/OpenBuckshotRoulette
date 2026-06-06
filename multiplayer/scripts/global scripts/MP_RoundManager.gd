@@ -35,8 +35,7 @@ var fs = false
 @export var adding_unknown_shells : bool
 
 func PacketSort(dict : Dictionary):
-	var value_category = dict.values()[0]
-	var value_alias = dict.values()[1]
+	var value_alias = str(dict.get("packet alias", ""))
 	match value_alias:
 		"first round routine":
 			if !intro_finished:
@@ -281,6 +280,8 @@ func ClearUserInventories():
 
 func BeginItemGrabbingForAllUsers():
 	print("beginning item grabbing for all users ...")
+	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
+		game_state.RebuildItemCountsFromInventory()
 	game_state.FreeLookCameraForAllUsers_Enable()
 	game_state.item_grabbing_finished_for_all_users_checked = false
 	game_state.MAIN_item_grabbing_in_progress = true
@@ -310,6 +311,8 @@ func BeginItemGrabbingForSockets(socket_number_array):
 			print("is not host: none of the users are set to grab items. returning")
 			return
 	print("beginning item grabbing for sockets: ", socket_number_array)
+	if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
+		game_state.RebuildItemCountsFromInventory()
 	game_state.FreeLookCameraForAllUsers_Enable()
 	game_state.item_grabbing_finished_for_all_users_checked = false
 	game_state.MAIN_item_grabbing_in_progress = true

@@ -26,7 +26,9 @@ func SetState():
 	var visible_name = ""
 	if nametag != null: 
 		if !GlobalVariables.mp_debugging:
-			visible_name = Steam.getFriendPersonaName(properties.user_id)
+			visible_name = GlobalSteam.getFriendPersonaName(properties.user_id)
+			if visible_name == "" || visible_name == "Unknown":
+				visible_name = properties.user_name
 		else:
 			visible_name = properties.user_name
 		nametag.text = visible_name.left(19)

@@ -166,6 +166,8 @@ func handle_server_message(data):
 		"roomCreated":
 			LOBBY_ID = int(data.roomId)
 			HOST_ID = data.hostId
+			lobby_player_limit = int(data.get("playerLimit", lobby_player_limit))
+			is_lobby_friends_only = bool(data.get("friendsOnly", is_lobby_friends_only))
 			LOBBY_MEMBERS.clear()
 			if data.has("members"):
 				for member_data in data.members:
@@ -175,6 +177,9 @@ func handle_server_message(data):
 				LOBBY_MEMBERS.append(member)
 			print("Room created: ", LOBBY_ID)
 			emit_signal("lobby_created", 1, LOBBY_ID)
+		"roomSettingsUpdated":
+			lobby_player_limit = int(data.get("playerLimit", lobby_player_limit))
+			is_lobby_friends_only = bool(data.get("friendsOnly", is_lobby_friends_only))
 		"joinedRoom":
 			LOBBY_ID = int(data.roomId)
 			HOST_ID = data.hostId
@@ -226,18 +231,42 @@ func handle_server_message(data):
 					"lobby_id": int(room.roomId),
 					"owner": room.hostId,
 					"members": room.memberCount,
-					"max_members": lobby_player_limit
+					"max_members": int(room.get("maxMembers", 4))
 				})
 			Steam.lobby_match_list.emit(lobby_list)
+		"error":
+			var err_message = str(data.get("message", "unknown"))
+			push_warning("Server error: %s" % err_message)
+			match err_message:
+				"Room is full":
+					emit_signal("lobby_joined", 0, 0, false, Steam.CHAT_ROOM_ENTER_RESPONSE_FULL)
+				"Room not found":
+					emit_signal("lobby_joined", 0, 0, false, Steam.CHAT_ROOM_ENTER_RESPONSE_DOESNT_EXIST)
+				_:
+					emit_signal("lobby_joined", 0, 0, false, Steam.CHAT_ROOM_ENTER_RESPONSE_ERROR)
 		_:
 			pass
 
 func create_room():
 	if connected:
-		var room_id = randi_range(100000, 999999)
-		LOBBY_ID = room_id
-		var msg = {"type": "createRoom", "playerId": STEAM_ID, "playerName": STEAM_NAME}
+		var msg = {
+			"type": "createRoom",
+			"playerId": STEAM_ID,
+			"playerName": STEAM_NAME,
+			"playerLimit": lobby_player_limit,
+			"friendsOnly": is_lobby_friends_only,
+		}
 		ws_peer.send_text(JSON.stringify(msg))
+
+func update_room_settings() -> void:
+	if not connected or LOBBY_ID == 0 or STEAM_ID != HOST_ID:
+		return
+	var msg = {
+		"type": "updateRoomSettings",
+		"playerLimit": lobby_player_limit,
+		"friendsOnly": is_lobby_friends_only,
+	}
+	ws_peer.send_text(JSON.stringify(msg))
 
 func join_room(room_id: int):
 	if connected:

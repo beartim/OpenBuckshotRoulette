@@ -101,10 +101,14 @@ func OnLobbyList(list):
 		var member_count = str(_member_count)
 		var player_limit = str(lobby.get("max_members", ""))
 		
-		if member_count == "":
+		if member_count == "" or member_count == "0":
 			member_count = Steam.getLobbyData(lobby_id, "members")
+		if member_count == "":
+			member_count = Steam.getLobbyData(lobby_id, "member_count")
 		if player_limit == "":
 			player_limit = Steam.getLobbyData(lobby_id, "max_members")
+		if player_limit == "":
+			player_limit = Steam.getLobbyData(lobby_id, "player_limit")
 		
 		if member_count == "" or player_limit == "":
 			print("found invalid lobby, skipping")

@@ -119,11 +119,14 @@ func InteractWithItem_FirstPerson(packet : Dictionary):
 		properties.is_on_secondary_interaction = false
 	var local_grid_index = packet.local_grid_index
 	var item_object : Node3D
-	#for user_property in properties.intermediary.instance_handler.instance_property_array:
-	#	if user_property.socket_number == packet.item_socket_number:
-	#		item_object = user_property.user_inventory_instance_array[local_grid_index]
-	#		break
-	item_object = properties.intermediary.game_state.MAIN_inventory_by_socket[packet.item_socket_number][local_grid_index].item_instance
+	if properties.intermediary != null && properties.intermediary.instance_handler != null && properties.intermediary.instance_handler.instance_property_array != null:
+		for user_property in properties.intermediary.instance_handler.instance_property_array:
+			if user_property.socket_number == packet.item_socket_number:
+				item_object = user_property.user_inventory_instance_array[local_grid_index]
+				break
+	var slot_check = properties.intermediary.game_state.MAIN_inventory_by_socket[packet.item_socket_number][local_grid_index]
+	if typeof(slot_check) == TYPE_DICTIONARY and slot_check.has("item_instance") and is_instance_valid(slot_check["item_instance"]):
+		item_object = slot_check["item_instance"]
 	RemoveItemFromInventory(local_grid_index, packet.item_socket_number)
 	GetItemVariables(item_object)
 	ChangeGameStateWithItem(active_id, packet)
@@ -178,12 +181,18 @@ func InteractWithItem_FirstPerson(packet : Dictionary):
 
 func InteractWithItem_ThirdPerson(packet : Dictionary):
 	var local_grid_index = packet.local_grid_index
-	var item_object : Node3D #= properties.user_inventory_instance_array[local_grid_index]
-	#for user_property in properties.intermediary.instance_handler.instance_property_array:
-	#	if user_property.socket_number == packet.item_socket_number:
-	#		item_object = user_property.user_inventory_instance_array[local_grid_index]
-	#		break
-	item_object = properties.intermediary.game_state.MAIN_inventory_by_socket[packet.item_socket_number][local_grid_index].item_instance
+	var item_object : Node3D
+	var item_socket_number := int(packet.item_socket_number)
+	var slot_dict = properties.intermediary.game_state.MAIN_inventory_by_socket[item_socket_number][local_grid_index]
+	if slot_dict != {} && slot_dict.has("item_instance") && is_instance_valid(slot_dict["item_instance"]):
+		item_object = slot_dict["item_instance"]
+	else:
+		for user_property in properties.intermediary.instance_handler.instance_property_array:
+			if user_property.socket_number == item_socket_number:
+				item_object = user_property.user_inventory_instance_array[local_grid_index]
+				break
+	if item_object == null || !is_instance_valid(item_object):
+		return
 	if packet.stealing_item:
 		properties.is_stealing_item = false
 		properties.is_on_secondary_interaction = false
@@ -249,8 +258,12 @@ func InteractWithItem_FirstPerson_Secondary(packet : Dictionary):
 				properties.jammer_manager.looping = false
 			EndItemInteraction(packet)
 		8:	#adrenaline
-			var item_parent_to_steal : Node3D = properties.intermediary.game_state.MAIN_inventory_by_socket[packet.item_selected_socket_number][packet.item_selected_local_grid_index].item_instance
-			print("item to steal: ", item_parent_to_steal.get_child(1).itemName)
+			var slot_check = properties.intermediary.game_state.MAIN_inventory_by_socket[packet.item_selected_socket_number][packet.item_selected_local_grid_index]
+			var item_parent_to_steal : Node3D = null
+			if typeof(slot_check) == TYPE_DICTIONARY and slot_check.has("item_instance") and is_instance_valid(slot_check["item_instance"]):
+				item_parent_to_steal = slot_check["item_instance"]
+			if item_parent_to_steal != null:
+				print("item to steal: ", item_parent_to_steal.get_child(1).itemName)
 
 func InteractWithItem_ThirdPerson_Secondary(packet : Dictionary):
 	if packet.has_exit_animation:

@@ -8,6 +8,10 @@ var settings: Dictionary = {
 		max_fps = 120,
 		level = 0,
 		ambient_filter_enabled = true
+	},
+	multiplayer = {
+		player_limit = 4,
+		friends_only = true
 	}
 }
 
@@ -68,16 +72,36 @@ func _save() -> void:
 		file.store_var(settings)
 
 func _read() -> void:
+	var defaults = {
+		performance = {
+			max_fps = 120,
+			level = 0,
+			ambient_filter_enabled = true
+		},
+		multiplayer = {
+			player_limit = 4,
+			friends_only = true
+		}
+	}
 	if FileAccess.file_exists(_PATH):
 		var file = FileAccess.open(_PATH, FileAccess.READ)
 		if file:
 			var data = file.get_var()
 			if data is Dictionary:
-				settings = data
+				settings = _merge_defaults(defaults, data)
 				return
 			else:
-				settings = {}
+				settings = defaults.duplicate(true)
 	_save()
+
+func _merge_defaults(defaults: Dictionary, loaded: Dictionary) -> Dictionary:
+	var merged = defaults.duplicate(true)
+	for key in loaded:
+		if loaded[key] is Dictionary and merged.has(key) and merged[key] is Dictionary:
+			merged[key] = _merge_defaults(merged[key], loaded[key])
+		else:
+			merged[key] = loaded[key]
+	return merged
 
 func _emit_all_settings(dict: Dictionary, prefix: String) -> void:
 	for key in dict:

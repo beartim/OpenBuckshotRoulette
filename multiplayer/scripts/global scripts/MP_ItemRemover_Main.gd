@@ -41,7 +41,9 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 				user.item_manager.ClearInventory_Dictionaries()
 		for c in range(game_state.MAIN_inventory_by_socket[sockets_to_remove_items_at[i]].size()):
 			if game_state.MAIN_inventory_by_socket[sockets_to_remove_items_at[i]][c] != {}:
-				items_to_delete_array.append(game_state.MAIN_inventory_by_socket[sockets_to_remove_items_at[i]][c].item_instance)
+				var slot = game_state.MAIN_inventory_by_socket[sockets_to_remove_items_at[i]][c]
+				if typeof(slot) == TYPE_DICTIONARY and slot.has("item_instance") and is_instance_valid(slot["item_instance"]):
+					items_to_delete_array.append(slot["item_instance"])
 	#clear global item count array in the game state
 	game_state.SetupEmptyGlobalItemCount()
 	#lerp cameras
@@ -83,7 +85,8 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 		var instance_array_to_reparent = []
 		for local_grid_index in game_state.MAIN_inventory_by_socket[sockets_to_remove_items_at[remover_socket_index]]:
 			if local_grid_index != {}:
-				instance_array_to_reparent.append(local_grid_index.item_instance)
+				if typeof(local_grid_index) == TYPE_DICTIONARY and local_grid_index.has("item_instance") and is_instance_valid(local_grid_index["item_instance"]):
+					instance_array_to_reparent.append(local_grid_index["item_instance"])
 		var remover_item_parent = instance_handler_array[sockets_to_remove_items_at[remover_socket_index]].get_parent().get_child(2).get_child(0).get_child(0)
 		#lerp items to carrier
 		for item_instance in instance_array_to_reparent:
@@ -104,7 +107,8 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 		var instance_array_to_reparent = []
 		for local_grid_index in game_state.MAIN_inventory_by_socket[sockets_to_remove_items_at[remover_socket_index]]:
 			if local_grid_index != {}:
-				instance_array_to_reparent.append(local_grid_index.item_instance)
+				if typeof(local_grid_index) == TYPE_DICTIONARY and local_grid_index.has("item_instance") and is_instance_valid(local_grid_index["item_instance"]):
+					instance_array_to_reparent.append(local_grid_index["item_instance"])
 		for item_instance in instance_array_to_reparent:
 			var original_transform = item_instance.global_transform
 			item_instance.get_parent().remove_child(item_instance)

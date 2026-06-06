@@ -11,10 +11,12 @@ func VerifyPacket(packet_data):
 	if !packet_data.has("sent_from_socket") or !packet_data.has("packet_id"):
 		print("unknown packet in verification: ", packet_data, ". returning")
 		return {}
-	var id = packet_data.values()[3]
+	var id = int(packet_data.get("packet_id", -1))
 	var verified_data = {}
 	var verification_successful = false
-	var properties = game_state.GetSocketProperties(packet_data.sent_from_socket)
+	var properties = game_state.GetSocketProperties(int(packet_data.sent_from_socket))
+	if properties == null:
+		return {}
 	match id:
 		10:
 			if !properties.is_holding_shotgun && game_state.MAIN_active_current_turn_socket == properties.socket_number && properties.has_turn:
@@ -51,8 +53,7 @@ func VerifyPacket(packet_data):
 	return verified_data
 
 func PacketSort(dict : Dictionary):
-	var value_category = dict.values()[0]
-	var value_alias = dict.values()[1]
+	var value_alias = str(dict.get("packet alias", ""))
 	var packet
 	var custom_target_packet = {}
 	var custom_target_id = -1
@@ -66,6 +67,12 @@ func PacketSort(dict : Dictionary):
 			"sent_from_socket": dict.sent_from_socket,
 			}
 		"shoot user request":
+			var seq_shoot = game_state.MAIN_active_sequence_dict.get("sequence_in_shotgun", [])
+			var shell_shoot = ""
+			var len_after_eject = 0
+			if seq_shoot is Array && (seq_shoot as Array).size() > 0:
+				shell_shoot = str(seq_shoot[0])
+				len_after_eject = (seq_shoot as Array).size() - 1
 			packet = {
 				"packet category": "MP_UserInstanceProperties",
 				"packet alias": "shoot user",
@@ -73,12 +80,12 @@ func PacketSort(dict : Dictionary):
 				"packet_id": 13,
 				"shooter_socket_self": dict.sent_from_socket,
 				"shooter_socket_target": dict.socket_to_shoot,
-				"shooter_shell": game_state.MAIN_active_sequence_dict.sequence_in_shotgun[0],
-				"shooter_sequence_length_after_eject": game_state.MAIN_active_sequence_dict.sequence_in_shotgun.size() - 1,
+				"shooter_shell": shell_shoot,
+				"shooter_sequence_length_after_eject": len_after_eject,
 				"shooter_socket_target_direction": roundManager.GetDirection(dict.sent_from_socket, dict.socket_to_shoot),
 				"barrel_sawed_off": game_state.MAIN_barrel_sawed_off,
 				"sent_from_socket": dict.sent_from_socket,
-				"ending_turn_after_shot": game_state.CheckIfShooterEndingTurnAfterShot(dict.socket_to_shoot, dict.sent_from_socket, game_state.MAIN_active_sequence_dict.sequence_in_shotgun[0], game_state.MAIN_barrel_sawed_off, game_state.MAIN_active_sequence_dict.sequence_in_shotgun.size() - 1),
+				"ending_turn_after_shot": game_state.CheckIfShooterEndingTurnAfterShot(dict.socket_to_shoot, dict.sent_from_socket, shell_shoot, game_state.MAIN_barrel_sawed_off, len_after_eject),
 			}
 		"look at user request":
 			packet = {
@@ -90,8 +97,10 @@ func PacketSort(dict : Dictionary):
 				"direction_to_look": dict.direction_to_look,
 			}
 		"grab item request":
-			var item_to_grab = game_state.GetItemToGrab(GetSocketProperties(dict.sent_from_socket), true)
+			var socket_properties = GetSocketProperties(dict.sent_from_socket)
+			var item_to_grab = game_state.GetItemToGrab(socket_properties, true)
 			if item_to_grab == null: return
+			socket_properties.unplaced_reserved_item_id = item_to_grab
 			#debug here1
 			#var debug_properties = GetSocketProperties(dict.sent_from_socket)
 			#var temp = [6, 6, 6, 6, 6, 6, 6, 6]
@@ -109,7 +118,9 @@ func PacketSort(dict : Dictionary):
 				"item_id": item_to_grab,
 			}
 		"place item request":
-			var is_last_item = game_state.IsPlacingLastItem(GetSocketProperties(dict.sent_from_socket))
+			var socket_properties = GetSocketProperties(dict.sent_from_socket)
+			socket_properties.unplaced_reserved_item_id = -1
+			var is_last_item = game_state.IsPlacingLastItem(socket_properties)
 			var sockets_ending_item_grabbing = []
 			if is_last_item:
 				game_state.MAIN_active_num_of_users_finished_item_grabbing += 1
@@ -128,6 +139,10 @@ func PacketSort(dict : Dictionary):
 				"sockets_ending_item_grabbing": sockets_ending_item_grabbing,
 			}
 		"interact with item request":
+			var seq_item = game_state.MAIN_active_sequence_dict.get("sequence_in_shotgun", [])
+			var chamber_shell = ""
+			if seq_item is Array && (seq_item as Array).size() > 0:
+				chamber_shell = str(seq_item[0])
 			packet = {
 				"packet category": "MP_UserInstanceProperties",
 				"packet alias": "interact with item",
@@ -139,14 +154,15 @@ func PacketSort(dict : Dictionary):
 				"socket_number": dict.sent_from_socket,
 				"stealing_item": dict.stealing_item,
 				"ending_turn_after_item_use": game_state.CheckIfEndingTurnAfterItemUse(dict.item_id, dict.sent_from_socket),
-				"current_shell_in_chamber": game_state.MAIN_active_sequence_dict.sequence_in_shotgun[0],
+				"current_shell_in_chamber": chamber_shell,
 				"phone_verbal_shell": "",
 				"phone_verbal_index": "",
 			}
 			if dict.item_id == 6:
 				custom_target_packet = packet.duplicate(true)
-				custom_target_packet.phone_verbal_index = game_state.GetBurnerPhone_VerbalIndex()
-				custom_target_packet.phone_verbal_shell = game_state._GetBurnerPhone_Shell(custom_target_packet.phone_verbal_index)
+				var phone_verbal_index = game_state.GetBurnerPhone_VerbalIndex()
+				custom_target_packet.phone_verbal_index = phone_verbal_index
+				custom_target_packet.phone_verbal_shell = game_state._GetBurnerPhone_Shell(int(phone_verbal_index))
 				custom_target_id = game_state.GetSocketID(dict.sent_from_socket)
 		"secondary item interaction request":
 			packet = {

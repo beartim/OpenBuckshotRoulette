@@ -154,8 +154,13 @@ func _resolved_lobby_controller() -> LobbyController:
 
 func PipeData(dict : Dictionary):
 	if GlobalVariables.printing_packets: print("[", GetTime(), "]", ": sorting packet: ", dict)
-	var value_category = dict.values()[0]
-	var value_alias = dict.values()[1]
+	if dict == null || dict == {}:
+		return
+	if !GlobalVariables.using_steam && GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+		if str(dict.get("packet category", "")) == "MP_PacketVerification" && str(dict.get("sent_from", "")) == "client":
+			return
+	var value_category = str(dict.get("packet category", ""))
+	var value_alias = str(dict.get("packet alias", ""))
 	match value_category:
 		"MP_UserInstanceHandler": 
 			if (instance_handler): instance_handler.PacketSort(dict)

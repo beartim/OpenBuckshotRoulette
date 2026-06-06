@@ -26,6 +26,7 @@ class_name MP_UserInstanceProperties extends Node
 @export var user_inventory : Array[Dictionary] = [{},{},{},{},{},{},{},{}]
 @export var user_inventory_instance_array : Array[Node3D] = [null,null,null,null,null,null,null,null]
 @export var user_inventory_count_by_item_id : Array[int]
+var unplaced_reserved_item_id : int = -1
 @export var user_item_resource_array : Array[MP_ItemResource_User] #nvm this crashes the editor LOL
 @export_group("item properties (index = ID)")
 @export var user_item_array_hand_R : Array[Node3D]
@@ -121,8 +122,7 @@ func _unhandled_input(event):
 		intermediary.ingame_lobby_ui.ToggleUI()
 
 func PacketSort(dict : Dictionary):
-	var value_category = dict.values()[0]
-	var value_alias = dict.values()[1]
+	var value_alias = str(dict.get("packet alias", ""))
 	match value_alias:
 		"pickup shotgun":
 			shotgun.ReceivePacket_PickUpShotgun(dict)

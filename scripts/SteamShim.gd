@@ -214,10 +214,11 @@ func addRequestLobbyListDistanceFilter(filter: int) -> void:
 		_steam.addRequestLobbyListDistanceFilter(filter)
 
 func requestLobbyList() -> void:
-	GlobalSteam.ws_peer.send_text(JSON.stringify({"type": "listRooms"}))
-	return
-	if _steam != null and _steam.has_method("requestLobbyList"):
+	if GlobalVariables.using_steam and _steam != null and _steam.has_method("requestLobbyList"):
 		_steam.requestLobbyList()
+		return
+	if GlobalSteam != null and GlobalSteam.ws_peer != null:
+		GlobalSteam.ws_peer.send_text(JSON.stringify({"type": "listRooms"}))
 		return
 	call_deferred("_emit_mock_lobby_match_list")
 
@@ -242,6 +243,8 @@ func getLobbyData(lobby_id: int, key: String) -> String:
 func setLobbyMemberLimit(lobby_id: int, max_members: int) -> void:
 	if _steam != null and _steam.has_method("setLobbyMemberLimit"):
 		_steam.setLobbyMemberLimit(lobby_id, max_members)
+		return
+	setLobbyData(lobby_id, "max_members", str(max_members))
 
 func setLobbyJoinable(lobby_id: int, joinable: bool) -> void:
 	if _steam != null and _steam.has_method("setLobbyJoinable"):
@@ -250,6 +253,8 @@ func setLobbyJoinable(lobby_id: int, joinable: bool) -> void:
 func setLobbyType(lobby_id: int, lobby_type: int) -> void:
 	if _steam != null and _steam.has_method("setLobbyType"):
 		_steam.setLobbyType(lobby_id, lobby_type)
+		return
+	setLobbyData(lobby_id, "friends_only", "true" if lobby_type == LOBBY_TYPE_FRIENDS_ONLY else "false")
 
 func activateGameOverlayInviteDialog(lobby_id: int) -> void:
 	if _steam != null and _steam.has_method("activateGameOverlayInviteDialog"):

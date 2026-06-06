@@ -88,6 +88,38 @@ func SetupEmptyGlobalItemCount():
 	for item_id in 11:
 		global_item_count_on_table_by_id.append(0)
 
+func RebuildItemCountsFromInventory():
+	SetupEmptyGlobalItemCount()
+	for property in instance_handler.instance_property_array:
+		property.CLearInventory_Count()
+		property.unplaced_reserved_item_id = -1
+	for socket_number in range(MAIN_inventory_by_socket.size()):
+		var socket_properties : MP_UserInstanceProperties = GetSocketProperties(socket_number)
+		for local_grid_index in range(MAIN_inventory_by_socket[socket_number].size()):
+			var dict = MAIN_inventory_by_socket[socket_number][local_grid_index]
+			if dict != {}:
+				var item_id = int(dict["item_id"])
+				if item_id >= 0 && item_id < global_item_count_on_table_by_id.size():
+					global_item_count_on_table_by_id[item_id] += 1
+				if socket_properties != null && item_id >= 0 && item_id < socket_properties.user_inventory_count_by_item_id.size():
+					socket_properties.user_inventory_count_by_item_id[item_id] += 1
+
+func RollbackUnplacedReservedItem(for_socket_number : int):
+	var property : MP_UserInstanceProperties = GetSocketProperties(for_socket_number)
+	if property == null:
+		return
+	var reserved_item_id = property.unplaced_reserved_item_id
+	if reserved_item_id == -1:
+		return
+	if reserved_item_id >= 0 && reserved_item_id < global_item_count_on_table_by_id.size():
+		if global_item_count_on_table_by_id[reserved_item_id] > 0:
+			global_item_count_on_table_by_id[reserved_item_id] -= 1
+	if property.user_inventory_count_by_item_id != null && reserved_item_id >= 0 && reserved_item_id < property.user_inventory_count_by_item_id.size():
+		if property.user_inventory_count_by_item_id[reserved_item_id] > 0:
+			property.user_inventory_count_by_item_id[reserved_item_id] -= 1
+	property.unplaced_reserved_item_id = -1
+	property.is_holding_item_to_place = false
+
 var mouse_pos
 func _input(event):
 	if event is InputEventMouse:
@@ -165,8 +197,8 @@ func Global_AddItemToInventory(socket_number : int, instance : Node3D, item_id :
 func Global_RemoveItemFromInventory(socket_number : int, local_grid_index):
 	for property in instance_handler.instance_property_array:
 		if property.socket_number == socket_number:
-			property.user_inventory_count_by_item_id[MAIN_inventory_by_socket[socket_number][local_grid_index].item_id] -= 1
-	global_item_count_on_table_by_id[MAIN_inventory_by_socket[socket_number][local_grid_index].item_id] -= 1
+			property.user_inventory_count_by_item_id[MAIN_inventory_by_socket[socket_number][local_grid_index]["item_id"]] -= 1
+	global_item_count_on_table_by_id[MAIN_inventory_by_socket[socket_number][local_grid_index]["item_id"]] -= 1
 	MAIN_inventory_by_socket[socket_number][local_grid_index] = {}
 
 func Global_ClearInventoryDictionaries(socket_number : int):
@@ -378,25 +410,32 @@ func CheckIfAllInventoriesAreFull():
 	return all_inventories_full
 
 func GetBurnerPhone_VerbalIndex():
-	var current_sequence = MAIN_active_sequence_dict.sequence_in_shotgun
+	var current_sequence = MAIN_active_sequence_dict.get("sequence_in_shotgun", [])
+	if !(current_sequence is Array):
+		return -1
+	var current_array : Array = current_sequence as Array
 	var verbal_index = 0
-	if current_sequence.size() <= 2:
+	if current_array.size() <= 2:
 		verbal_index = -1
 	else:
-		var randindex = randi_range(2, current_sequence.size() - 1)
-		verbal_index = randindex; verbal_index += 1
-	if verbal_index > 7: verbal_index = 7
+		var randindex = randi_range(2, current_array.size() - 1)
+		verbal_index = randindex
+		verbal_index += 1
+	if verbal_index > 7:
+		verbal_index = 7
 	return verbal_index
 
 func _GetBurnerPhone_Shell(with_verbal_index : int):
-	var current_sequence = MAIN_active_sequence_dict.sequence_in_shotgun
-	var verbal_shell = ""
+	var current_sequence = MAIN_active_sequence_dict.get("sequence_in_shotgun", [])
+	if !(current_sequence is Array):
+		return ""
+	var current_array : Array = current_sequence as Array
+	if current_array.size() <= 2:
+		return ""
 	var check_index = with_verbal_index - 1
-	if current_sequence.size() <= 2:
-		verbal_shell = ""
-	else:
-		verbal_shell = current_sequence[check_index]
-	return verbal_shell
+	if check_index < 0 || check_index >= current_array.size():
+		return ""
+	return str(current_array[check_index])
 
 #func GetBurnerPhone_Shell():
 #	var current_sequence = MAIN_active_sequence_dict.sequence_in_shotgun
@@ -552,7 +591,8 @@ func StopAllTimeouts():
 func OnTimeoutReached(timeout_type : String, for_socket_number : float):
 	if !GlobalVariables.timeouts_enabled: return
 	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID: return
-	var property : MP_UserInstanceProperties = GetSocketProperties(for_socket_number)
+	var socket_number_int := int(for_socket_number)
+	var property : MP_UserInstanceProperties = GetSocketProperties(socket_number_int)
 	var ending_turn_after_timeout = false
 	print("... timeout type: ", timeout_type, " ... property on secondary interaction: ", property.is_on_secondary_interaction, " ... is interacting with item: ", property.is_interacting_with_item)
 	if (timeout_type == "turn" && !property.is_on_secondary_interaction) && property.is_interacting_with_item:
@@ -571,12 +611,14 @@ func OnTimeoutReached(timeout_type : String, for_socket_number : float):
 	if timeout_type == "turn":
 		MAIN_active_user_id_to_ignore_timeout_packets_array.append(property.user_id)
 	if timeout_type == "item distribution":
+		RollbackUnplacedReservedItem(socket_number_int)
 		MAIN_active_user_id_to_ignore_timeout_packets_array.append(property.user_id)
 		
 	var packet = {
 		"packet category": "MP_UserInstanceProperties",
 		"packet alias": "timeout exceeded",
 		"sent_from": "host",
+		"packet_id": 30,
 		"packet id": 30,
 		"timeout_type": timeout_type,
 		"ending_turn_after_timeout": ending_turn_after_timeout,

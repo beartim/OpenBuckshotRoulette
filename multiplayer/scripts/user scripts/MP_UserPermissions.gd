@@ -46,10 +46,11 @@ func SetItemPermissions(state : bool, for_all_items_on_table : bool = false):
 		if socket != properties.socket_number:
 			for dict in properties.intermediary.game_state.MAIN_inventory_by_socket[socket]:
 				if dict != {}:
-					var pickup_indicator : MP_PickupIndicator = dict.item_instance.get_child(0)
-					var interaction_branch : MP_InteractionBranch = dict.item_instance.get_child(1)
-					interaction_branch.interactionAllowed = false
-					pickup_indicator.lerping_on_hover = false
+					if typeof(dict) == TYPE_DICTIONARY and dict.has("item_instance") and is_instance_valid(dict["item_instance"]):
+						var pickup_indicator : MP_PickupIndicator = dict["item_instance"].get_child(0)
+						var interaction_branch : MP_InteractionBranch = dict["item_instance"].get_child(1)
+						interaction_branch.interactionAllowed = false
+						pickup_indicator.lerping_on_hover = false
 	
 	var invalid_item_id_array = properties.intermediary.game_state.GetPropertyInvalidItems(properties)
 	var item_array_to_check_permissions_on = []
@@ -62,7 +63,8 @@ func SetItemPermissions(state : bool, for_all_items_on_table : bool = false):
 			if socket != properties.socket_number:
 				for dict in properties.intermediary.game_state.MAIN_inventory_by_socket[socket]:
 					if dict != {}:
-						item_array_to_check_permissions_on.append(dict.item_instance)
+						if typeof(dict) == TYPE_DICTIONARY and dict.has("item_instance") and is_instance_valid(dict["item_instance"]):
+							item_array_to_check_permissions_on.append(dict["item_instance"])
 	for item in item_array_to_check_permissions_on:
 		if item != null:
 			var pickup_indicator : MP_PickupIndicator = item.get_child(0)

@@ -34,6 +34,8 @@ class_name MP_ItemManager extends Node
 @export var speaker_tp_grab_item : AudioStreamPlayer3D
 
 var active_hand : String = "R"
+var grab_request_pending : bool = false
+var place_request_pending : bool = false
 
 #	ID	NAME
 #	1	handsaw
@@ -92,6 +94,9 @@ func BeginItemGrabbing():
 	print("begin item grabbing on user name: ", properties.user_name)
 	properties.is_grabbing_items = true
 	debug_grid_index = -1
+	grab_request_pending = false
+	place_request_pending = false
+	properties.is_holding_item_to_place = false
 	if !properties.running_fast_revival:
 		#await GlobalVariables.tree.create_timer(1.3, false).timeout
 		pass
@@ -120,11 +125,14 @@ func BeginItemGrabbing():
 		speaker_tp_item_briefcase.play()
 
 func EndItemGrabbing():
+	grab_request_pending = false
+	place_request_pending = false
 	bp_item_distribution.visible = false
 		
 	if properties.is_holding_item_to_place:
 		if active_instance != null:
 			ReturnItemToBriefcase()
+		properties.is_holding_item_to_place = false
 	properties.intermediary.game_state.StopTimeoutForSocket("item distribution", properties.socket_number)
 	SetGridColliders(false)
 	SetIntakeCollider(false)
@@ -143,14 +151,20 @@ func ReturnItemToBriefcase():
 	active_instance.queue_free()
 
 func EndItemGrabbingDefault():
+	grab_request_pending = false
+	place_request_pending = false
 	properties.is_grabbing_items = false
+	properties.is_holding_item_to_place = false
 	if properties.is_active:
 		EndItemGrabbing()
 	else:
 		properties.hands.Hands_ReturnBriefcase()
 
 func EndItemGrabbingAfterTimeout():
+	grab_request_pending = false
+	place_request_pending = false
 	properties.is_grabbing_items = false
+	properties.is_holding_item_to_place = false
 	if properties.is_active:
 		EndItemGrabbing()
 	else:
@@ -162,13 +176,23 @@ func EndItemGrabbingAfterTimeout():
 		properties.intermediary.game_state.CheckIfItemGrabbingFinishedForAllUsers()
 
 func EndItemGrabbingAfterNonEligible():
+	grab_request_pending = false
+	place_request_pending = false
 	properties.is_grabbing_items = false
+	properties.is_holding_item_to_place = false
 	if properties.is_active:
 		EndItemGrabbing()
 	else:
 		properties.hands.Hands_ReturnBriefcase()
 
 func GrabItemRequest():
+	if grab_request_pending:
+		return
+	if !properties.is_grabbing_items:
+		return
+	if properties.is_holding_item_to_place:
+		return
+	grab_request_pending = true
 	SetIntakeCollider(false)
 	SetGridColliders(false)
 	var packet = {
@@ -180,8 +204,19 @@ func GrabItemRequest():
 	}
 	properties.intermediary.packets.send_p2p_packet_directly_to_host(GlobalSteam.STEAM_ID, packet)
 	if GlobalVariables.mp_debugging: properties.intermediary.packets.PipeData(packet)
+	await GlobalVariables.tree.create_timer(0.45, false).timeout
+	if grab_request_pending && properties.is_grabbing_items && !properties.is_holding_item_to_place:
+		grab_request_pending = false
+		SetIntakeCollider(true)
 
 func PlaceItemRequest(on_grid_index):
+	if place_request_pending:
+		return
+	if !properties.is_grabbing_items:
+		return
+	if !properties.is_holding_item_to_place:
+		return
+	place_request_pending = true
 	SetIntakeCollider(false)
 	SetGridColliders(false)
 	var packet = {
@@ -194,9 +229,16 @@ func PlaceItemRequest(on_grid_index):
 	}
 	properties.intermediary.packets.send_p2p_packet_directly_to_host(GlobalSteam.STEAM_ID, packet)
 	if GlobalVariables.mp_debugging: properties.intermediary.packets.PipeData(packet)
+	await GlobalVariables.tree.create_timer(0.45, false).timeout
+	if place_request_pending && properties.is_grabbing_items && properties.is_holding_item_to_place:
+		place_request_pending = false
+		SetGridColliders(true)
 
 func ReceivePacket_GrabItem(dict : Dictionary):
 	if dict.socket_number == properties.socket_number:
+		grab_request_pending = false
+		if properties.is_holding_item_to_place:
+			return
 		properties.is_holding_item_to_place = true
 		properties.num_of_items_currently_grabbed += 1
 		if properties.is_active:
@@ -212,6 +254,9 @@ func ReceivePacket_PlaceItem(dict : Dictionary):
 	if properties.socket_number in dict.sockets_ending_item_grabbing:
 		EndItemGrabbingAfterNonEligible()
 	if dict.socket_number == properties.socket_number:
+		place_request_pending = false
+		if !properties.is_holding_item_to_place:
+			return
 		properties.is_holding_item_to_place = false
 		if properties.is_active:
 			PlaceItem(dict.local_grid_index, dict.is_last_item)

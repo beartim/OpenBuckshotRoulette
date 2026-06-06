@@ -46,7 +46,7 @@ file_logging/enable_file_logging=true
 
 window/size/viewport_width=960
 window/size/viewport_height=540
-window/size/window_width_override=1560
+window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"

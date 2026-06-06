@@ -4,11 +4,9 @@
 这是一个把 Buckshot Roulette (恶魔轮盘) 开源并扩展的项目，基于 v2.2.0.6 (Steam)  
 如果你想修改或使用 Open Buckshot Roulette 请确保 Buckshot Roulette 在你的 itch.io 或 Steam 账户上可用
 
-你需要使用 Godot Engine 4.6.2 及以上版本编辑它  
+你需要使用 Godot Engine 4.6.3 及以上版本编辑它  
 
-~~Open Buckshot Roulette 可以较流畅地运行在安卓设备上~~  
-双人游戏目前基本可用  
-3、4 人游戏目前基本不可用
+多人游戏目前基本可用
 
 ## 多人游戏
 ### 搭建服务器
