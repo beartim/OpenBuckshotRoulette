@@ -8097,7 +8097,7 @@ transform = Transform3D(0.999955, 0.00948284, 9.49949e-08, -9.0804e-08, -3.57628
 mesh = SubResource("ArrayMesh_vwr5j")
 
 [node name="sequence segment6" type="MeshInstance3D" parent="shell sequence machine main parent/shell sequence machine shell holder parent/sequence segment0/sequence segment1/sequence segment2/sequence segment3/sequence segment4/sequence segment5" unique_id=1655276414]
-transform = Transform3D(0.9743697, 0, -0.22495118, 0, 1, 0, 0.22495118, 0, 0.9743697, 0.439169, 0, 0)
+transform = Transform3D(0.97436965, 0, -0.22495116, 0, 1, 0, 0.22495116, 0, 0.97436965, 0.439169, 0, 0)
 mesh = SubResource("ArrayMesh_qgvpn")
 
 [node name="single shell parent_segment6" parent="shell sequence machine main parent/shell sequence machine shell holder parent/sequence segment0/sequence segment1/sequence segment2/sequence segment3/sequence segment4/sequence segment5/sequence segment6" unique_id=974449199 instance=ExtResource("73")]
@@ -8330,7 +8330,7 @@ transform = Transform3D(3.57628e-07, 1, 0, -1, 3.57628e-07, 0, 0, 0, 1, -2.74079
 mesh = SubResource("ArrayMesh_fkfe4")
 
 [node name="rotato arm parent_rear stock" type="Node3D" parent="main centerpiece pivot parent/shotgun main parent/shotgun secondary parent" unique_id=2144594279]
-transform = Transform3D(0.2254021, 2.8040358e-06, 0.9742646, 0.9742646, -3.5268324e-06, -0.2254021, 2.8040326e-06, 1, -3.5268283e-06, 3.01702, 0.0988179, -0.253031)
+transform = Transform3D(0.22540209, 2.8040358e-06, 0.9742646, 0.9742646, -3.5268324e-06, -0.22540209, 2.8040324e-06, 1, -3.5268283e-06, 3.01702, 0.0988179, -0.253031)
 
 [node name="rotator arm_rear stock base" type="MeshInstance3D" parent="main centerpiece pivot parent/shotgun main parent/shotgun secondary parent/rotato arm parent_rear stock" unique_id=1686598233]
 transform = Transform3D(0.999891, 2.7118e-06, 0.0149219, -2.78899e-06, 1, 3.50324e-06, -0.0149219, -3.50149e-06, 0.999891, 0.00252604, -0.0567403, -0.00240493)

@@ -84,10 +84,12 @@ extends Node3D
 	$"light parent/light_interior club upper light hit2",
 	$"exterior environment main/exterior environment parent/exterior environment prop parent/wood pallet_005"
 ]
+@onready var canvas_layer_back: CanvasLayer = $CanvasLayer_Back
 
 func _ready() -> void:
 	viewblocker_global.show()
 	input_blocker.show()
+	canvas_layer_back.hide()
 	NeoSettings.value_changed.connect(_update_performance_options)
 	_update_performance_options()
 
@@ -132,3 +134,21 @@ func _update_performance_options(_key: String = "", _value: Variant = null) -> v
 			node.show()
 		for node in p1should_be_hides:
 			node.show()
+
+var last_back_preessed_time := 0
+
+func _input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed('back') && Time.get_ticks_msec() - last_back_preessed_time >= 33.33:
+		if viewblocker_global.visible == false:
+			canvas_layer_back.hide()
+			return
+		canvas_layer_back.visible = !canvas_layer_back.visible
+	last_back_preessed_time = Time.get_ticks_msec()
+
+
+func _on_true_button_back_yes_pressed() -> void:
+	GlobalVariables.tree.change_scene_to_file("res://scenes/menu.tscn")
+
+
+func _on_true_button_back_no_pressed() -> void:
+	canvas_layer_back.visible = false

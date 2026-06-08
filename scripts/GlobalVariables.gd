@@ -1,10 +1,10 @@
 extends Node
 
-var currentVersion_nr:= "v1.0.0.13-beta EXTENDS v2.2.0"
+var currentVersion_nr:= "v1.0.0.14 EXTENDS v2.2.0"
 var currentVersion_hotfix:= 6
 var using_steam:= false
 var all_steam_features_enabled:= true
-const PROTOCOL := 2
+const PROTOCOL := 3
 
 var currentVersion:= ""
 var versuffix_steam:= " (STEAM)"

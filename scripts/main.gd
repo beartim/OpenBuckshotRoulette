@@ -29,6 +29,7 @@ extends Node3D
 	$"backroom visual parent/Plane_023", $"backroom visual parent/Plane_024",
 	$"backroom visual parent/Cube_001", $"backroom visual parent/Cube_003", $"backroom visual parent/Cube_005", $"backroom visual parent/Cube_043",
 	$"backroom visual parent/Cube_039",
+	$restroom_CLUB/Cube_117
 	
 ]
 @onready var p2should_be_hides: Array[Node3D] = [
@@ -73,9 +74,12 @@ extends Node3D
 	$"backroom visual parent/Cube", $"backroom visual parent/Cube_002"
 ]
 
+@onready var canvas_layer_back: CanvasLayer = $CanvasLayer_Back
+
 func _ready() -> void:
 	GlobalVariables.set_tree(self)
 	viewblocker_parent.show()
+	canvas_layer_back.hide()
 	NeoSettings.connect('value_changed', update_performance_options)
 	update_performance_options()
 
@@ -141,3 +145,18 @@ func update_performance_options(_key: String = "", _value: Variant = null):
 		lp_spot_light_1.hide()
 		light_main_door_2_club_ls.shadow_enabled = true
 		light_main_door_club_ls.shadow_enabled = true
+
+var last_back_preessed_time := 0
+
+func _input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed('back') && Time.get_ticks_msec() - last_back_preessed_time >= 33.33:
+		canvas_layer_back.visible = !canvas_layer_back.visible
+	last_back_preessed_time = Time.get_ticks_msec()
+
+
+func _on_true_button_back_yes_pressed() -> void:
+	GlobalVariables.tree.change_scene_to_file("res://scenes/menu.tscn")
+
+
+func _on_true_button_back_no_pressed() -> void:
+	canvas_layer_back.visible = false

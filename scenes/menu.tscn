@@ -843,6 +843,7 @@ scale = Vector2(0.181524, 0.146467)
 texture = ExtResource("25")
 
 [node name="discord icon" type="TextureRect" parent="Camera/dialogue UI/menu ui/main screen/Control_Discord" unique_id=1655257635]
+modulate = Color(1, 1, 1, 0.49803922)
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -874,10 +875,11 @@ offset_bottom = -78.0
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(7.63651, 9.17861)
-focus_neighbor_left = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_left = NodePath("../../Control_Github/true button")
 focus_neighbor_top = NodePath("../../Control_MainOptions/true button_exit")
 focus_neighbor_right = NodePath("../../Control_MainOptions/true button_exit")
 focus_neighbor_bottom = NodePath("../../Control_MainOptions/true button_start")
+disabled = true
 
 [node name="button class_discord" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_Discord/true button_discord" unique_id=406969853 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
@@ -911,9 +913,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -183.0
+offset_left = -175.0
 offset_top = -85.000244
-offset_right = 287.0
+offset_right = 295.0
 offset_bottom = 366.99976
 scale = Vector2(0.181524, 0.146467)
 texture = ExtResource("25")
@@ -925,9 +927,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -171.0
+offset_left = -163.0
 offset_top = -86.0
-offset_right = 817.0
+offset_right = 825.0
 offset_bottom = 1070.0
 grow_horizontal = 0
 grow_vertical = 0
@@ -943,16 +945,16 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -181.0
+offset_left = -173.0
 offset_top = -85.99994
-offset_right = -170.13116
+offset_right = -162.13116
 offset_bottom = -77.99994
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(7.63651, 9.17861)
 focus_neighbor_left = NodePath("../../Control_MainOptions/true button_exit")
 focus_neighbor_top = NodePath("../../Control_MainOptions/true button_exit")
-focus_neighbor_right = NodePath("../../Control_MainOptions/true button_exit")
+focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
 focus_neighbor_bottom = NodePath("../../Control_MainOptions/true button_start")
 
 [node name="button class_github" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_Github/true button" unique_id=1047271076 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1095,7 +1097,7 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(8.18198, 3.01166)
 focus_neighbor_top = NodePath("../true button_exit")
-focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
+focus_neighbor_right = NodePath("../../Control_Github/true button")
 focus_neighbor_bottom = NodePath("../true button_multiplayer")
 
 [node name="button class_start" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_start" unique_id=104325548 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1122,7 +1124,7 @@ offset_right = -56.99994
 offset_bottom = 109.0
 scale = Vector2(8.18198, 3.01166)
 focus_neighbor_top = NodePath("../true button_start")
-focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
+focus_neighbor_right = NodePath("../../Control_Github/true button")
 focus_neighbor_bottom = NodePath("../true button_options")
 
 [node name="button class_multiplayer" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_multiplayer" unique_id=740415924 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1150,7 +1152,7 @@ offset_bottom = 137.0
 grow_horizontal = 2
 scale = Vector2(11.3777, 3.01166)
 focus_neighbor_top = NodePath("../true button_multiplayer")
-focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
+focus_neighbor_right = NodePath("../../Control_Github/true button")
 focus_neighbor_bottom = NodePath("../true button_credits")
 
 [node name="button class_sub options" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_options" unique_id=2010222811 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1179,7 +1181,7 @@ offset_bottom = 160.0
 grow_horizontal = 2
 scale = Vector2(12.8665, 2.77652)
 focus_neighbor_top = NodePath("../true button_options")
-focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
+focus_neighbor_right = NodePath("../../Control_Github/true button")
 focus_neighbor_bottom = NodePath("../true button_exit")
 
 [node name="button class_credits" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_credits" unique_id=1537607121 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1207,7 +1209,7 @@ offset_right = -17.87994
 offset_bottom = 186.00008
 scale = Vector2(6.46671, 2.77652)
 focus_neighbor_top = NodePath("../true button_credits")
-focus_neighbor_right = NodePath("../../Control_Discord/true button_discord")
+focus_neighbor_right = NodePath("../../Control_Github/true button")
 focus_neighbor_bottom = NodePath("../true button_start")
 
 [node name="button class_exit" type="Node" parent="Camera/dialogue UI/menu ui/main screen/Control_MainOptions/true button_exit" unique_id=1430264673 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1383,7 +1385,7 @@ offset_right = -42.99994
 offset_bottom = 136.0
 scale = Vector2(17.9065, 2.77652)
 focus_neighbor_top = NodePath("../true button_language")
-focus_neighbor_bottom = NodePath("../true button_exit sub options")
+focus_neighbor_bottom = NodePath("../true button_online service")
 
 [node name="button class_controller" type="Node" parent="Camera/dialogue UI/menu ui/sub options select/true button_controller" unique_id=16196375 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
@@ -1406,7 +1408,7 @@ offset_top = 154.0
 offset_right = -68.66333
 offset_bottom = 162.0
 scale = Vector2(17.9065, 2.77652)
-focus_neighbor_top = NodePath("../true button_language")
+focus_neighbor_top = NodePath("../true button_controller")
 focus_neighbor_bottom = NodePath("../true button_exit sub options")
 
 [node name="button class_online service" type="Node" parent="Camera/dialogue UI/menu ui/sub options select/true button_online service" unique_id=652275881 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1425,12 +1427,12 @@ ui_opacity_active = 0.5
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = -23.0
-offset_top = 179.0
-offset_right = -15.0
-offset_bottom = 187.0
+offset_left = -28.0
+offset_top = 180.0
+offset_right = -20.0
+offset_bottom = 188.0
 scale = Vector2(11.9867, 2.77652)
-focus_neighbor_top = NodePath("../true button_controller")
+focus_neighbor_top = NodePath("../true button_online service")
 focus_neighbor_bottom = NodePath("../true button_audio video")
 
 [node name="button class_exit sub options" type="Node" parent="Camera/dialogue UI/menu ui/sub options select/true button_exit sub options" unique_id=719944607 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
@@ -1728,6 +1730,7 @@ offset_top = -186.99998
 offset_right = 134.0
 offset_bottom = -178.99998
 scale = Vector2(2.80992, 2.8106)
+focus_neighbor_left = NodePath("../Label_PerformanceLevel/Label_PerformanceLevel_Value/Label_Plus/true button")
 focus_neighbor_top = NodePath("../true button_colorblind mode")
 focus_neighbor_bottom = NodePath("../true button_increase")
 
@@ -1923,9 +1926,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-focus_neighbor_top = NodePath("../true button_toggle music")
-focus_neighbor_right = NodePath("../true button_fullscreen")
-focus_neighbor_bottom = NodePath("../true button_return audio video")
+focus_neighbor_right = NodePath("../../Label_MaxFPS_Plus/true button_MaxFPS_Plus")
+focus_neighbor_bottom = NodePath("../../../../true button_colorblind mode")
 
 [node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value/Label_MaxFPS_Reduce/true button_MaxFPS_Reduce" unique_id=560468339 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
@@ -1965,9 +1967,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_left = NodePath("../../Label_MaxFPS_Reduce/true button_MaxFPS_Reduce")
 focus_neighbor_top = NodePath("../true button_toggle music")
 focus_neighbor_right = NodePath("../true button_fullscreen")
-focus_neighbor_bottom = NodePath("../true button_return audio video")
+focus_neighbor_bottom = NodePath("../../../../true button_colorblind mode")
 
 [node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_MaxFPS/Label_MaxFPS_Value/Label_MaxFPS_Plus/true button_MaxFPS_Plus" unique_id=203241911 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
@@ -2029,9 +2032,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-focus_neighbor_top = NodePath("../true button_toggle music")
-focus_neighbor_right = NodePath("../true button_fullscreen")
-focus_neighbor_bottom = NodePath("../true button_return audio video")
+focus_neighbor_right = NodePath("../../Label_Plus/true button")
+focus_neighbor_bottom = NodePath("../../../../true button_windowed")
 
 [node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value/Label_Reduce/true button" unique_id=2071377899 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
@@ -2071,9 +2073,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-focus_neighbor_top = NodePath("../true button_toggle music")
-focus_neighbor_right = NodePath("../true button_fullscreen")
-focus_neighbor_bottom = NodePath("../true button_return audio video")
+focus_neighbor_left = NodePath("../../Label_Reduce/true button")
+focus_neighbor_right = NodePath("../../../../true button_greyscale death")
+focus_neighbor_bottom = NodePath("../../../../true button_windowed")
 
 [node name="button class" type="Node" parent="Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value/Label_Plus/true button" unique_id=443028516 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
 script = ExtResource("28")
@@ -4330,6 +4332,7 @@ grow_vertical = 2
 metadata/_edit_lock_ = true
 
 [node name="viewblocker parent" type="Control" parent="Camera/dialogue UI" unique_id=1667418873]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

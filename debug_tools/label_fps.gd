@@ -8,6 +8,8 @@ var frames_physics_2: float = 0.0
 var text_fps := 'Loading...'
 var text_renderer3d_info := 'Loading'
 
+var is_beta:= false
+
 func _physics_process(delta: float) -> void:
 	frames_physics += 1
 	frames_physics_2 = 1.0 / delta
@@ -20,10 +22,15 @@ func _on_timer_fps_timeout() -> void:
 	text_fps = str(frames_render) + '/' + str("%.2f" % frames_render_2) + 'r, ' + str(frames_physics) + '/' + str("%.2f" % frames_physics_2) + 'p'
 	frames_physics = 0
 	frames_render = 0
-	var renderer_name = RenderingServer.get_video_adapter_name()
-	var v_size = get_viewport().get_visible_rect().size
-	var render_scale = get_viewport().scaling_3d_scale
-	var engine_method = RenderingServer.get_video_adapter_api_version()
-	text_renderer3d_info = renderer_name + ', ' + engine_method + ', v-size: ' + str(v_size) + ', scale: ' + str(render_scale)
 	
-	text = 'FPS: ' + text_fps + '\nRenderer3D: ' + text_renderer3d_info
+	text = 'FPS: ' + text_fps
+	if is_beta:
+		var renderer_name = RenderingServer.get_video_adapter_name()
+		var v_size = get_viewport().get_visible_rect().size
+		var render_scale = get_viewport().scaling_3d_scale
+		var engine_method = RenderingServer.get_video_adapter_api_version()
+		text_renderer3d_info = renderer_name + ', ' + engine_method + ', v-size: ' + str(v_size) + ', scale: ' + str(render_scale)
+		text = text + '\nRenderer3D: ' + text_renderer3d_info
+
+func _ready() -> void:
+	is_beta = GlobalVariables.currentVersion_nr.contains('beta')
