@@ -677,11 +677,13 @@ offset_bottom = 40.0
 mouse_filter = 2
 
 [node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/opengl post processing" unique_id=106521241]
+visible = false
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
 [node name="ColorRect" type="ColorRect" parent="Camera/post processing/opengl post processing/BackBufferCopy" unique_id=201837539]
+visible = false
 material = SubResource("ShaderMaterial_d3bca")
 offset_left = -99.0
 offset_top = -98.0

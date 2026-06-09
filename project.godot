@@ -610,6 +610,7 @@ locale/locale_filter_mode=0
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
+anti_aliasing/screen_space_roughness_limiter/enabled=false
 limits/opengl/max_lights_per_object=20
 environment/defaults/default_clear_color=Color(0.254902, 0.254902, 0.254902, 1)
 environment/size/mode=0

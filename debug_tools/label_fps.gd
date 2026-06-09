@@ -24,7 +24,7 @@ func _on_timer_fps_timeout() -> void:
 	frames_render = 0
 	
 	text = 'FPS: ' + text_fps
-	if is_beta:
+	if is_beta || DebugTools.DEBUG_TOOLS_ENABLED:
 		var renderer_name = RenderingServer.get_video_adapter_name()
 		var v_size = get_viewport().get_visible_rect().size
 		var render_scale = get_viewport().scaling_3d_scale

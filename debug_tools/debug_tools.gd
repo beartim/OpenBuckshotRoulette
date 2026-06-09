@@ -10,6 +10,7 @@ extends Node
 @onready var label_performance_level: Label = $CanvasLayer/Control/Panel_Performance/Label_PerformanceLevel
 @onready var label_ambient_filter: Label = $CanvasLayer/Control/Panel_Performance/Label_AmbientFilter
 @onready var check_button_ambient_filter: CheckButton = $CanvasLayer/Control/Panel_Performance/Label_AmbientFilter/CheckButton_AmbientFilter
+@onready var label_rendering_scale: Label = $CanvasLayer/Control/Panel_Performance/Label_RenderingScale
 
 var _forcing_mouse_mode := false
 var _forced_mouse_mode := Input.MOUSE_MODE_VISIBLE
@@ -25,7 +26,7 @@ var dealer_health:= 0
 var _mp_hide_dealer_in_debug_panel := false
 var mp_gambling_refresh_ttl := 0.0
 
-const DEBUG_TOOLS_ENABLED := false
+const DEBUG_TOOLS_ENABLED := true
 const SKIP_SPLASH_ANIM := true
 
 func  _ready() -> void:
@@ -300,3 +301,10 @@ func _on_button_reduce_performance_level_pressed() -> void:
 
 func _on_check_button_ambient_filter_pressed() -> void:
 	NeoSettings.put("performance/ambient_filter_enabled", !NeoSettings.fetch("performance/ambient_filter_enabled"))	
+
+
+func _on_h_slider_rendering_scale_value_changed(value: float) -> void:
+	var root_window = get_window()
+	root_window.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR
+	root_window.scaling_3d_scale = value
+	label_rendering_scale.text = 'RenderingScale: ' + "%.2f" % value

@@ -110,6 +110,7 @@ func _update_performance_options(_key: String = "", _value: Variant = null) -> v
 		light_center.omni_attenuation = 1
 		light_center.shadow_opacity = 1
 		global_camera.far = 800
+		light_center.shadow_enabled = true
 	if level >= 2:
 		for node in p2should_be_hides:
 			node.hide()
@@ -118,6 +119,7 @@ func _update_performance_options(_key: String = "", _value: Variant = null) -> v
 		global_camera.far = 500
 		light_center.omni_attenuation = 0.6
 		light_center.shadow_opacity = 0.65
+		light_center.shadow_enabled = false
 	if level >= 3:
 		for node in p3should_be_hides:
 			node.hide()
@@ -128,6 +130,7 @@ func _update_performance_options(_key: String = "", _value: Variant = null) -> v
 		global_camera.far = 4000
 		light_center.omni_attenuation = 1
 		light_center.shadow_opacity = 1
+		light_center.shadow_enabled = true
 		for node in p3should_be_hides:
 			node.show()
 		for node in p2should_be_hides:

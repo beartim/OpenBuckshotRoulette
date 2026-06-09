@@ -49,9 +49,8 @@ sky_material = SubResource("ProceduralSkyMaterial_o70y1")
 
 [sub_resource type="Environment" id="Environment_fmxu8"]
 background_mode = 1
-background_energy_multiplier = 1.05
+background_energy_multiplier = 0.0
 sky = SubResource("Sky_sfsxa")
-ambient_light_color = Color(0.913725, 0.913725, 0.913725, 1)
 ambient_light_energy = 0.0
 tonemap_mode = 3
 glow_intensity = 0.0
@@ -59,13 +58,13 @@ fog_enabled = true
 fog_light_color = Color(0.768627, 0.713726, 0.662745, 1)
 fog_light_energy = 1.48
 fog_density = 0.0035
+fog_sky_affect = 0.55
 volumetric_fog_density = 0.084
 volumetric_fog_emission_energy = 0.0
 volumetric_fog_gi_inject = 2.6
 volumetric_fog_length = 91.8
-adjustment_enabled = true
 adjustment_brightness = 1.26
-adjustment_contrast = 1.46
+adjustment_contrast = 0.96
 adjustment_saturation = 0.26
 
 [sub_resource type="Animation" id="Animation_6dx0p"]
@@ -1526,7 +1525,7 @@ libraries/ = SubResource("AnimationLibrary_vvkk5")
 autoplay = &"bird fly"
 
 [node name="Camera" type="Camera3D" parent="." unique_id=910328149]
-transform = Transform3D(0.039118085, 0.931403, 0.36188385, -0.16916099, 0.36310688, -0.916263, -0.98481196, -0.025374169, 0.17176089, 3.47932, 1.009, 2.00394)
+transform = Transform3D(0.039118085, 0.931403, 0.36188382, -0.16916099, 0.36310688, -0.9162629, -0.98481196, -0.025374169, 0.17176087, 3.47932, 1.009, 2.00394)
 fov = 65.5
 script = ExtResource("15")
 
@@ -1542,11 +1541,13 @@ offset_bottom = 40.0
 mouse_filter = 2
 
 [node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/opengl post processing" unique_id=528460181]
+visible = false
 position = Vector2(482, 270)
 scale = Vector2(4.87, 2.75)
 copy_mode = 2
 
 [node name="ColorRect" type="ColorRect" parent="Camera/post processing/opengl post processing/BackBufferCopy" unique_id=1594346386]
+visible = false
 material = SubResource("ShaderMaterial_etd52")
 offset_left = -99.0
 offset_top = -98.0
@@ -1557,23 +1558,33 @@ mouse_filter = 2
 
 [node name="posterization test" type="Control" parent="Camera/post processing" unique_id=804005399]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="BackBufferCopy" type="BackBufferCopy" parent="Camera/post processing/posterization test" unique_id=1490315685]
-position = Vector2(482, 270)
-scale = Vector2(4.87, 2.75)
+position = Vector2(1718, 1100)
+scale = Vector2(17.18, 11)
 copy_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Camera/post processing/posterization test/BackBufferCopy" unique_id=1709891163]
 material = SubResource("ShaderMaterial_q0uip")
-offset_left = -99.0
-offset_top = -98.0
-offset_right = 140.0
-offset_bottom = 139.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = -100.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="color precision" type="Control" parent="Camera/post processing" unique_id=100558003]
 visible = false
@@ -1841,10 +1852,16 @@ grow_vertical = 2
 
 [node name="you are dead label" type="Label" parent="Camera/dialogue UI/death ui" unique_id=2144129180]
 modulate = Color(1, 1, 1, 0)
-layout_mode = 0
-offset_top = 137.0
-offset_right = 960.0
-offset_bottom = 210.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -133.0
+offset_right = 480.0
+offset_bottom = -60.0
 pivot_offset = Vector2(480, 0)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -1858,19 +1875,32 @@ horizontal_alignment = 1
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
-offset_left = -177.0
-offset_top = 40.0
-offset_right = 1138.0
-offset_bottom = 1120.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -657.0
+offset_top = -230.0
+offset_right = 658.0
+offset_bottom = 850.0
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(0.23132, 0.23132)
 pivot_offset = Vector2(657, 0)
 texture = ExtResource("24")
 
 [node name="text_retry" type="Label" parent="Camera/dialogue UI/death ui" unique_id=1138753241]
-layout_mode = 0
-offset_top = 302.0
-offset_right = 960.0
-offset_bottom = 354.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = 32.0
+offset_right = 480.0
+offset_bottom = 84.0
 pivot_offset = Vector2(63.02, 0)
 theme_override_colors/font_color = Color(0, 0, 0, 0)
 theme_override_fonts/font = ExtResource("22")
@@ -1900,10 +1930,16 @@ adding_cursor = true
 t = NodePath("../..")
 
 [node name="text_exit" type="Label" parent="Camera/dialogue UI/death ui" unique_id=1762485709]
-layout_mode = 0
-offset_top = 339.0
-offset_right = 960.0
-offset_bottom = 391.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = 69.0
+offset_right = 480.0
+offset_bottom = 121.0
 pivot_offset = Vector2(63.02, 0)
 theme_override_colors/font_color = Color(0, 0, 0, 0)
 theme_override_fonts/font = ExtResource("22")
@@ -1966,6 +2002,7 @@ text = "<          >"
 horizontal_alignment = 1
 
 [node name="viewblocker parent" type="Control" parent="Camera/dialogue UI" unique_id=1346836705]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1974,15 +2011,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="viewblcoker" type="ColorRect" parent="Camera/dialogue UI/viewblocker parent" unique_id=618346529]
-layout_mode = 0
-offset_left = -10.0
-offset_top = -3.0
-offset_right = 972.0
-offset_bottom = 553.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
 [node name="m button_heaven door" type="Button" parent="Camera/dialogue UI" unique_id=990206187]
 visible = false
