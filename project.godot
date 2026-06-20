@@ -37,6 +37,7 @@ GlobalSteam="*res://scripts/Steam.gd"
 Steam="*res://scripts/SteamShim.gd"
 NeoSettings="*uid://bav3buhtigr4v"
 DebugTools="*uid://0rkffdwpvpro"
+ModLoader="*uid://btcu2fmv3uva1"
 
 [debug]
 

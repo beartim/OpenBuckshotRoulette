@@ -144,3 +144,5 @@ func _on_button_class_interact(alias: String):
 		NeoSettings.decrease("performance/level", 1, 0)
 	elif alias == 'performance level plus':
 		NeoSettings.increase("performance/level", 1, 3)
+	elif alias == 'open mods folder':
+		OS.shell_open(ProjectSettings.globalize_path('user://mods/'))

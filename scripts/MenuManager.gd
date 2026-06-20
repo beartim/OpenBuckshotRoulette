@@ -61,6 +61,8 @@ func _ready():
 	buttons_options[8].connect("is_pressed", ToggleGreyscaleDeath)
 	
 	version.text = GlobalVariables.currentVersion
+	if GlobalVariables.mod_count > 0:
+		version.text = version.text + ', ' + str(GlobalVariables.mod_count) + ' mod(s) loaded'
 	
 	Intro()
 	

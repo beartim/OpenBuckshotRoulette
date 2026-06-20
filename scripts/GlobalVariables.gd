@@ -1,6 +1,6 @@
 extends Node
 
-var currentVersion_nr:= "v1.0.1.15 EXTENDS v2.2.0"
+var currentVersion_nr:= "v1.0.1.15-beta EXTENDS v2.2.0"
 var currentVersion_hotfix:= 6
 var using_steam:= false
 var all_steam_features_enabled:= true
@@ -21,6 +21,8 @@ var current_button_hovered_over : Control
 
 var base_time_scale := 1.0
 var debug_time_scale_multiplier := 1.0
+
+signal on_mod_info_loaded(mods: Array[ModInfo])
 
 func ApplyTimeScale(base: float) -> void:
 	base_time_scale = base
@@ -66,6 +68,8 @@ var active_match_customization_dictionary : Dictionary #match customization dict
 var stashed_match_customization_dictionary : Dictionary #match customization dictionary that will be stored in the current game session
 var previous_match_customization_differences : Dictionary #previously active match customization differences that were received by the host
 var steam_id_version_checked_ayeahrray : Array
+
+var mod_count:int = 0
 
 signal on_button_class_interact(alias: String)
 
@@ -303,6 +307,9 @@ func _ready():
 	if GlobalVariables.mp_debugging:
 		TranslationServer.set_locale("EN")
 		active_match_customization_dictionary = debug_match_customization
+	on_mod_info_loaded.connect(func(mods: Array[ModInfo]):
+		mod_count = mods.size()
+		)
 
 func _unhandled_input(event):
 	if mp_debugging or mp_debug_keys_enabled:
