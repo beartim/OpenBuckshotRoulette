@@ -165,7 +165,7 @@ func ConfirmButton():
 	SetJammerControllerPrompts(false)
 	await GlobalVariables.tree.create_timer(.05, false).timeout
 	var direction = target_direction_strings[selected_target_index]
-	var instance_property_to_jam : MP_UserInstanceProperties = properties.GetSocketProperties(properties.GetSocketFromDirection(properties.socket_number, direction))
+	#var instance_property_to_jam : MP_UserInstanceProperties = properties.GetSocketProperties(properties.GetSocketFromDirection(properties.socket_number, direction))
 	var selected_socket_number : int = properties.GetSocketFromDirection(properties.socket_number, direction)
 	looping = true
 	ShowFinalTargetOnScreen(direction)
@@ -272,34 +272,3 @@ func BootupJammer():
 		blinker.set_surface_override_material(0, mat_blinker_void)
 	blinker_array[3].set_surface_override_material(0, mat_blinker_red)
 	BootupFinished()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

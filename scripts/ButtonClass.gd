@@ -33,8 +33,8 @@ func _ready():
 	get_parent().connect("pressed", OnPress)
 	if (isDynamic && ui): ui.modulate.a = ui_opacity_inactive
 
-func SetFilter(alias : String):
-	match(alias):
+func SetFilter(m_alias : String):
+	match(m_alias):
 		"ignore":
 			ui_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		"stop":

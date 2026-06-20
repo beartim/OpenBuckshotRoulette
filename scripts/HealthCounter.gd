@@ -153,7 +153,7 @@ func UpdateDisplayRoutineCigarette_Player():
 	pass
 
 func UpdateDisplayRoutineCigarette_Main(isChanging : bool, isAddingEnemy : bool):
-	var prevsocket = camera.activeSocket
+	#var prevsocket = camera.activeSocket
 	var playingsound = true
 	camera.BeginLerp("health counter")
 	await GlobalVariables.tree.create_timer(.8, false).timeout

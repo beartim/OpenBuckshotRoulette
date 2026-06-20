@@ -182,7 +182,7 @@ func PacketSort(dict : Dictionary):
 			ExitGameWithLobby()
 
 func GetRoot():
-	var root_children = GlobalVariables.tree.root.get_children()
+	#var root_children = GlobalVariables.tree.root.get_children()
 	for i in GlobalVariables.tree.root.get_children(): if i.name == "mp_main": scene_root = i
 
 func StartMainGame():

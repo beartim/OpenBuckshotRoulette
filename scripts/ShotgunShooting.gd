@@ -168,7 +168,7 @@ func ShootingDealerEjection(currentRoundInChamberCopy : String, whoCopy : String
 var whatTheFuck = false
 var delaying = false
 var isPlayerSide = false
-func FinalizeShooting(playerCanGoAgain : bool, placeShotgunOnTable : bool, waitForRevival : bool, addDelay : bool):
+func FinalizeShooting(mPlayerCanGoAgain : bool, placeShotgunOnTable : bool, waitForRevival : bool, addDelay : bool):
 	if(placeShotgunOnTable): animator_shotgun.play("player place on table after eject")
 	shotgunshaker.StopShaking()
 	#shellSpawner.sequenceArray.remove_at(0)
@@ -189,7 +189,7 @@ func FinalizeShooting(playerCanGoAgain : bool, placeShotgunOnTable : bool, waitF
 			await GlobalVariables.tree.create_timer(2, false).timeout
 		if (roundManager.health_player <= 2 && !roundManager.wireIsCut_player):
 			await GlobalVariables.tree.create_timer(2, false).timeout
-	if(roundManager.health_opponent != 0): roundManager.EndTurn(playerCanGoAgain)
+	if(roundManager.health_opponent != 0): roundManager.EndTurn(mPlayerCanGoAgain)
 
 func CheckAchievement_coinflip():
 	var setting = false

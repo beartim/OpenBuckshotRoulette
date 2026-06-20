@@ -310,5 +310,5 @@ func GetStealingVariableDictionary(item_direction : String, which_hand_to_grab_w
 
 func Hands_OnUserDeath():
 	return
-	hand_parent_L.visible = false
-	hand_parent_R.visible = false
+	#hand_parent_L.visible = false
+	#hand_parent_R.visible = false

@@ -23,8 +23,8 @@ func _process(_delta) -> void:
 		read_p2p_packet()
 
 var read_count
-func read_all_p2p_packets(read_count: int = 0):
-	if read_count >= GlobalSteam.PACKET_READ_LIMIT:
+func read_all_p2p_packets(m_read_count: int = 0):
+	if m_read_count >= GlobalSteam.PACKET_READ_LIMIT:
 		return
 	
 	if Steam.getAvailableP2PPacketSize(0) > 0:

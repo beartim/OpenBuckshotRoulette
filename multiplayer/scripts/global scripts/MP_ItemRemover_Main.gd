@@ -87,7 +87,7 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 			if local_grid_index != {}:
 				if typeof(local_grid_index) == TYPE_DICTIONARY and local_grid_index.has("item_instance") and is_instance_valid(local_grid_index["item_instance"]):
 					instance_array_to_reparent.append(local_grid_index["item_instance"])
-		var remover_item_parent = instance_handler_array[sockets_to_remove_items_at[remover_socket_index]].get_parent().get_child(2).get_child(0).get_child(0)
+		#var remover_item_parent = instance_handler_array[sockets_to_remove_items_at[remover_socket_index]].get_parent().get_child(2).get_child(0).get_child(0)
 		#lerp items to carrier
 		for item_instance in instance_array_to_reparent:
 			var item_id : int = item_instance.get_child(1).item_id
@@ -137,19 +137,3 @@ func RemoveItemsFromSockets(sockets_to_remove_items_at): #array[int]
 	#delete instances that were added to array for deletion
 	for item_instance in items_to_delete_array:
 		item_instance.queue_free()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

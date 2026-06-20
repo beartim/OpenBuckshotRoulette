@@ -24,11 +24,12 @@ class_name Signature extends Node
 @export var btn_signature_a : Control
 @export var controller : ControllerManager
 
-var fullstring = ""
-var lettercount = 0
+var fullstring := ""
+var lettercount := 0
 var origpos_shotgun
-var markerIndex = 0
-var blinking = false
+var markerIndex := 0
+var blinking := false
+var input_finished := false
 
 func _ready():
 	for l in letterArray_signature_joined: l.text = ""
@@ -114,6 +115,7 @@ func Input_Enter():
 		ach.UnlockAchievement("ach11")
 		return
 	if (fullstring != ""):
+		input_finished = true
 		for br in intbranches:
 			var el = br.get_parent().get_child(2)
 			br.interactionAllowed = false

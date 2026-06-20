@@ -64,8 +64,8 @@ var new_y
 func OscillateAxis():
 	if oscillating:
 		time += get_process_delta_time()
-		var new_y = (sin(time * frequency) + amplitude) / offset
+		var m_new_y = (sin(time * frequency) + amplitude) / offset
 		# Calculate the cumulative offset caused by the oscillation
-		var oscillation_offset = initial_y + new_y - parent.transform.origin.y + .18
+		var oscillation_offset = initial_y + m_new_y - parent.transform.origin.y + .18
 		# Apply the cumulative offset
 		parent.transform.origin += Vector3(0, oscillation_offset, 0)

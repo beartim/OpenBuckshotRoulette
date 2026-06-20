@@ -49,8 +49,8 @@ func WinRoutine(winning_socket_number : int = -1):
 				i.briefcase_manager.GrabBriefcase_ThirdPerson()
 		if i.socket_number != winning_socket_number:
 			var direction_to_look_at = roundManager.GetDirection(i.socket_number, winning_socket_number)
-			var str = "opponent " + direction_to_look_at
-			LerpCam(i, str, true)
+			var m_str = "opponent " + direction_to_look_at
+			LerpCam(i, m_str, true)
 	await GlobalVariables.tree.create_timer(6.4, false).timeout
 	SetLightShow(false)
 	await GlobalVariables.tree.create_timer(.4, false).timeout

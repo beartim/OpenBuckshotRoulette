@@ -69,7 +69,7 @@ func PlaySound_CorpseFall():
 	speaker_corpse_fall.pitch_scale = randf_range(.9, 1)
 	speaker_corpse_fall.play()
 
-func UserDeath_Revive(reviving_from_spectator : bool = false):
+func UserDeath_Revive(_reviving_from_spectator : bool = false):
 	if properties.is_active: DefibRevive()
 	if !properties.running_fast_revival:
 		await GlobalVariables.tree.create_timer(1.3, false).timeout

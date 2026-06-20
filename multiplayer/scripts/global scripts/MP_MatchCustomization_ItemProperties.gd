@@ -28,10 +28,10 @@ func _ready():
 func AssignName():
 	label_item_name.text = item_name_loc
 
-func UpdateItemProperties(max_per_player : int, max_on_table : int, is_ingame : bool):
-	label_max_per_player.text = str(max_per_player)
-	label_max_on_table.text = str(max_on_table)
-	checkmark_ingame.visible = is_ingame
+func UpdateItemProperties(m_max_per_player : int, m_max_on_table : int, m_is_ingame : bool):
+	label_max_per_player.text = str(m_max_per_player)
+	label_max_on_table.text = str(m_max_on_table)
+	checkmark_ingame.visible = m_is_ingame
 
 func AssignSequence():
 	var verbal_index = sequence_index + 1

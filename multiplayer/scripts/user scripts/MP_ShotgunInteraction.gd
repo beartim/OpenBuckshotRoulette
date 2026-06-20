@@ -174,7 +174,7 @@ func SetTargetControllerPrompts(state : bool):
 	else:
 		bp_shotgun_target_selection.visible = false
 
-func PickupShotgun_ThirdPerson(packet_dictionary : Dictionary = {}):
+func PickupShotgun_ThirdPerson(_packet_dictionary : Dictionary = {}):
 	SetShotgunVisible_Local(true)
 	SetShotgunVisible_Global(false)
 	properties.oscillator_manager.LerpToOriginal("hands")
@@ -354,14 +354,18 @@ func EndTurnRequest():
 
 func CheckIfEndingTurn(packet_dictionary : Dictionary):
 	print("checking if ending turn ...")
-	var ending_turn = true
+	#var ending_turn = true
 	var handing_turn_over = true
 	var sequence_empty = false
 	var user_has_won_with_socket = -1
 	user_has_won_with_socket = CheckIfUserHasWon()
-	if active_shooter_socket_target == active_shooter_socket_self && active_shooter_shell == "blank": ending_turn = false; handing_turn_over = false
-	if active_shooter_sequence_length_after_eject == 0: ending_turn = true; sequence_empty = true
-	if user_has_won_with_socket != -1: ending_turn = true
+	if active_shooter_socket_target == active_shooter_socket_self && active_shooter_shell == "blank":
+		#ending_turn = false
+		handing_turn_over = false
+	if active_shooter_sequence_length_after_eject == 0:
+		#ending_turn = true
+		sequence_empty = true
+	#if user_has_won_with_socket != -1: ending_turn = true
 	if !packet_dictionary.ending_turn_after_shot:
 		properties.FreeLookCameraForUser_Enable()
 		GlobalVariables.cursor_state_after_toggle = true

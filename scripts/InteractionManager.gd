@@ -149,11 +149,11 @@ func CheckPickupLerp():
 	if (mouseRay.result != null && mouseRay.result.has("collider") && cursor.cursor_visible):
 		var parent = mouseRay.result.collider.get_parent()
 		activeParent = parent
-		var childArray = parent.get_children()
-		for i in range(childArray.size()):
-			if (childArray[i] is PickupIndicator):
-				var indicator = childArray[i]
-		pass
+		#var childArray = parent.get_children()
+		#for i in range(childArray.size()):
+			#if (childArray[i] is PickupIndicator):
+				#var indicator = childArray[i]
+		#pass
 	else:	
 		activeParent = null
 	pass

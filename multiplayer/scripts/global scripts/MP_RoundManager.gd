@@ -398,7 +398,7 @@ func GetFirstTurn_Socket():
 	print("get first turn socket: ", socket_to_return)
 	return socket_to_return
 	
-func GetNextTurn_Socket(current_turn_socket : int, direction_string : String = "CW"):
+func GetNextTurn_Socket(current_turn_socket : int, _direction_string : String = "CW"):
 	var socket_array = []
 	for i in intermed.instance_handler.instance_property_array:
 		var appended = false
@@ -450,18 +450,18 @@ func GenerateRandomRound():
 
 	var starting_health = 0
 	var setting_random = false
-	var set = 0
-	for round in GlobalVariables.active_match_customization_dictionary.round_property_array:
-		if round.round_index == game_state.MAIN_active_round_index:
-			if round.starting_health == -1:
+	var m_set = 0
+	for m_round in GlobalVariables.active_match_customization_dictionary.round_property_array:
+		if m_round.round_index == game_state.MAIN_active_round_index:
+			if m_round.starting_health == -1:
 				setting_random = true
 			else:
-				set = round.starting_health
+				m_set = m_round.starting_health
 	
 	if setting_random:
 		starting_health = randi_range(health_r1, health_r2)
 	else:
-		starting_health = set
+		starting_health = m_set
 	
 	var dict = {
 		"starting_health": starting_health,
@@ -485,9 +485,9 @@ func GenerateRandomSequence():
 	var setting_random = false
 	var blanks = 0
 	var lives = 0
-	for round in GlobalVariables.active_match_customization_dictionary.round_property_array:
-		if round.round_index == game_state.MAIN_active_round_index:
-			for shell_load in round.shell_load_properties:
+	for m_round in GlobalVariables.active_match_customization_dictionary.round_property_array:
+		if m_round.round_index == game_state.MAIN_active_round_index:
+			for shell_load in m_round.shell_load_properties:
 				if shell_load.sequence_index == game_state.MAIN_active_sequence_index_to_pull:
 					if shell_load.number_of_blanks == -1 or shell_load.number_of_lives == -1:
 						setting_random = true
@@ -507,7 +507,7 @@ func GenerateRandomSequence():
 			sequence.append("blank")
 		
 	var shuffling_sequence = false
-	var flip = randi_range(0, 1)
+	#var flip = randi_range(0, 1)
 	var sequence_visible_shuffled = sequence.duplicate()
 	var sequence_in_shotgun = sequence.duplicate(); sequence_in_shotgun.shuffle()
 	var dict = {
@@ -554,21 +554,21 @@ func GetRandomItemGrabAmount():
 	
 	var num_of_items_to_grab = 0
 	var setting_random = false
-	var set = 0
+	var m_set = 0
 	
-	for round in GlobalVariables.active_match_customization_dictionary.round_property_array:
-		if round.round_index == game_state.MAIN_active_round_index:
-			for shell_load in round.shell_load_properties:
+	for m_round in GlobalVariables.active_match_customization_dictionary.round_property_array:
+		if m_round.round_index == game_state.MAIN_active_round_index:
+			for shell_load in m_round.shell_load_properties:
 				if shell_load.sequence_index == game_state.MAIN_active_sequence_index_to_pull:
 					if shell_load.number_of_items == -1:
 						setting_random = true
 					else:
-						set = shell_load.number_of_items
+						m_set = shell_load.number_of_items
 	
 	if setting_random:
 		num_of_items_to_grab = randi_range(item_r1, item_r2)
 	else:
-		num_of_items_to_grab = set
+		num_of_items_to_grab = m_set
 	game_state.MAIN_active_num_of_items_to_grab = num_of_items_to_grab
 
 func GetDirection(self_socket, selected_socket):

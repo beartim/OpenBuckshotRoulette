@@ -171,9 +171,9 @@ func setLeaderboardDetailsMax(max_details: int) -> int:
 		return int(_steam.setLeaderboardDetailsMax(max_details))
 	return max_details
 
-func findLeaderboard(name: String) -> void:
+func findLeaderboard(_name: String) -> void:
 	if _steam != null and _steam.has_method("findLeaderboard"):
-		_steam.findLeaderboard(name)
+		_steam.findLeaderboard(_name)
 		return
 	call_deferred("_emit_mock_leaderboard_find_result")
 

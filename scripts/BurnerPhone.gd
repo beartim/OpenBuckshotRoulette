@@ -5,13 +5,13 @@ class_name BurnerPhone extends Node
 
 func SendDialogue():
 	var sequence  = sh.sequenceArray
-	var len = sequence.size()
+	var length = sequence.size()
 	var randindex
 	var firstpart = ""
 	var secondpart = ""
 	var fulldia = ""
-	if (len != 1):
-		randindex = randi_range(1, len - 1)
+	if (length != 1):
+		randindex = randi_range(1, length - 1)
 		if(randindex == 8 or randindex == 7): randindex -= 1
 		if (sequence[randindex] == "blank"): secondpart = tr("BLANKROUND") % ""
 		else: secondpart = tr("LIVEROUND") % ""
@@ -33,4 +33,3 @@ func SendDialogue():
 	dia.ShowText_Forever(fulldia)
 	await GlobalVariables.tree.create_timer(3, false).timeout
 	dia.HideText()
-

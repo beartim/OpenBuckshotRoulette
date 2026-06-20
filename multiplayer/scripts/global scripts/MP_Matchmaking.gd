@@ -90,16 +90,16 @@ func OnLobbyList(list):
 	print("lobbies found: ", list)
 	var index = 0
 	var invalid_list_array = []
-	for lobby in list:
-		var lobby_id = lobby.get("lobby_id", 0)
+	for m_lobby in list:
+		var lobby_id = m_lobby.get("lobby_id", 0)
 		if lobby_id == 0:
 			print("found invalid lobby (no lobby_id), skipping")
 			invalid_list_array.append(0)
 			continue
 		
-		var _member_count:int= round(lobby.get("members", 0))
+		var _member_count:int= round(m_lobby.get("members", 0))
 		var member_count = str(_member_count)
-		var player_limit = str(lobby.get("max_members", ""))
+		var player_limit = str(m_lobby.get("max_members", ""))
 		
 		if member_count == "" or member_count == "0":
 			member_count = Steam.getLobbyData(lobby_id, "members")
@@ -142,7 +142,7 @@ func Trial():
 	var list = []
 	for i in 50: list.append(0)
 	var index = 0
-	for lobby in list:
+	for _lobby in list:
 		var member_count = randi_range(1, 3)
 		var player_limit = randi_range(member_count + 1, 4)
 		index += 1

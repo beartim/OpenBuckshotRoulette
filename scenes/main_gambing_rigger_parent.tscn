@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://djrntcjlg6hfd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8iljn"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5q23w"]
+material = SubResource("StandardMaterial3D_8iljn")
+
+[node name="GambingRiggerParent" type="MeshInstance3D" unique_id=31006306]
+mesh = SubResource("PlaneMesh_5q23w")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1601349483]
+
+[node name="Control" type="Control" parent="SubViewport" unique_id=1765034163]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="SubViewport/Control" unique_id=1759513426]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "asdasdads"

@@ -311,7 +311,7 @@ func PlaceDownItem(gridIndex : int):
 	numberOfOccupiedGrids += 1
 	gridOccupiedArray[gridIndex] = true
 	moving = false
-	var temp_indicator = activeItem.get_child(0)
+	#var temp_indicator = activeItem.get_child(0)
 	if (temp_interaction.itemName == "cigarettes"): numberOfCigs_player += 1
 	pos_current = activeItem.transform.origin
 	rot_current = activeItem.rotation_degrees
@@ -357,7 +357,7 @@ func GrabItems_Enemy():
 			if (roundManager.currentRound == 0 && roundManager.roundArray[roundManager.currentRound].startingHealth == 2):
 				if ("handsaw" in availableItemsToGrabArray_dealer): availableItemsToGrabArray_dealer.erase("handsaw")
 			
-			var randindex = randi_range(0, availableItemsToGrabArray_dealer.size() - 1)
+			#var randindex = randi_range(0, availableItemsToGrabArray_dealer.size() - 1)
 			var selectedItem = availableItemsToGrabArray_dealer[randindex]
 			
 			#SPAWN ITEM
@@ -411,8 +411,8 @@ func SetupItemSteal():
 	var ch = itemSpawnParent.get_children()
 	for c in ch.size():
 		if(ch[c].get_child(0) is PickupIndicator):
-			var temp_indicator : PickupIndicator = ch[c].get_child(0)
-			var temp_interaction : InteractionBranch = ch[c].get_child(1)
+			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
+			#var temp_interaction : InteractionBranch = ch[c].get_child(1)
 			items_dynamicIndicatorArray.append(temp_indicator)
 			items_dynamicInteractionArray.append(temp_interaction)
 	
@@ -445,7 +445,7 @@ func RevertItemSteal_Timeout():
 	var ch = itemSpawnParent.get_children()
 	for c in ch.size():
 		if(ch[c].get_child(0) is PickupIndicator):
-			var temp_indicator : PickupIndicator = ch[c].get_child(0)
+			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
 			temp_indicator.Revert()
 	camera.BeginLerp("home")
 	await GlobalVariables.tree.create_timer(.4, false).timeout

@@ -168,8 +168,8 @@ func GenerateRandomBatches():
 			b.roundArray[i].startingHealth = randi_range(2, 4)
 			curhealth = b.roundArray[i].startingHealth
 			
-			var total_shells = randi_range(2, 8)
-			var amount_live = max(1, total_shells / 2)
+			var total_shells:= randi_range(2, 8)
+			var amount_live = max(1, int(float(total_shells) / 2))
 			var amount_blank = total_shells - amount_live
 			b.roundArray[i].amountBlank = amount_blank
 			b.roundArray[i].amountLive = amount_live

@@ -168,19 +168,19 @@ func UpdateStats():
 func GetLeaderboard():
 	Steam.findLeaderboard("double_or_nothing")
 
-func UploadScore_Deprecated(rounds_beat, visible_score, initial_score):
+func UploadScore_Deprecated(rounds_beat, _visible_score, initial_score):
 	var ar = PackedInt32Array([initial_score, rounds_beat])
 	var upload = initial_score * rounds_beat
 	Steam.uploadLeaderboardScore(upload, true, ar, leaderboard_handle)
 
-func UploadScore(rounds_beat, visible_score, initial_score):
+func UploadScore(rounds_beat, _visible_score, initial_score):
 	var ar = PackedInt32Array([initial_score, rounds_beat])
 	var upload = initial_score
 	for s in range(rounds_beat - 1): upload *= 2
 	upload = val2compressed(upload)
 	Steam.uploadLeaderboardScore(upload, true, ar, leaderboard_handle)
 
-func _on_leaderboard_score_uploaded(success: int, this_handle: int, this_score: Dictionary) -> void:
+func _on_leaderboard_score_uploaded(success: int, _this_handle: int, this_score: Dictionary) -> void:
 	if success == 1: 
 		print("successfully uploaded score: ", this_score)
 	else: print("failed to upload score")
@@ -225,10 +225,10 @@ var print_max = 48
 func _on_leaderboard_scores_downloaded(message: String, this_leaderboard_handle: int, result: Array) -> void:
 	print("scores downloaded message: %s" % message)
 	
-	var leaderboard_handle: int = this_leaderboard_handle
+	var m_leaderboard_handle: int = this_leaderboard_handle
 	
 	active_result_array = result
-	active_entry_count = Steam.getLeaderboardEntryCount(leaderboard_handle)
+	active_entry_count = Steam.getLeaderboardEntryCount(m_leaderboard_handle)
 	
 	for this_result in result: if (print_cur <= print_max): print("leaderboard result (", print_cur, "/", print_max, ")", this_result, Steam.getFriendPersonaName(this_result.steam_id)); print_cur += 1
 	UpdateDisplay()

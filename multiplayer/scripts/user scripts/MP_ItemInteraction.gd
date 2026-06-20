@@ -318,7 +318,7 @@ func ReturnJammerAfterTimeout():
 		properties.jammer_manager.looping = false
 		animator_items_thirdperson.play("use item id 3 third person_secondary exit")
 
-func ChangeGameStateWithItem(item_id : int, packet : Dictionary = {}):
+func ChangeGameStateWithItem(_item_id : int, packet : Dictionary = {}):
 	properties.stat_number_of_items_used += 1
 	match active_id:
 		2:	#magnifying glass
@@ -375,7 +375,7 @@ func PickupItem(item_object_parent : Node3D):
 	properties.item_manager.speaker_fp_grab_item_on_table.stream = active_stream
 	properties.item_manager.speaker_fp_grab_item_on_table.play()
 	
-	var active_socket_number = active_interaction_branch.socket_number
+	#var active_socket_number = active_interaction_branch.socket_number
 	var pickup_duration = .6
 	active_pickup_indicator.lerpEnabled = false
 	#active_pickup_indicator.SnapToMax()

@@ -40,7 +40,7 @@ func _ready():
 	viewblocker_top_global.visible = false
 	input_blocker.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-func HoverPanEntered(active_hoverpan_socket : int):
+func HoverPanEntered(_active_hoverpan_socket : int):
 	#print("hover pan function with: ", active_hoverpan_socket)
 	pass
 
@@ -82,4 +82,4 @@ func InteractionPipe(alias : String, button_class_main : MP_ButtonClassMain):
 			ingame_lobby_ui.ToggleUI()
 		"kick button":
 			if GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID and ingame_lobby_ui != null and ingame_lobby_ui.lobby != null:
-				ingame_lobby_ui.lobby.KickPlayerInLobby(button_class_main.segment.user_id)
+				ingame_lobby_ui.lobby.KickPlayerInLobby(int(button_class_main.segment.user_id))

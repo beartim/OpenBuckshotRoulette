@@ -46,7 +46,7 @@ func AssignArmClosedRotations():
 	rot_fore_closed = lerp_arm_fore.obj.rotation_degrees
 	rot_rear_closed = lerp_arm_rear.obj.rotation_degrees
 
-func MoveToSocket(socket_next : float, direction : String = ""):
+func MoveToSocket(m_socket_next : float, _direction : String = ""):
 	moving = false
 	fs = false
 	var waiting_for_unlock = false
@@ -54,30 +54,30 @@ func MoveToSocket(socket_next : float, direction : String = ""):
 		if arms_locked_array[i]:
 			Arms("unlock", i)
 			waiting_for_unlock = true
-	if (waiting_for_unlock): GlobalVariables.tree.create_timer(.15, false).timeout
+	if (waiting_for_unlock): await GlobalVariables.tree.create_timer(.15, false).timeout
 	if arms_open: RotateArms_Close()
 	
 	dur_current = dur
 	
 	var is_neighbour = true
-	if socket_current == 2 && socket_next == 0 or socket_current == 3 && socket_next == 1: is_neighbour = false
-	if socket_current == 0 && socket_next == 2 or socket_current == 1 && socket_next == 3: is_neighbour = false
-	if parent.rotation_degrees == Vector3(0, 48, 0) && socket_next == 1: is_neighbour = false
-	if parent.rotation_degrees == Vector3(0, -132, 0) && socket_next == 0: is_neighbour = false
-	if parent.rotation_degrees == Vector3(0, -132, 0) && socket_next == 3: is_neighbour = false
+	if socket_current == 2 && m_socket_next == 0 or socket_current == 3 && m_socket_next == 1: is_neighbour = false
+	if socket_current == 0 && m_socket_next == 2 or socket_current == 1 && m_socket_next == 3: is_neighbour = false
+	if parent.rotation_degrees == Vector3(0, 48, 0) && m_socket_next == 1: is_neighbour = false
+	if parent.rotation_degrees == Vector3(0, -132, 0) && m_socket_next == 0: is_neighbour = false
+	if parent.rotation_degrees == Vector3(0, -132, 0) && m_socket_next == 3: is_neighbour = false
 	if !is_neighbour: dur_current *= 2
 	
 	var overriding = false
-	var overriding_parent = false
-	if (socket_current == 3 && socket_next == 0): rot_next = Vector3(0, -360, 0); overriding = true
-	if (socket_current == 0 && socket_next == 3): rot_next = Vector3(0, 90, 0); overriding = true
-	if (docked && socket_current == 0 && socket_next == 2): parent.rotation_degrees = Vector3(0, -311, 0); overriding_parent = true
+	#var overriding_parent = false
+	if (socket_current == 3 && m_socket_next == 0): rot_next = Vector3(0, -360, 0); overriding = true
+	if (socket_current == 0 && m_socket_next == 3): rot_next = Vector3(0, 90, 0); overriding = true
+	#if (docked && socket_current == 0 && m_socket_next == 2): parent.rotation_degrees = Vector3(0, -311, 0); overriding_parent = true
 	rot_current = parent.rotation_degrees
-	if !overriding: rot_next = socket_rotations[socket_next]
+	if !overriding: rot_next = socket_rotations[m_socket_next]
 	
 	adding_exponent = false
 	elapsed = 0
-	socket_current = socket_next
+	socket_current = m_socket_next
 	overriding = false
 	moving = true
 	LockRotation(true)
@@ -174,5 +174,3 @@ func LerpMovement():
 		else: c = ease(c, 4.8)
 		var rot = lerp(rot_current, rot_next, c)
 		parent.rotation_degrees = rot
-
-

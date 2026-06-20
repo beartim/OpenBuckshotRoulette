@@ -48,14 +48,14 @@ func SetCursor(isVisible : bool, playSound : bool):
 func SetCursorImage(alias : String):
 	if is_lobby_scene:
 		match alias:
-			"point": Input.set_custom_mouse_cursor(cursor_point, 0, Vector2(12, 0))
-			"hover": Input.set_custom_mouse_cursor(cursor_hover, 0, Vector2(9, 0))
-			"invalid": Input.set_custom_mouse_cursor(cursor_invalid, 0, Vector2(12, 0))
-			"eye": Input.set_custom_mouse_cursor(cursor_eye, 0, Vector2(12, 0))
+			"point": Input.set_custom_mouse_cursor(cursor_point, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))
+			"hover": Input.set_custom_mouse_cursor(cursor_hover, Input.CursorShape.CURSOR_ARROW, Vector2(9, 0))
+			"invalid": Input.set_custom_mouse_cursor(cursor_invalid, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))
+			"eye": Input.set_custom_mouse_cursor(cursor_eye, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))
 		return
 	if (properties.is_active):
 		match(alias):
-			"point": Input.set_custom_mouse_cursor(cursor_point, 0, Vector2(12, 0))
-			"hover": Input.set_custom_mouse_cursor(cursor_hover, 0, Vector2(9, 0))
-			"invalid": Input.set_custom_mouse_cursor(cursor_invalid, 0, Vector2(12, 0))
-			"eye": Input.set_custom_mouse_cursor(cursor_eye, 0, Vector2(12, 0))
+			"point": Input.set_custom_mouse_cursor(cursor_point, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))
+			"hover": Input.set_custom_mouse_cursor(cursor_hover, Input.CursorShape.CURSOR_ARROW, Vector2(9, 0))
+			"invalid": Input.set_custom_mouse_cursor(cursor_invalid, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))
+			"eye": Input.set_custom_mouse_cursor(cursor_eye, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))

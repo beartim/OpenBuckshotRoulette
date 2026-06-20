@@ -201,8 +201,8 @@ func CreateLobby():
 		else:
 			GlobalSteam.create_room()
 
-func _on_lobby_created(connect: int, this_lobby_id: int) -> void:
-	if connect == 1:
+func _on_lobby_created(m_connect: int, this_lobby_id: int) -> void:
+	if m_connect == 1:
 		if GlobalVariables.using_steam:
 			GlobalSteam.is_lobby_friends_only = NeoSettings.fetch("multiplayer/friends_only", true)
 			GlobalSteam.lobby_player_limit = NeoSettings.fetch("multiplayer/player_limit", 4)
@@ -382,7 +382,7 @@ func check_version():
 		}
 		packets.send_p2p_packet_directly_to_host(GlobalSteam.STEAM_ID, packet)
 
-func _on_lobby_chat_update(this_lobby_id: int, change_id: int, making_change_id: int, chat_state: int) -> void:
+func _on_lobby_chat_update(_this_lobby_id: int, change_id: int, _making_change_id: int, chat_state: int) -> void:
 	# Get the user who has made the lobby change
 	var changer_name: String = Steam.getFriendPersonaName(change_id)
 	
@@ -456,8 +456,8 @@ func _remove_member_from_local_lobby_list(steam_id : int) -> void:
 
 
 func get_lobby_members() -> void:
-	var temp_hostname = ""
-	var temp_hostid = 0
+	#var temp_hostname = ""
+	#var temp_hostid = 0
 	
 	if instance_handler != null:
 		instance_handler.previous_member_steamid_array = GlobalSteam.LOBBY_MEMBERS.duplicate()
@@ -517,11 +517,11 @@ func get_lobby_members() -> void:
 		if match_customization != null:
 			match_customization.CheckMatchCustomizationDifferences()
 	previous_host = GlobalSteam.HOST_ID
-	var temp_string
-	if (GlobalSteam.STEAM_ID == Steam.getLobbyOwner(GlobalSteam.LOBBY_ID)): 
-		temp_string = "you are the host."
-	else: 
-		temp_string = "you are not the host."
+	#var temp_string
+	#if (GlobalSteam.STEAM_ID == Steam.getLobbyOwner(GlobalSteam.LOBBY_ID)): 
+		#temp_string = "you are the host."
+	#else: 
+		#temp_string = "you are not the host."
 	#if GlobalVariables.sending_lobby_change_alerts_to_console: print("updating lobby member array with lobby member array: ", GlobalSteam.LOBBY_MEMBERS)
 	#if GlobalVariables.sending_lobby_change_alerts_to_console: Console("updating lobby member array:\n \n" +  str(GlobalSteam.LOBBY_MEMBERS) + " in id: " + str(GlobalSteam.LOBBY_ID) + "\n" + "\n" + temp_string)
 	if instance_handler != null: instance_handler.CheckLobbyMemberArray()
@@ -604,15 +604,15 @@ func UpdateList():
 @export var pop_anim : AnimationPlayer
 @export var pop_ui : Label
 @export var pop_sp : AudioStreamPlayer2D
-func Console(message : String):
+func Console(_message : String):
 	return
-	if (using_console):
-		pop_sp.pitch_scale = randf_range(2, 2)
-		pop_sp.stop()
-		pop_sp.play()
-		pop_ui.text = str(message)
-		pop_anim.play("RESET")
-		pop_anim.play("pop")
+	#if (using_console):
+		#pop_sp.pitch_scale = randf_range(2, 2)
+		#pop_sp.stop()
+		#pop_sp.play()
+		#pop_ui.text = str(message)
+		#pop_anim.play("RESET")
+		#pop_anim.play("pop")
 
 func CheckCommandLine():
 	var arguments = OS.get_cmdline_args()

@@ -295,9 +295,9 @@ func GetSocketFromDirection(self_socket : int, selected_direction : String):
 				"right": socket_number = 2
 	return socket_number
 
-func GetSocketProperties(socket_number : int):
+func GetSocketProperties(m_socket_number : int):
 	for instance_property in intermediary.instance_handler.instance_property_array:
-		if instance_property.socket_number == socket_number:
+		if instance_property.socket_number == m_socket_number:
 			return instance_property
 	return null
 

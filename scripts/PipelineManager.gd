@@ -27,11 +27,11 @@ func Toggle():
 		main_restroom.visible = false
 		main_restroom.visible = true
 
-func AdjustSettings(scene : String):
+func AdjustSettings(mScene : String):
 	if (GlobalVariables.using_gl): 
-		print("adjusting settings in scene: ", scene)
+		print("adjusting settings in scene: ", mScene)
 		overlay.visible = true
-		match scene:
+		match mScene:
 			"menu":
 				print("adjust menu")
 			"main":

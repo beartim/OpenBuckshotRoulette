@@ -17,7 +17,7 @@ func _ready() -> void:
 	intermediary = get_node("/root/mp_main/standalone managers/interactions/interaction intermediary")
 
 func _process(delta: float) -> void:
-	fps = 1.0 / delta
+	fps = int(1.0 / delta)
 	CheckIfHovering()
 	UpdateRaycastState()
 	if properties.is_active:

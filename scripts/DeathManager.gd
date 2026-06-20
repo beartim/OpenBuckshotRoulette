@@ -42,7 +42,7 @@ func Kill(who : String, trueDeath : bool, returningShotgun : bool):
 					var addingDelay = false
 					animator_shotgun.play("RESET")
 					ejectManager_player.DeathEjection()
-					await GlobalVariables.tree.create_timer(2)
+					#await GlobalVariables.tree.create_timer(2)
 					if (shotgunShooting.roundManager.health_opponent == 1 or shotgunShooting.roundManager.health_player == 1): addingDelay = true
 					#if (shellLoader.roundManager.shellSpawner.sequenceArray.size() != 0): shotgunShooting.delaying = true
 					if (shotgunShooting.roundManager.health_player == 1): shitIsFuckedUp = true

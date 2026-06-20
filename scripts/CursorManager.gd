@@ -22,7 +22,7 @@ func SetCursor(isVisible : bool, playSound : bool):
 
 func SetCursorImage(alias : String):
 	match(alias):
-		"point": Input.set_custom_mouse_cursor(cursor_point, 0, Vector2(12, 0))
-		"hover": Input.set_custom_mouse_cursor(cursor_hover, 0, Vector2(9, 0))
-		"invalid": Input.set_custom_mouse_cursor(cursor_invalid, 0, Vector2(12, 0))
+		"hover": Input.set_custom_mouse_cursor(cursor_hover, Input.CursorShape.CURSOR_ARROW, Vector2(9, 0))
+		"point": Input.set_custom_mouse_cursor(cursor_point, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))
+		"invalid": Input.set_custom_mouse_cursor(cursor_invalid, Input.CursorShape.CURSOR_ARROW, Vector2(12, 0))
 	pass

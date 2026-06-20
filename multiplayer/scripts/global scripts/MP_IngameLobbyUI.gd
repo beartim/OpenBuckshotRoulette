@@ -82,7 +82,7 @@ func HideConfirmation():
 	intermediary.intermed_properties.controller.previousFocus = btn_continue
 
 func UpdateUserList():
-	var b : Button
+	#var b : Button
 	for segment in segment_array:
 		segment.get_parent().visible = false
 	var active_index = 0

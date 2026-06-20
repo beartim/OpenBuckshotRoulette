@@ -92,7 +92,6 @@ func MainShellRoutine():
 	_push_debug_tools_update()
 	roundManager.LoadShells()
 	return
-	pass
 
 func _push_debug_tools_update() -> void:
 	var debug_tools = get_tree().get_first_node_in_group("debug_tools")
