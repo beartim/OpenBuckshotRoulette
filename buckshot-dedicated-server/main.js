@@ -1,7 +1,5 @@
 const WebSocket = require('ws');
 const fs = require('fs');
-const zlib = require('zlib');
-const crypto = require('crypto');
 
 const config = JSON.parse(fs.readFileSync('server.json', 'utf8'));
 
@@ -22,13 +20,16 @@ server.on('connection', (ws) => {
 
     console.log(`Client ${clientId} connected`);
 
-    ws.on('message', (message) => {
+    ws.on('message', (message, isBinary) => {
+        if (isBinary) {
+            handlePacket(clientId, message);
+            return;
+        }
         try {
-            const data = JSON.parse(message);
+            const data = JSON.parse(message.toString());
             handleMessage(clientId, data);
         } catch (e) {
-            // Assume it's binary packet
-            handlePacket(clientId, message);
+            console.log(`Client ${clientId} sent invalid message:`, message.toString().substring(0, 100));
         }
     });
 
@@ -72,15 +73,12 @@ function handlePacket(clientId, buffer) {
     const client = clients.get(clientId);
     if (!client || !client.roomId) return;
 
-    // Decompress
-    zlib.gunzip(buffer, (err, decompressed) => {
-        if (err) {
-            console.error('Decompression error:', err);
-            return;
-        }
-        // Broadcast to room
-        broadcastPacketToRoom(client.roomId, decompressed, clientId);
-    });
+    // Relay compressed data as-is — the Godot client handles its own decompression
+    // via bytes_to_var / decompress_dynamic(COMPRESSION_GZIP).  Decompressing on
+    // the server and then broadcasting raw var_to_bytes output can cause silent
+    // decode failures in Godot's HTML5 export (bytes_to_var may return invalid
+    // results for certain data), leading to soft-locks when using items.
+    broadcastPacketToRoom(client.roomId, buffer, clientId);
 }
 
 function listRooms(clientId) {
@@ -169,7 +167,14 @@ function joinRoom(clientId, data) {
         return {playerId: roomClient.playerId, playerName: roomClient.playerName};
     });
 
-    client.ws.send(JSON.stringify({type: 'joinedRoom', roomId: roomId.toString(), hostId: room.hostId, members: roomMembers}));
+    client.ws.send(JSON.stringify({
+        type: 'joinedRoom',
+        roomId: roomId.toString(),
+        hostId: room.hostId,
+        members: roomMembers,
+        playerLimit: room.playerLimit,
+        friendsOnly: room.friendsOnly
+    }));
     broadcastToRoom(roomId, {type: 'playerJoined', playerId: client.playerId, playerName: client.playerName}, clientId);
     console.log(`Client ${clientId} (${client.playerName}) joined room ${roomId}`);
 }
@@ -214,10 +219,16 @@ function clampPlayerLimit(value) {
 
 function updateRoomSettings(clientId, data) {
     const client = clients.get(clientId);
-    if (!client || !client.roomId) return;
+    if (!client || !client.roomId) {
+        console.log(`updateRoomSettings: client ${clientId} not found or not in room`);
+        return;
+    }
 
     const room = rooms.get(client.roomId);
-    if (!room || room.hostId !== client.playerId) return;
+    if (!room || room.hostId !== client.playerId) {
+        console.log(`updateRoomSettings: room not found or client ${clientId} is not host`);
+        return;
+    }
 
     if (data.playerLimit !== undefined) {
         room.playerLimit = clampPlayerLimit(data.playerLimit);
@@ -226,11 +237,14 @@ function updateRoomSettings(clientId, data) {
         room.friendsOnly = Boolean(data.friendsOnly);
     }
 
-    client.ws.send(JSON.stringify({
+    const updateMsg = {
         type: 'roomSettingsUpdated',
         playerLimit: room.playerLimit,
         friendsOnly: room.friendsOnly
-    }));
+    };
+
+    broadcastToRoom(client.roomId, updateMsg);
+    console.log(`Room ${client.roomId} settings updated: playerLimit=${room.playerLimit} friendsOnly=${room.friendsOnly}`);
 }
 
 function broadcastPacketToRoom(roomId, packet, excludeClientId = null) {

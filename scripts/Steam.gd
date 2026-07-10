@@ -137,16 +137,16 @@ func _process(delta: float) -> void:
 func handle_binary_packet(packet: PackedByteArray):
 	if packet.is_empty():
 		return
+	var decompressed: PackedByteArray = packet.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
+	if not decompressed.is_empty():
+		var decoded: Variant = bytes_to_var(decompressed)
+		if decoded is Dictionary:
+			emit_signal("packet_received", decoded as Dictionary)
+			return
 	var decoded: Variant = bytes_to_var(packet)
 	if decoded is Dictionary:
 		emit_signal("packet_received", decoded as Dictionary)
 		return
-	var decompressed: PackedByteArray = packet.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
-	if not decompressed.is_empty():
-		decoded = bytes_to_var(decompressed)
-		if decoded is Dictionary:
-			emit_signal("packet_received", decoded as Dictionary)
-			return
 	push_warning("Steam.gd: could not decode binary websocket packet (size=%d)" % packet.size())
 
 func InitializeSteam():
@@ -183,6 +183,8 @@ func handle_server_message(data):
 		"joinedRoom":
 			LOBBY_ID = int(data.roomId)
 			HOST_ID = data.hostId
+			lobby_player_limit = int(data.get("playerLimit", lobby_player_limit))
+			is_lobby_friends_only = bool(data.get("friendsOnly", is_lobby_friends_only))
 			LOBBY_MEMBERS.clear()
 			
 			if data.has("members"):
