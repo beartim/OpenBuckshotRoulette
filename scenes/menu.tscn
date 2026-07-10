@@ -811,6 +811,7 @@ grow_vertical = 2
 metadata/_edit_lock_ = true
 
 [node name="main screen" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=474929423]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2358,7 +2359,6 @@ playing = true
 ui_opacity_active = 0.5
 
 [node name="options_online service" type="Control" parent="Camera/dialogue UI/menu ui" unique_id=89946228]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2453,6 +2453,85 @@ speaker_hover = NodePath("../../../../../../../../../../speaker_hover")
 playing = true
 ui_opacity_active = 0.5
 
+[node name="Label3" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control" unique_id=113161666]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -269.0
+offset_top = -82.0
+offset_right = 175.73389
+offset_bottom = -43.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.760005, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 26
+text = "USER NAME"
+
+[node name="Label_UserName" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label3" unique_id=218144386]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -121.684265
+offset_top = -22.5
+offset_right = 447.05087
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 16
+text = "ws://127.0.0.1:14122"
+horizontal_alignment = 2
+
+[node name="Label" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label3/Label_UserName" unique_id=1444423760]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -385.8416
+offset_top = -3.0
+offset_bottom = 21.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("27")
+theme_override_font_sizes/font_size = 16
+text = "PASTE FROM CLIPBOARD"
+horizontal_alignment = 2
+
+[node name="true button" type="Button" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label3/Label_UserName/Label" unique_id=2120732252]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = -293.4191
+offset_top = -20.000002
+offset_right = -253.99191
+offset_bottom = -5.2316685
+scale = Vector2(17.5539, 2.80719)
+metadata/_edit_lock_ = true
+
+[node name="button class_pause user name" type="Node" parent="Camera/dialogue UI/menu ui/options_online service/Control/Label3/Label_UserName/Label/true button" unique_id=686432326 node_paths=PackedStringArray("cursor", "ui", "speaker_press", "speaker_hover")]
+script = ExtResource("28")
+cursor = NodePath("../../../../../../../../../../standalone managers/cursor manager")
+alias = "pause user name"
+isActive = true
+isDynamic = true
+ui = NodePath("../..")
+speaker_press = NodePath("../../../../../../../../../../speaker_press")
+speaker_hover = NodePath("../../../../../../../../../../speaker_hover")
+playing = true
+ui_opacity_active = 0.5
+
 [node name="Label2" type="Label" parent="Camera/dialogue UI/menu ui/options_online service/Control" unique_id=835829349]
 layout_mode = 1
 anchors_preset = 8
@@ -2461,9 +2540,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -269.5
-offset_top = -82.0
+offset_top = -34.0
 offset_right = 206.15479
-offset_bottom = -43.0
+offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.760005, 1)
@@ -4559,3 +4638,4 @@ outline_size = 0
 uppercase = true
 
 [connection signal="pressed" from="Camera/dialogue UI/menu ui/main screen/button_open_mods_folder/true button" to="." method="_on_true_button_pressed"]
+[connection signal="is_pressed" from="Camera/dialogue UI/menu ui/options_online service/Control/Label3/Label_UserName/Label/true button/button class_pause user name" to="." method="_on_button_class_pause_user_name_is_pressed"]

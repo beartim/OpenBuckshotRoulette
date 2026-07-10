@@ -1,6 +1,6 @@
 extends Node
 
-var currentVersion_nr:= "v1.0.1.15-beta EXTENDS v2.2.0"
+var currentVersion_nr:= "v1.0.1.16 EXTENDS v2.2.0"
 var currentVersion_hotfix:= 6
 var using_steam:= false
 var all_steam_features_enabled:= true

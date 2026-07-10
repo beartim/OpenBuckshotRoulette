@@ -225,6 +225,7 @@ func UpdatePlayerList():
 		if i != 0 && GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID: 
 			array_kick[i].visible = true
 			array_kick[i].get_child(0).get_child(0).sub_alias = str(members[i].steam_id)
+	CheckStartButton()
 	fs = true
 
 func ShowPopupWindow(with_message : String):

@@ -1,5 +1,9 @@
 class_name LobbyController extends Node
 
+func _is_multibot_enabled() -> bool:
+	var debug_tools_script = load("res://debug_tools/debug_tools.gd")
+	return debug_tools_script != null and debug_tools_script.DEBUG_TOOLS_ENABLED and debug_tools_script.MULTIPLAYER_BOT_ENABLED
+
 @export var cursor : MP_CursorManager
 @export var packets : PacketManager
 @export var anim_start : AnimationPlayer
@@ -16,7 +20,8 @@ var fs = false
 func StartGame():
 	if (!fs):
 		if (GlobalSteam.LOBBY_ID != 0):
-			if (GlobalSteam.LOBBY_MEMBERS.size() > 1):
+			var min_players := 1 if _is_multibot_enabled() else 2
+			if (GlobalSteam.LOBBY_MEMBERS.size() >= min_players):
 				if (GlobalSteam.HOST_ID == GlobalSteam.STEAM_ID):
 					print("starting game with match customization settings: ", GlobalVariables.active_match_customization_dictionary)
 					Steam.setLobbyJoinable(GlobalSteam.LOBBY_ID, false)

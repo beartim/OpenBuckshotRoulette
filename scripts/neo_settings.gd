@@ -11,7 +11,8 @@ var settings: Dictionary = {
 	},
 	multiplayer = {
 		player_limit = 4,
-		friends_only = true
+		friends_only = true,
+		username = ''
 	}
 }
 

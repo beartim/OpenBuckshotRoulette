@@ -30,6 +30,11 @@ func InitialCheck():
 	
 	if (GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID):
 		membersHere_list.append(GlobalSteam.HOST_ID)
+		for member in GlobalSteam.LOBBY_MEMBERS:
+			var sid: int = member["steam_id"]
+			if sid < 0 and not sid in membersHere_list:
+				membersHere_list.append(sid)
+				amountOfPlayers_here = membersHere_list.size()
 		total_members_expected = GlobalSteam.LOBBY_MEMBERS.size()
 		UpdateMemberList()
 		CheckMembers()

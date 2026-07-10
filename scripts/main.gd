@@ -148,7 +148,7 @@ func update_performance_options(_key: String = "", _value: Variant = null):
 
 var last_back_preessed_time := 0
 
-func _input(event: InputEvent) -> void:
+func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed('back') && Time.get_ticks_msec() - last_back_preessed_time >= 33.33:
 		canvas_layer_back.visible = !canvas_layer_back.visible
 	last_back_preessed_time = Time.get_ticks_msec()

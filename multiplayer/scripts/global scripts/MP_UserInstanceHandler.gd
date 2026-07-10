@@ -233,11 +233,15 @@ func ClearAllInstances():
 			instance.instance_root.queue_free()
 	instance_property_array.clear()
 
+func _is_multibot_enabled() -> bool:
+	var debug_tools_script = load("res://debug_tools/debug_tools.gd")
+	return debug_tools_script != null and debug_tools_script.DEBUG_TOOLS_ENABLED and debug_tools_script.MULTIPLAYER_BOT_ENABLED
+
 func SetupDictionary():
 	var lobby_dict_array = GlobalSteam.LOBBY_MEMBERS
 	lobby_dict_array.shuffle()
-	var socket_index = 0
 	var setting_opposite = lobby_dict_array.size() == 2	
+	var used_sockets : Array[int] = []
 	for i in range(lobby_dict_array.size()):
 		var member_entry = lobby_dict_array[i]
 		var pid: int = int(member_entry["steam_id"])
@@ -247,11 +251,11 @@ func SetupDictionary():
 			display_name = GlobalSteam.getFriendPersonaName(pid)
 		if display_name == "" || display_name == "Unknown":
 			display_name = "Player%d" % (pid % 100000)
+		var socket_index := 0
 		if setting_opposite:
-			if i == 0:
-				socket_index = 1
-			else:
-				socket_index = 3
+			socket_index = 1 if i == 0 else 3
+		else:
+			socket_index = i
 		var dict = {
 			"socket_number": socket_index,
 			"user_id": pid,
@@ -260,8 +264,24 @@ func SetupDictionary():
 			"cpu_enabled": false,
 		}
 		instance_dictionary.append(dict)
-		socket_index += 1
-	print("lobby dict array after initial dictionary array fill: ", lobby_dict_array)
+		used_sockets.append(socket_index)
+	if _is_multibot_enabled():
+		var bot_id := -1
+		var max_players: int = GlobalSteam.lobby_player_limit
+		for socket in range(max_players):
+			if socket in used_sockets:
+				continue
+			var bot_dict = {
+				"socket_number": socket,
+				"user_id": bot_id,
+				"is_host": false,
+				"user_name": "Bot %d" % -bot_id,
+				"cpu_enabled": true,
+			}
+			instance_dictionary.append(bot_dict)
+			bot_id -= 1
+		print("bot count: ", -bot_id - 1)
+	print("lobby dict array after initial dictionary array fill: ", instance_dictionary)
 
 func _resolve_display_name_from_slot_dict(user: Variant) -> String:
 	if !(user is Dictionary):

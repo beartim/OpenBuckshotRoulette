@@ -67,6 +67,56 @@ func ShowForwardedMessage():
 		Console(GlobalVariables.message_to_forward)
 		GlobalVariables.message_to_forward = ""
 
+var _bot_member_ids: Array[int] = []
+var _next_bot_number := 1
+
+func _is_bot_management_enabled() -> bool:
+	var debug_tools_script = load("res://debug_tools/debug_tools.gd")
+	return debug_tools_script != null and debug_tools_script.DEBUG_TOOLS_ENABLED and debug_tools_script.MULTIPLAYER_BOT_ENABLED
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _is_bot_management_enabled():
+		return
+	if GlobalSteam.STEAM_ID != GlobalSteam.HOST_ID:
+		return
+	if GlobalSteam.LOBBY_ID == 0:
+		return
+	if event.is_action_pressed("ui_add"):
+		_handle_add_bot()
+	if event.is_action_pressed("ui_substract"):
+		_handle_remove_bot()
+
+func _handle_add_bot() -> void:
+	if GlobalSteam.LOBBY_MEMBERS.size() >= GlobalSteam.lobby_player_limit:
+		Console_Copypaste("MP_UI LOBBY FULL")
+		return
+	var bot_id := _get_next_bot_id()
+	var bot_name := "[BOT]%d" % _next_bot_number
+	_next_bot_number += 1
+	var bot_entry := {"steam_id": bot_id, "steam_name": bot_name}
+	GlobalSteam.LOBBY_MEMBERS.append(bot_entry)
+	_bot_member_ids.append(bot_id)
+	GlobalVariables.steam_id_version_checked_array.append(bot_id)
+	if lobby_ui != null:
+		lobby_ui.UpdatePlayerList()
+	Console_Copypaste("Bot added: " + bot_name)
+
+func _handle_remove_bot() -> void:
+	if _bot_member_ids.is_empty():
+		return
+	var last_bot_id: int = _bot_member_ids.pop_back()
+	_remove_member_from_local_lobby_list(last_bot_id)
+	GlobalVariables.steam_id_version_checked_array.erase(last_bot_id)
+	if lobby_ui != null:
+		lobby_ui.UpdatePlayerList()
+	Console_Copypaste("Bot removed")
+
+func _get_next_bot_id() -> int:
+	var base := -1
+	while base in _bot_member_ids:
+		base -= 1
+	return base
+
 var interaction_enabled = true
 func Pipe(alias : String = "", sub_alias : String = ""):
 	match alias:
@@ -151,9 +201,10 @@ func CopyLobbyID():
 
 func Console_Copypaste(message : String):
 	print("printing message to player visible console: ", message)
-	ui_copypaste_console_pop.text = message
-	animator_consolepop_copypaste_ui.play("RESET")
-	animator_consolepop_copypaste_ui.play("pop")
+	if ui_copypaste_console_pop != null and animator_consolepop_copypaste_ui != null:
+		ui_copypaste_console_pop.text = message
+		animator_consolepop_copypaste_ui.play("RESET")
+		animator_consolepop_copypaste_ui.play("pop")
 
 func ToggleLobbyFriendsOnly():
 	if GlobalSteam.LOBBY_ID != 0 && GlobalSteam.STEAM_ID == GlobalSteam.HOST_ID:
@@ -277,6 +328,8 @@ func leave_lobby() -> void:
 		# Clear the local lobby list
 		GlobalSteam.LOBBY_MEMBERS.clear()
 		GlobalSteam.USER_ID_LIST_TO_IGNORE.clear()
+		_bot_member_ids.clear()
+		_next_bot_number = 1
 		if lobby_ui != null: 
 			lobby_ui.UpdatePlayerList()
 		GlobalSteam.HOST_ID = 0
@@ -481,7 +534,11 @@ func get_lobby_members() -> void:
 		previous_host = GlobalSteam.HOST_ID
 		return
 
-	#print("member array before clear: ", GlobalSteam.LOBBY_MEMBERS)
+	#save bot entries before clearing
+	var saved_bots: Array[Dictionary] = []
+	for member in GlobalSteam.LOBBY_MEMBERS:
+		if member["steam_id"] in _bot_member_ids:
+			saved_bots.append(member.duplicate())
 	# Clear your previous lobby list
 	GlobalSteam.LOBBY_MEMBERS.clear()
 	
@@ -496,6 +553,9 @@ func get_lobby_members() -> void:
 		var member_steam_name: String = Steam.getFriendPersonaName(member_steam_id)
 		# Add them to the list
 		GlobalSteam.LOBBY_MEMBERS.append({"steam_id":member_steam_id, "steam_name":member_steam_name})
+	#restore bot entries
+	for bot in saved_bots:
+		GlobalSteam.LOBBY_MEMBERS.append(bot)
 	if lobby_ui != null:
 		lobby_ui.UpdatePlayerList()
 	if instance_handler != null:

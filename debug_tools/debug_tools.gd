@@ -28,6 +28,7 @@ var mp_gambling_refresh_ttl := 0.0
 
 const DEBUG_TOOLS_ENABLED := false
 const SKIP_SPLASH_ANIM := true
+const MULTIPLAYER_BOT_ENABLED := false
 
 func  _ready() -> void:
 	add_to_group("debug_tools")

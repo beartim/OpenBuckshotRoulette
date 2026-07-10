@@ -20,6 +20,8 @@ extends Node3D
 @onready var label_performance_level_value: Label = $"Camera/dialogue UI/menu ui/options_audio video/Label_PerformanceLevel/Label_PerformanceLevel_Value"
 @onready var shell_waterfall_2: Node3D = $"shell waterfall2"
 @onready var shell_waterfall_4: Node3D = $"shell waterfall4"
+@onready var button_class_pause_user_name: ButtonClass = $"Camera/dialogue UI/menu ui/options_online service/Control/Label3/Label_UserName/Label/true button/button class_pause user name"
+@onready var label_user_name: Label = $"Camera/dialogue UI/menu ui/options_online service/Control/Label3/Label_UserName"
 
 @onready var hide_on_android: Array[Node] = [
 	$"Camera/dialogue UI/menu ui/options_audio video/option monitor_windowed", $"Camera/dialogue UI/menu ui/options_audio video/option monitor_fullscreen", $"Camera/dialogue UI/menu ui/options_audio video/bracket selection_windowed", $"Camera/dialogue UI/menu ui/options_audio video/bracket selection_fullscreen", $"Camera/dialogue UI/menu ui/options_audio video/true button_windowed", $"Camera/dialogue UI/menu ui/options_audio video/true button_fullscreen"
@@ -50,6 +52,7 @@ func _ready() -> void:
 		$"standalone managers/cursor manager".SetCursor(true, false)
 	NeoSettings.connect('value_changed', update_performance_options)
 	update_performance_options()
+	init_username()
 
 func bind_events():
 	button_class_pause_server_address.connect("is_pressed", _on_button_class_pause_server_address_is_pressed)
@@ -79,7 +82,34 @@ func update_performance_options(_key: String = "", _value: Variant = null):
 		shell_waterfall_2.show()
 		shell_waterfall_4.show()
 
-func get_server_address_from_clipboard() -> String:
+func init_username() -> void:
+	var saved_name = NeoSettings.fetch("multiplayer/username", "")
+	if saved_name == "":
+		saved_name = _generate_random_name()
+		NeoSettings.put("multiplayer/username", saved_name)
+	GlobalSteam.STEAM_NAME = saved_name
+	update_user_name_label()
+
+func _generate_random_name() -> String:
+	var length = randi() % 5 + 6
+	var mName = ""
+	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	for i in range(length):
+		mName += chars[randi() % chars.length()]
+	return mName
+
+func _open_mods_folder() -> void:
+	var mods_path: String
+	if OS.has_feature("mobile"):
+		OS.request_permissions()
+		mods_path = "/sdcard/open_buckshot_roulette/mods/"
+	else:
+		mods_path = ProjectSettings.globalize_path("user://mods/")
+	if not DirAccess.dir_exists_absolute(mods_path):
+		DirAccess.make_dir_absolute(mods_path)
+	OS.shell_open(mods_path)
+
+func get_text_from_clipboard() -> String:
 	var text = DisplayServer.clipboard_get()
 	return text.strip_edges()
 
@@ -103,7 +133,7 @@ func is_valid_ws_url(url: String) -> bool:
 	return true
 
 func _on_button_class_pause_server_address_is_pressed():
-	var text = get_server_address_from_clipboard()
+	var text = get_text_from_clipboard()
 	if is_valid_ws_url(text):
 		options_manager.setting_server_address = text
 		options_manager.SaveSettings()
@@ -145,4 +175,15 @@ func _on_button_class_interact(alias: String):
 	elif alias == 'performance level plus':
 		NeoSettings.increase("performance/level", 1, 3)
 	elif alias == 'open mods folder':
-		OS.shell_open(ProjectSettings.globalize_path('user://mods/'))
+		_open_mods_folder()
+
+
+func _on_button_class_pause_user_name_is_pressed() -> void:
+	var text = get_text_from_clipboard()
+	if text.length() <= 24 && text.length() >= 1:
+		NeoSettings.put("multiplayer/username", text)
+		GlobalSteam.STEAM_NAME = text
+		update_user_name_label()
+
+func update_user_name_label():
+	label_user_name.text = NeoSettings.fetch("multiplayer/username", GlobalSteam.STEAM_NAME)

@@ -21,6 +21,10 @@ var y_past = false
 var enabled = false
 var using_mouse_for_input = false
 
+var touch_count = 0
+var touch_drag_relative = Vector2.ZERO
+var touch_based_free_look_active = false
+
 func _process(_delta: float):
 	if properties.is_active:
 		UpdateMouseLook()
@@ -53,6 +57,22 @@ func _input(event):
 		
 		if event is InputEventMouseMotion:
 			mouse_position = event.relative
+		
+		if event is InputEventScreenTouch:
+			if event.pressed:
+				touch_count += 1
+			else:
+				touch_count -= 1
+			touch_count = maxi(touch_count, 0)
+			
+			if touch_count == 2 && !properties.is_being_revived && !properties.is_stealing_item && properties.is_allowed_to_free_look && (!properties.is_interacting_with_item or properties.is_on_jammer_selection):
+				touch_based_free_look_active = true
+				BeginCameraLook()
+			elif looking_active && touch_based_free_look_active && touch_count < 2:
+				EndCameraLook()
+		
+		if event is InputEventScreenDrag && touch_count == 2 && looking_active:
+			touch_drag_relative += event.relative
 
 func BeginCameraLook():
 	controller.checkingForInput = false
@@ -62,7 +82,8 @@ func BeginCameraLook():
 	mouse_position = Vector2(0, 0)
 	total_pitch = 0
 	StopCameraReturn()
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	if !touch_based_free_look_active:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	looking_active = true
 	fs = false
 
@@ -76,7 +97,9 @@ func CheckCameraReturn():
 		properties.cam.returning_on_previous_lerp = false
 		properties.cam.BeginLerp(properties.cam.lerp_previous, true)
 		properties.cam.returning_on_previous_lerp = true
-		SetPreviousMouseMode()
+		if !touch_based_free_look_active:
+			SetPreviousMouseMode()
+		touch_based_free_look_active = false
 		controller.checkingForInput = true
 		fs = true
 
@@ -120,7 +143,12 @@ func UpdateMouseLook():
 	if looking_active && properties.is_active:
 		var yaw
 		var pitch
-		if using_mouse_for_input:
+		if touch_based_free_look_active:
+			touch_drag_relative *= sensitivity
+			yaw = touch_drag_relative.x
+			pitch = touch_drag_relative.y
+			touch_drag_relative = Vector2.ZERO
+		elif using_mouse_for_input:
 			mouse_position *= sensitivity
 			yaw = mouse_position.x
 			pitch = mouse_position.y
