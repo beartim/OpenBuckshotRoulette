@@ -1,51 +1,67 @@
-# OpenBuckshotRoulette iOS 移植套件 v4
+# OpenBuckshotRoulette iOS 14 自定义模板构建套件
 
-## 本次已修复
+## 已确认的模板状态
 
-这次错误来自语言名称 `ES LATAM`。Godot 4.7 把带空格的名称和路径直接写进
-`project.pbxproj`，但没有添加引号，导致 Xcode 报 `missing semicolon`。
+上传的构建日志显示：
 
-v4 会在 Xcode 读取工程前自动把它修复为：
+- Godot commit：`5b4e0cb0fd279832bbdd69fed5354d4e5ad26f88`
+- Xcode：16.4（16F6）
+- Apple Clang：17.0.0
+- iPhoneOS SDK：18.5
+- iOS 14 烟雾测试对象：`minos 14.0`
+- Debug 模板：构建完成
+- Release 模板及 Bundle：构建完成
 
-```text
-name = "ES LATAM";
-path = "ES LATAM.lproj/InfoPlist.strings";
-```
+日志中的大量 `duplicate member name` 是 Apple `libtool` 合并静态库时的警告，最终显示 `scons: done building targets`，不影响模板生成。
 
-修复器不是只处理这一种语言，而是会处理所有未加引号且包含空格的 PBX
-`name` 和 `path` 字段。
+## 使用方法
 
-## 最低 iOS 版本
-
-本套件把可真实运行的最低版本设置为 **iOS 15.0**。工作流、Godot 导出预设、
-Xcode 构建参数、Info.plist 和最终 Mach-O 都会进行设置或校验。
-
-无法把 Godot 4.7 版本真实降到 iOS 9.0，原因是官方 iOS 引擎模板本身以
-`-miphoneos-version-min=15.0` 编译，并且 Metal 渲染器要求 iOS 14 以上。
-只把 Info.plist 改成 9.0 会生成“看起来支持 iOS 9、实际无法启动”的 IPA，
-所以 v4 会拒绝低于 15.0 的目标。
-
-真正支持 iOS 9 需要把整个项目从 Godot 4.7 反向移植到旧版 Godot，替换渲染、
-脚本和资源格式，并使用旧 Xcode/SDK 重新编译引擎；这不是修改一个版本号即可完成。
-
-## 覆盖文件
-
-将套件中的以下目录复制到完整项目根目录：
+把套件中的三个文件复制到 OpenBuckshotRoulette 仓库：
 
 ```text
-.github/workflows/build-ios.yml
-ios_port/build_ios.sh
-ios_port/export_presets.cfg.template
+.github/workflows/build-ios14.yml
+ios_port/build_ios14.sh
+ios_port/export_presets.ios14.cfg.template
 ```
 
-提交并推送：
+提交：
 
 ```bash
-git add .github/workflows/build-ios.yml ios_port/build_ios.sh ios_port/export_presets.cfg.template
-git update-index --chmod=+x ios_port/build_ios.sh
-git commit -m "Fix iOS PBX localization paths and deployment target"
+git add .github/workflows/build-ios14.yml
+git add ios_port/build_ios14.sh
+git add ios_port/export_presets.ios14.cfg.template
+git update-index --chmod=+x ios_port/build_ios14.sh
+git commit -m "Build OpenBuckshotRoulette for iOS 14 with custom Godot template"
 git push
 ```
 
-在 GitHub Actions 手动运行时，`ios_deployment_target` 保持 `15.0`。
-构建成功后下载 `OpenBuckshotRoulette-iOS-unsigned`。
+然后打开 GitHub：
+
+```text
+Actions
+→ Build OpenBuckshotRoulette iOS 14 IPA
+→ Run workflow
+```
+
+参数：
+
+```text
+bundle_id: com.example.openbuckshotroulette
+template_artifact_name: godot-4.7-ios14-xcode16.4-template
+template_run_id: 留空
+```
+
+工作流会自动查找同一仓库中最新的、尚未过期的模板 Artifact。也可以把成功的模板工作流 Run ID 填入 `template_run_id`，固定使用某一次构建。
+
+成功产物：
+
+```text
+OpenBuckshotRoulette-iOS14-unsigned
+└── OpenBuckshotRoulette-iOS14-unsigned.ipa
+```
+
+该 IPA 未签名，需要使用你自己的证书、AltStore、SideStore、Sideloadly 或其他合法签名方式签名后安装。
+
+## Artifact 保留问题
+
+模板工作流当前设置的保留期限是 90 天。建议把模板 ZIP 同时保存到本地，或者发布为仓库的 GitHub Release Asset。Artifact 过期后，需要重新运行模板编译工作流。
