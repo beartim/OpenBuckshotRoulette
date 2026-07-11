@@ -8,6 +8,9 @@ BUNDLE_ID="${BUNDLE_ID:-com.example.openbuckshotroulette}"
 EXPORT_METHOD="${EXPORT_METHOD:-development}"
 UNSIGNED="${UNSIGNED:-0}"
 ALLOW_INSECURE_WS="${ALLOW_INSECURE_WS:-1}"
+# Godot requires a syntactically valid 10-character Team ID even when it is
+# only generating an unsigned Xcode project. This value is never used to sign.
+UNSIGNED_PROJECT_TEAM_ID="${UNSIGNED_PROJECT_TEAM_ID:-ABCDE12XYZ}"
 LOG_DIR="$ROOT/build/logs"
 
 mkdir -p "$LOG_DIR"
@@ -19,8 +22,8 @@ trap 'rc=$?; echo "error: command failed at line ${BASH_LINENO[0]}: ${BASH_COMMA
 [[ "$(uname -s)" == "Darwin" ]] || fail "iOS compilation requires macOS with Xcode."
 command -v xcodebuild >/dev/null || fail "xcodebuild not found; install/open Xcode first."
 command -v xcrun >/dev/null || fail "xcrun not found; install the Xcode command line tools."
+command -v plutil >/dev/null || fail "plutil not found."
 [[ -x "$GODOT_BIN" ]] || fail "Godot executable not found: $GODOT_BIN"
-[[ "$APPLE_TEAM_ID" =~ ^[A-Za-z0-9]{10}$ ]] || fail "APPLE_TEAM_ID must be a 10-character Apple Team ID."
 [[ "$BUNDLE_ID" =~ ^[A-Za-z0-9.-]+$ ]] || fail "BUNDLE_ID contains invalid characters."
 [[ -f "$ROOT/project.godot" ]] || fail "project.godot is missing. Run this kit from a full OpenBuckshotRoulette repository."
 
@@ -30,39 +33,46 @@ case "$EXPORT_METHOD" in
   *) fail "EXPORT_METHOD must be development, ad-hoc, or app-store-connect" ;;
 esac
 
+if [[ "$UNSIGNED" == "1" ]]; then
+  PROJECT_TEAM_ID="$UNSIGNED_PROJECT_TEAM_ID"
+  DEBUG_SIGN_IDENTITY=""
+  RELEASE_SIGN_IDENTITY=""
+else
+  [[ "$APPLE_TEAM_ID" =~ ^[A-Za-z0-9]{10}$ ]] || fail "APPLE_TEAM_ID must be a valid 10-character Apple Team ID for signed builds."
+  PROJECT_TEAM_ID="$APPLE_TEAM_ID"
+  DEBUG_SIGN_IDENTITY="Apple Development"
+  RELEASE_SIGN_IDENTITY="Apple Distribution"
+fi
+[[ "$PROJECT_TEAM_ID" =~ ^[A-Za-z0-9]{10}$ ]] || fail "The project Team ID must contain exactly 10 alphanumeric characters."
+
 cd "$ROOT"
 echo "Godot: $("$GODOT_BIN" --version)"
 echo "Xcode: $(xcodebuild -version | tr '\n' ' ')"
 echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
+echo "Build mode: $([[ "$UNSIGNED" == "1" ]] && echo unsigned || echo signed)"
+echo "Godot project Team ID: $PROJECT_TEAM_ID"
 
 python3 ios_port/apply_ios_port.py --project-root "$ROOT"
 
-ATS_XML=""
-if [[ "$ALLOW_INSECURE_WS" == "1" ]]; then
-  ATS_XML='<key>NSAppTransportSecurity</key><dict><key>NSExceptionDomains</key><dict><key>buckds.1503dev.top</key><dict><key>NSIncludesSubdomains</key><true/><key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key><true/></dict></dict></dict>'
-fi
-
-python3 - "$APPLE_TEAM_ID" "$BUNDLE_ID" "$ATS_XML" <<'PY'
+python3 - "$PROJECT_TEAM_ID" "$BUNDLE_ID" "$DEBUG_SIGN_IDENTITY" "$RELEASE_SIGN_IDENTITY" <<'PY'
 from pathlib import Path
 import sys
 
-team, bundle, plist = sys.argv[1:]
+team, bundle, debug_identity, release_identity = sys.argv[1:]
 template = Path("ios_port/export_presets.cfg.template").read_text(encoding="utf-8")
-# Godot stores this field inside a quoted string.
-plist = plist.replace("\\", "\\\\").replace('"', '\\"')
 out = (
-    template.replace("__APPLE_TEAM_ID__", team)
+    template.replace("__PROJECT_TEAM_ID__", team)
     .replace("__BUNDLE_ID__", bundle)
-    .replace("__ADDITIONAL_PLIST_CONTENT__", plist)
+    .replace("__DEBUG_SIGN_IDENTITY__", debug_identity)
+    .replace("__RELEASE_SIGN_IDENTITY__", release_identity)
 )
 Path("export_presets.cfg").write_text(out, encoding="utf-8")
 PY
+cp export_presets.cfg "$LOG_DIR/export_presets.generated.cfg"
 
 rm -rf build/ios build/archive build/ipa build/DerivedData build/Payload
-mkdir -p build/ios/project build/ipa build/logs
+mkdir -p build/ios/project build/ipa
 
-# Godot's dedicated import mode waits until resource importing is complete.
-# This replaces the old --quit-after 2 workaround, which could stop too early.
 "$GODOT_BIN" \
   --headless \
   --verbose \
@@ -70,8 +80,8 @@ mkdir -p build/ios/project build/ipa build/logs
   --import \
   2>&1 | tee "$LOG_DIR/godot-import.log"
 
-# Godot's command-line export documentation specifies .zip for iOS output.
-# The archive contains the generated Xcode project.
+# application/export_project_only=true is essential here: Godot generates the
+# Xcode project, while signing/building is performed explicitly below.
 IOS_EXPORT_ZIP="$ROOT/build/ios/OpenBuckshotRoulette.zip"
 "$GODOT_BIN" \
   --headless \
@@ -80,13 +90,52 @@ IOS_EXPORT_ZIP="$ROOT/build/ios/OpenBuckshotRoulette.zip"
   --export-release "iOS" "$IOS_EXPORT_ZIP" \
   2>&1 | tee "$LOG_DIR/godot-export.log"
 
-[[ -s "$IOS_EXPORT_ZIP" ]] || fail "Godot did not create the iOS Xcode-project ZIP: $IOS_EXPORT_ZIP"
-unzip -q "$IOS_EXPORT_ZIP" -d "$ROOT/build/ios/project"
+if [[ -s "$IOS_EXPORT_ZIP" ]]; then
+  unzip -q "$IOS_EXPORT_ZIP" -d "$ROOT/build/ios/project"
+fi
 
-PROJECT="$(find "$ROOT/build/ios/project" -name '*.xcodeproj' -print -quit)"
-[[ -n "$PROJECT" ]] || fail "Godot did not produce an .xcodeproj inside the iOS export ZIP."
+PROJECT="$(find "$ROOT/build/ios/project" "$ROOT/build/ios" -name '*.xcodeproj' -print -quit 2>/dev/null || true)"
+[[ -n "$PROJECT" ]] || fail "Godot did not produce an .xcodeproj. Check godot-export.log."
+PBXPROJ="$PROJECT/project.pbxproj"
+[[ -s "$PBXPROJ" ]] || fail "Generated project.pbxproj is missing or empty: $PBXPROJ"
 
-xcodebuild -project "$PROJECT" -list -json > "$LOG_DIR/xcode-project-list.json"
+cp "$PBXPROJ" "$LOG_DIR/generated-project.pbxproj"
+nl -ba "$PBXPROJ" | sed -n '35,85p' > "$LOG_DIR/generated-project-lines-35-85.txt"
+
+if ! plutil -lint "$PBXPROJ" > "$LOG_DIR/pbxproj-lint.log" 2>&1; then
+  cat "$LOG_DIR/pbxproj-lint.log"
+  fail "Godot generated a malformed Xcode project. The exact project file and lines 35-85 were saved in the diagnostic artifact."
+fi
+
+# Add the temporary ATS exception after project generation instead of embedding
+# XML inside export_presets.cfg. plistlib keeps the resulting Info.plist valid.
+INFO_PLIST="$(find "$(dirname "$PROJECT")" -type f -name '*-Info.plist' -print -quit 2>/dev/null || true)"
+[[ -n "$INFO_PLIST" ]] || fail "Generated application Info.plist was not found."
+if [[ "$ALLOW_INSECURE_WS" == "1" ]]; then
+  python3 - "$INFO_PLIST" <<'PY'
+from pathlib import Path
+import plistlib
+import sys
+
+path = Path(sys.argv[1])
+with path.open("rb") as handle:
+    data = plistlib.load(handle)
+ats = data.setdefault("NSAppTransportSecurity", {})
+domains = ats.setdefault("NSExceptionDomains", {})
+entry = domains.setdefault("buckds.1503dev.top", {})
+entry["NSIncludesSubdomains"] = True
+entry["NSTemporaryExceptionAllowsInsecureHTTPLoads"] = True
+with path.open("wb") as handle:
+    plistlib.dump(data, handle, fmt=plistlib.FMT_XML, sort_keys=False)
+PY
+fi
+cp "$INFO_PLIST" "$LOG_DIR/generated-app-Info.plist"
+plutil -lint "$INFO_PLIST" | tee "$LOG_DIR/info-plist-lint.log"
+
+if ! xcodebuild -project "$PROJECT" -list -json > "$LOG_DIR/xcode-project-list.json" 2> "$LOG_DIR/xcode-project-list.stderr.log"; then
+  cat "$LOG_DIR/xcode-project-list.stderr.log"
+  fail "xcodebuild could not read the generated project."
+fi
 SCHEME="$(python3 - "$LOG_DIR/xcode-project-list.json" <<'PY'
 import json
 import sys
@@ -102,6 +151,7 @@ PY
 
 echo "Xcode project: $PROJECT"
 echo "Scheme: $SCHEME"
+echo "Info.plist: $INFO_PLIST"
 
 if [[ "$UNSIGNED" == "1" ]]; then
   xcodebuild \
@@ -113,8 +163,11 @@ if [[ "$UNSIGNED" == "1" ]]; then
     -derivedDataPath "$ROOT/build/DerivedData" \
     CODE_SIGNING_ALLOWED=NO \
     CODE_SIGNING_REQUIRED=NO \
+    CODE_SIGN_STYLE=Manual \
     CODE_SIGN_IDENTITY= \
     DEVELOPMENT_TEAM= \
+    PROVISIONING_PROFILE= \
+    PROVISIONING_PROFILE_SPECIFIER= \
     PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE_ID" \
     build \
     2>&1 | tee "$LOG_DIR/xcode-build.log"
@@ -126,7 +179,7 @@ if [[ "$UNSIGNED" == "1" ]]; then
   (cd "$ROOT/build" && /usr/bin/zip -qry "ipa/OpenBuckshotRoulette-unsigned.ipa" Payload)
   [[ -s "$ROOT/build/ipa/OpenBuckshotRoulette-unsigned.ipa" ]] || fail "IPA packaging failed."
   echo "Created unsigned IPA: $ROOT/build/ipa/OpenBuckshotRoulette-unsigned.ipa"
-  echo "This file must be signed before it can be installed on a normal iOS device."
+  echo "The IPA must be signed before installation on a normal iOS device."
   exit 0
 fi
 

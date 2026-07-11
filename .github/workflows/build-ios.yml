@@ -8,8 +8,6 @@ on:
         required: true
         default: com.example.openbuckshotroulette
 
-# GitHub-hosted runners support Node.js 24. Keeping this explicit also makes
-# accidental use of an old JavaScript action visible during migration.
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   GODOT_VERSION: 4.7-stable
@@ -41,7 +39,7 @@ jobs:
             ios_port/build_ios.sh \
             ios_port/export_presets.cfg.template; do
             if [[ ! -f "$file" ]]; then
-              echo "::error file=$file::Required file is missing. Copy the iOS kit into a full OpenBuckshotRoulette fork, not into an empty repository."
+              echo "::error file=$file::Required file is missing. Copy the iOS kit into a full OpenBuckshotRoulette fork."
               missing=1
             fi
           done
@@ -81,9 +79,12 @@ jobs:
         shell: bash
         env:
           GODOT_BIN: ${{ github.workspace }}/Godot.app/Contents/MacOS/Godot
-          APPLE_TEAM_ID: AAAAAAAAAA
           BUNDLE_ID: ${{ inputs.bundle_id }}
           UNSIGNED: "1"
+          # This is only written into the generated Xcode project because the
+          # Godot exporter requires a 10-character ID. xcodebuild signing is
+          # disabled and DEVELOPMENT_TEAM is cleared in build_ios.sh.
+          UNSIGNED_PROJECT_TEAM_ID: ABCDE12XYZ
           ALLOW_INSECURE_WS: "1"
         run: ./ios_port/build_ios.sh
 
