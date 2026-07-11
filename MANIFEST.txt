@@ -1,5 +1,8 @@
 .github/workflows/build-ios.yml
 ERROR-ANALYSIS.md
+MANIFEST.txt
 README.zh-CN.md
+ios_port/__pycache__/prepare_ios14_runtime.cpython-313.pyc
 ios_port/build_ios14.sh
 ios_port/export_presets.ios14.cfg.template
+ios_port/prepare_ios14_runtime.py

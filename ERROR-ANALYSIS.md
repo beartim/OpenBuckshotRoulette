@@ -1,19 +1,34 @@
-# 最新链接错误分析
+# OpenBuckshotRoulette iOS 14 Metal link failure analysis
 
-这次 Xcode 已进入最终 arm64 链接阶段，失败原因是数百个 Vulkan `vk*` 符号未定义，例如：
+The latest log still ran the older PBX-removal script. It explicitly reports:
 
-- `vkCreateInstance`
-- `vkCreateMetalSurfaceEXT`
-- `vkGetInstanceProcAddr`
-- `vkCreateGraphicsPipelines`
+```text
+removed 4 stale MoltenVK PBX entries
+```
 
-虽然项目运行时被设置为 Godot 原生 Metal，但自编译模板中的 `libgodot.a` 是在启用 Vulkan 驱动的情况下构建的。Godot 的驱动注册对象会让 Vulkan 相关目标文件进入最终链接，因此仍需要 MoltenVK 提供这些符号。
+The final linker command contains only `-lgodot`; it contains neither
+`MoltenVK.xcframework`, `libMoltenVK.a`, nor `-force_load`. Because the custom
+`libgodot.a` includes the Vulkan driver, the linker then reports hundreds of
+undefined `_vk*` symbols.
 
-上一版删除 `project.pbxproj` 中的 MoltenVK 引用会使链接必然失败。正确做法是：
+## Robust fix
 
-1. 保持运行时配置为 `rendering_device/driver.ios="metal"`；
-2. 保留 Xcode 工程中的 `MoltenVK.xcframework` 引用；
-3. 在构建前注入 Khronos 的静态 MoltenVK XCFramework；
-4. 运行时不会因为链接了 MoltenVK 就自动选择 Vulkan，后端仍由项目设置决定。
+This revision does not depend on generated Xcode PBX framework records. It:
 
-`AudioUnit`、`CoreAudioTypes` 和 `SwiftUICore` 在本次日志中是 linker warning，不是导致失败的未定义符号来源。
+1. Copies the static `MoltenVK.xcframework` next to the Xcode project.
+2. Verifies that `libMoltenVK.a` exports `_vkCreateInstance` and
+   `_vkGetInstanceProcAddr`.
+3. Removes any generated MoltenVK PBX records to prevent duplicate or stale
+   references.
+4. Passes the static archive directly through Xcode `OTHER_LDFLAGS` using:
+
+```text
+-Wl,-force_load,/absolute/path/MoltenVK.xcframework/ios-arm64/libMoltenVK.a
+```
+
+5. Explicitly links the iOS system frameworks listed by the MoltenVK runtime
+   integration guide.
+6. Runs `xcodebuild -showBuildSettings` and refuses to compile unless the
+   `-force_load` path is present.
+7. Uses a visible script revision marker so GitHub Actions detects accidental
+   deployment of an older script before the expensive Godot export begins.

@@ -1,4 +1,4 @@
-name: Build OpenBuckshotRoulette iOS 14 runtime-safe IPA
+name: Build OpenBuckshotRoulette iOS 14 IPA (MoltenVK force-load)
 on:
   workflow_dispatch:
     inputs:
@@ -17,6 +17,8 @@ env:
   GODOT_VERSION: 4.7-stable
   XCODE_VERSION: "16.4"
   LOCAL_TEMPLATE_ZIP: godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip
+  MOLTENVK_VERSION: "1.3.0"
+  IOS_BUILD_SCRIPT_REVISION: "2026-07-12-moltenvk-force-load-v1"
 jobs:
   build-ios14:
     runs-on: macos-15
@@ -52,6 +54,56 @@ jobs:
           set -euo pipefail
           for f in project.godot scripts/ModLoader.gd ios_port/apply_ios_port.py ios_port/prepare_ios14_runtime.py ios_port/build_ios14.sh ios_port/export_presets.ios14.cfg.template; do test -f "$f"; done
           chmod +x ios_port/*.py ios_port/build_ios14.sh
+          grep -Fq "${IOS_BUILD_SCRIPT_REVISION}" ios_port/build_ios14.sh || {
+            echo "::error::The repository is still using an older build_ios14.sh. Expected revision ${IOS_BUILD_SCRIPT_REVISION}."
+            sed -n '1,30p' ios_port/build_ios14.sh
+            exit 1
+          }
+      - name: Download static MoltenVK for link-time Vulkan symbols
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/logs ios_port/deps /tmp/moltenvk-package
+          URL="https://github.com/KhronosGroup/MoltenVK/releases/download/v${MOLTENVK_VERSION}/MoltenVK-all.tar"
+          curl --fail --location --retry 5 --retry-all-errors \
+            --output /tmp/MoltenVK-all.tar "$URL"
+          shasum -a 256 /tmp/MoltenVK-all.tar \
+            | tee build/logs/moltenvk-download.sha256
+          tar -tf /tmp/MoltenVK-all.tar \
+            > build/logs/moltenvk-archive-contents.txt
+          tar -xf /tmp/MoltenVK-all.tar -C /tmp/moltenvk-package
+
+          MOLTENVK_SOURCE="$(python3 - <<'PY'
+          from pathlib import Path
+          matches = list(Path("/tmp/moltenvk-package").rglob("MoltenVK.xcframework"))
+          valid = [
+              p for p in matches
+              if (p / "Info.plist").is_file()
+              and (p / "ios-arm64" / "libMoltenVK.a").is_file()
+          ]
+          print(valid[0] if valid else "")
+          PY
+          )"
+          if [[ -z "$MOLTENVK_SOURCE" ]]; then
+            echo "::error::MoltenVK release does not contain the static ios-arm64 XCFramework."
+            find /tmp/moltenvk-package -maxdepth 7 -print \
+              | sort | tee build/logs/moltenvk-extracted-files.txt
+            exit 1
+          fi
+          rm -rf ios_port/deps/MoltenVK.xcframework
+          ditto "$MOLTENVK_SOURCE" ios_port/deps/MoltenVK.xcframework
+          test -f ios_port/deps/MoltenVK.xcframework/Info.plist
+          test -f ios_port/deps/MoltenVK.xcframework/ios-arm64/libMoltenVK.a
+          plutil -lint ios_port/deps/MoltenVK.xcframework/Info.plist \
+            | tee build/logs/moltenvk-source-info-plist-lint.txt
+          {
+            echo "Version: $MOLTENVK_VERSION"
+            echo "URL: $URL"
+            echo "Source: $MOLTENVK_SOURCE"
+            du -sh ios_port/deps/MoltenVK.xcframework
+            find ios_port/deps/MoltenVK.xcframework -maxdepth 3 -type f -print | sort
+          } | tee build/logs/moltenvk-installation.txt
+
       - name: Download Godot editor
         shell: bash
         run: |
@@ -71,6 +123,7 @@ jobs:
           UNSIGNED: "1"
           UNSIGNED_PROJECT_TEAM_ID: ABCDE12XYZ
           ALLOW_INSECURE_WS: "1"
+          MOLTENVK_XCFRAMEWORK: ${{ github.workspace }}/ios_port/deps/MoltenVK.xcframework
         run: ./ios_port/build_ios14.sh
       - name: Upload IPA
         if: success()

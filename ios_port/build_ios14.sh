@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+IOS_BUILD_SCRIPT_REVISION="2026-07-12-moltenvk-force-load-v1"
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GODOT_BIN="${GODOT_BIN:-/Applications/Godot.app/Contents/MacOS/Godot}"
 APPLE_TEAM_ID="${APPLE_TEAM_ID:-}"
@@ -11,6 +13,7 @@ ALLOW_INSECURE_WS="${ALLOW_INSECURE_WS:-1}"
 IOS_DEPLOYMENT_TARGET="${IOS_DEPLOYMENT_TARGET:-14.0}"
 IOS_RENDERER="${IOS_RENDERER:-metal}"
 IOS_CUSTOM_TEMPLATE="${IOS_CUSTOM_TEMPLATE:-res://godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip}"
+MOLTENVK_XCFRAMEWORK="${MOLTENVK_XCFRAMEWORK:-$ROOT/ios_port/deps/MoltenVK.xcframework}"
 UNSIGNED_PROJECT_TEAM_ID="${UNSIGNED_PROJECT_TEAM_ID:-ABCDE12XYZ}"
 LOG_DIR="$ROOT/build/logs"
 SYMBOL_DIR="$ROOT/build/symbols"
@@ -67,6 +70,7 @@ fi
 [[ "$PROJECT_TEAM_ID" =~ ^[A-Za-z0-9]{10}$ ]] || fail "The project Team ID must be 10 alphanumeric characters."
 
 cd "$ROOT"
+echo "Build script revision: $IOS_BUILD_SCRIPT_REVISION"
 echo "Godot: $("$GODOT_BIN" --version)"
 echo "Xcode: $XCODE_VERSION"
 echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
@@ -150,8 +154,61 @@ fi
 
 echo "Detected Xcode project: $PROJECT" | tee "$LOG_DIR/detected-xcode-project.txt"
 
-# Native Metal and GL Compatibility do not need MoltenVK.
-# The generated project is checked after PBX repair to ensure the override worked.
+# The runtime renderer can be native Metal or OpenGL, but this custom Godot
+# static library was compiled with the Vulkan driver included. Registration
+# objects in libgodot.a keep Vulkan references alive at link time, so MoltenVK
+# is still required to satisfy the vk* symbols even when Vulkan is not selected
+# at runtime. Keep the PBX reference and inject the static XCFramework.
+PROJECT_PARENT="$(dirname "$PROJECT")"
+MOLTENVK_DEST="$PROJECT_PARENT/MoltenVK.xcframework"
+
+resolve_moltenvk_source() {
+  local candidates=(
+    "$MOLTENVK_XCFRAMEWORK"
+    "$ROOT/ios_port/deps/MoltenVK.xcframework"
+    "/opt/homebrew/Frameworks/MoltenVK.xcframework"
+    "/usr/local/Frameworks/MoltenVK.xcframework"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -d "$candidate" \
+      && -f "$candidate/Info.plist" \
+      && -f "$candidate/ios-arm64/libMoltenVK.a" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+MOLTENVK_SOURCE="$(resolve_moltenvk_source || true)"
+[[ -n "$MOLTENVK_SOURCE" ]] || fail \
+  "MoltenVK.xcframework is required by the custom libgodot.a. The workflow must download the static Khronos framework first."
+rm -rf "$MOLTENVK_DEST"
+ditto "$MOLTENVK_SOURCE" "$MOLTENVK_DEST"
+[[ -f "$MOLTENVK_DEST/Info.plist" ]] || fail "MoltenVK Info.plist is missing after injection."
+[[ -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]] || fail "MoltenVK iOS arm64 static library is missing after injection."
+MOLTENVK_STATIC="$MOLTENVK_DEST/ios-arm64/libMoltenVK.a"
+plutil -lint "$MOLTENVK_DEST/Info.plist" | tee "$LOG_DIR/moltenvk-info-plist-lint.log"
+
+# Verify this is the real static MoltenVK archive, not an XCFramework wrapper
+# without the Vulkan entry points required by libgodot.a.
+xcrun nm -gU "$MOLTENVK_STATIC" > "$LOG_DIR/moltenvk-global-symbols.txt" 2>&1
+if ! grep -Eq '[[:space:]]_vkCreateInstance$' "$LOG_DIR/moltenvk-global-symbols.txt"; then
+  fail "The selected MoltenVK archive does not export _vkCreateInstance."
+fi
+if ! grep -Eq '[[:space:]]_vkGetInstanceProcAddr$' "$LOG_DIR/moltenvk-global-symbols.txt"; then
+  fail "The selected MoltenVK archive does not export _vkGetInstanceProcAddr."
+fi
+{
+  echo "Runtime renderer: $IOS_RENDERER"
+  echo "MoltenVK source: $MOLTENVK_SOURCE"
+  echo "MoltenVK destination: $MOLTENVK_DEST"
+  du -sh "$MOLTENVK_DEST"
+  find "$MOLTENVK_DEST" -maxdepth 3 -type f -print | sort
+} > "$LOG_DIR/moltenvk-framework.txt"
+xcrun otool -l "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" \
+  > "$LOG_DIR/moltenvk-build-versions.txt" 2>&1 || true
 
 PBXPROJ="$PROJECT/project.pbxproj"
 [[ -s "$PBXPROJ" ]] || fail "Generated project.pbxproj is missing."
@@ -189,20 +246,23 @@ changes.append(
     f"{deployment_count} build settings"
 )
 
-# The Godot Xcode skeleton can retain MoltenVK records even when the project
-# is configured for native Metal or GL Compatibility. This custom iOS 14
-# template contains no MoltenVK framework, so delete those stale PBX records.
-kept_lines: list[str] = []
-removed_lines: list[str] = []
-for line in text.splitlines(keepends=True):
-    if "MoltenVK" in line:
-        removed_lines.append(line.rstrip("\r\n"))
+# Do not rely on generated PBX references for MoltenVK. Custom exporters and
+# previous compatibility patches may add, remove, or partially rewrite those
+# records. Remove them consistently and link the static archive explicitly via
+# OTHER_LDFLAGS with -force_load below.
+lines = text.splitlines(keepends=True)
+kept_lines = []
+removed_moltenvk = []
+for line in lines:
+    if "MoltenVK.xcframework" in line or "/* MoltenVK */" in line or "name = MoltenVK;" in line:
+        removed_moltenvk.append(line.rstrip("\n"))
     else:
         kept_lines.append(line)
 text = "".join(kept_lines)
-changes.append(f"removed {len(removed_lines)} stale MoltenVK PBX entries")
-for line in removed_lines:
+changes.append(f"removed {len(removed_moltenvk)} generated MoltenVK PBX lines")
+for line in removed_moltenvk:
     changes.append(f"removed PBX line: {line.strip()}")
+changes.append("MoltenVK will be linked explicitly with -force_load")
 
 path.write_text(text, encoding="utf-8")
 log_path.write_text("\n".join(changes) + "\n", encoding="utf-8")
@@ -212,9 +272,10 @@ cp "$PBXPROJ" "$LOG_DIR/generated-project.pbxproj"
 nl -ba "$PBXPROJ" | sed -n '35,95p' > "$LOG_DIR/generated-project-lines-35-95.txt"
 cat "$LOG_DIR/pbxproj-fixes.log"
 plutil -lint "$PBXPROJ" | tee "$LOG_DIR/pbxproj-lint.log"
-if grep -q 'MoltenVK' "$PBXPROJ"; then
-  fail "MoltenVK references remain after PBX repair for IOS_RENDERER=$IOS_RENDERER."
+if ! grep -q 'MoltenVK.xcframework' "$PBXPROJ"; then
+  fail "Generated project has no MoltenVK reference, but custom libgodot.a requires Vulkan symbol resolution."
 fi
+[[ -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]] || fail "MoltenVK disappeared before Xcode build."
 
 INFO_PLIST="$(find "$(dirname "$PROJECT")" -type f -name '*-Info.plist' -print -quit)"
 [[ -n "$INFO_PLIST" ]] || fail "Generated Info.plist was not found."
@@ -259,6 +320,16 @@ PY
 echo "Xcode project: $PROJECT"
 echo "Scheme: $SCHEME"
 
+# The generated PBX project has historically alternated between missing,
+# stale, and removed MoltenVK references. Link the static archive explicitly.
+# -force_load is intentional: libgodot.a introduces Vulkan references late in
+# the final link, so a normal archive argument can be skipped due to link order.
+MOLTENVK_LINK_FLAGS="\$(inherited) -Wl,-force_load,$MOLTENVK_STATIC -framework Metal -framework Foundation -framework QuartzCore -framework CoreGraphics -framework IOSurface -framework UIKit"
+{
+  echo "MoltenVK static archive: $MOLTENVK_STATIC"
+  echo "OTHER_LDFLAGS: $MOLTENVK_LINK_FLAGS"
+} | tee "$LOG_DIR/moltenvk-link-flags.txt"
+
 COMMON_XCODE_ARGS=(
   -project "$PROJECT"
   -scheme "$SCHEME"
@@ -274,7 +345,22 @@ COMMON_XCODE_ARGS=(
   STRIP_INSTALLED_PRODUCT=NO
   LD_GENERATE_MAP_FILE=YES
   LD_MAP_FILE_PATH="$SYMBOL_DIR/OpenBuckshotRoulette-${IOS_RENDERER}.linkmap"
+  DEAD_CODE_STRIPPING=YES
+  CLANG_ENABLE_MODULES=YES
+  CLANG_MODULES_AUTOLINK=YES
+  OTHER_LDFLAGS="$MOLTENVK_LINK_FLAGS"
 )
+
+xcodebuild \
+  "${COMMON_XCODE_ARGS[@]}" \
+  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGNING_REQUIRED=NO \
+  -showBuildSettings \
+  > "$LOG_DIR/xcode-build-settings.txt" 2>&1
+if ! grep -Fq -- "-force_load,$MOLTENVK_STATIC" "$LOG_DIR/xcode-build-settings.txt"; then
+  cat "$LOG_DIR/xcode-build-settings.txt"
+  fail "Xcode did not accept the explicit MoltenVK -force_load setting."
+fi
 
 if [[ "$UNSIGNED" == "1" ]]; then
   xcodebuild \
