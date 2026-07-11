@@ -8,9 +8,9 @@ on:
         required: true
         default: com.example.openbuckshotroulette
       ios_deployment_target:
-        description: Minimum iOS version (Godot 4.7 supports 14.0 or later)
+        description: Minimum iOS version (Xcode 26 supports 15.0 or later)
         required: true
-        default: "14.0"
+        default: "15.0"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -18,7 +18,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-26
     timeout-minutes: 75
     permissions:
       contents: read
@@ -31,24 +31,44 @@ jobs:
           lfs: true
           persist-credentials: false
 
-      - name: Select Xcode 15
+      - name: Select Xcode 26
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -d /Applications/Xcode_15.4.app ]]; then
-            XCODE_APP=/Applications/Xcode_15.4.app
-          else
-            XCODE_APP="$(find /Applications -maxdepth 1 -type d -name 'Xcode_15*.app' -print | sort | tail -n 1)"
-          fi
-          if [[ -z "${XCODE_APP:-}" ]]; then
-            echo "::error::No Xcode 15 installation is available on this runner."
+          XCODE_APP="$(python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          candidates = []
+          for path in Path('/Applications').glob('Xcode_26*.app'):
+              match = re.search(r'Xcode_([0-9]+(?:\.[0-9]+)*)', path.name)
+              if match:
+                  version = tuple(int(part) for part in match.group(1).split('.'))
+                  candidates.append((version, str(path)))
+          default = Path('/Applications/Xcode.app')
+          if default.is_dir():
+              candidates.append(((26,), str(default)))
+          candidates.sort()
+          print(candidates[-1][1] if candidates else '')
+          PY
+          )"
+          if [[ -z "$XCODE_APP" ]]; then
+            echo "::error::No Xcode 26 installation is available on this runner."
             find /Applications -maxdepth 1 -name 'Xcode*.app' -print || true
             exit 1
           fi
           sudo xcode-select --switch "$XCODE_APP/Contents/Developer"
+          XCODE_VERSION="$(xcodebuild -version | awk 'NR==1 {print $2}')"
+          XCODE_MAJOR="${XCODE_VERSION%%.*}"
+          if [[ "$XCODE_MAJOR" -lt 26 ]]; then
+            echo "::error::Godot 4.7 official iOS templates require an Xcode 26-era SDK/toolchain; selected $XCODE_VERSION."
+            exit 1
+          fi
           xcodebuild -version
+          echo "Xcode app: $XCODE_APP"
           echo "Xcode developer directory: $(xcode-select -p)"
           echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
+          xcrun --sdk iphoneos --show-sdk-path
 
       - name: Verify repository layout
         shell: bash

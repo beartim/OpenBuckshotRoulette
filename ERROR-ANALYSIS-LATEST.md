@@ -1,25 +1,16 @@
-# Latest build error analysis
+# 最新构建错误分析
 
-The failure is in the generated `project.pbxproj`, not Node.js, signing, or asset import.
+本次 `project.pbxproj` 已修复并可被 Xcode 正常读取，编译也已进入最终链接阶段。
 
-Godot emitted this invalid PBX line for the `ES LATAM` localization:
-
-```text
-name = ES LATAM; path = ES LATAM.lproj/InfoPlist.strings;
-```
-
-OpenStep/PBX syntax requires values containing spaces to be quoted. v4 rewrites it as:
+真正失败发生在 Xcode 15.4 / iOS 17.5 SDK 链接 Godot 4.7 官方 iOS 静态库时。日志中的关键错误包括：
 
 ```text
-name = "ES LATAM"; path = "ES LATAM.lproj/InfoPlist.strings";
+Could not find or use auto-linked library 'swift_Builtin_float'
+Could not find or use auto-linked framework 'SwiftUICore'
+Undefined symbols: CADynamicRangeAutomatic, MTLLogStateErrorDomain,
+MTLTensorDomain, MTLResidencySetDescriptor, ...
 ```
 
-The repair runs before `plutil -lint` and before `xcodebuild -list`.
+这些符号来自比 Xcode 15.4 更新的 Apple SDK/Swift 运行库。Godot 4.7 官方模板使用 Xcode 26 时代工具链生成，不能再由旧 Xcode 15.4 完成最终链接。
 
-## Why the real minimum is iOS 14, not iOS 9
-
-Godot 4.7's iOS build configuration compiles the device engine with
-`-miphoneos-version-min=14.0`. Its iOS exporter also rejects a Metal renderer
-minimum below 14.0. Editing only Info.plist or the Xcode deployment-target text
-does not change the minimum encoded in the precompiled Godot engine objects.
-Such an IPA would still fail to load on iOS 9.
+v5 改用 GitHub 的 `macos-26` Runner 和 Xcode 26，并在执行 Godot 导出前校验 Xcode 主版本。由于 Apple 公布的 Xcode 26 部署目标范围从 iOS 15 开始，v5 将最低真实系统版本设为 iOS 15.0。

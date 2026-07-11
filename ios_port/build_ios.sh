@@ -8,7 +8,7 @@ BUNDLE_ID="${BUNDLE_ID:-com.example.openbuckshotroulette}"
 EXPORT_METHOD="${EXPORT_METHOD:-development}"
 UNSIGNED="${UNSIGNED:-0}"
 ALLOW_INSECURE_WS="${ALLOW_INSECURE_WS:-1}"
-IOS_DEPLOYMENT_TARGET="${IOS_DEPLOYMENT_TARGET:-14.0}"
+IOS_DEPLOYMENT_TARGET="${IOS_DEPLOYMENT_TARGET:-15.0}"
 # Godot requires a syntactically valid 10-character Team ID while generating
 # an unsigned Xcode project. This placeholder is removed before compilation.
 UNSIGNED_PROJECT_TEAM_ID="${UNSIGNED_PROJECT_TEAM_ID:-ABCDE12XYZ}"
@@ -26,22 +26,30 @@ command -v xcrun >/dev/null || fail "xcrun not found; install the Xcode command 
 command -v plutil >/dev/null || fail "plutil not found."
 [[ -x "$GODOT_BIN" ]] || fail "Godot executable not found: $GODOT_BIN"
 [[ "$BUNDLE_ID" =~ ^[A-Za-z0-9.-]+$ ]] || fail "BUNDLE_ID contains invalid characters."
-[[ "$IOS_DEPLOYMENT_TARGET" =~ ^[0-9]+([.][0-9]+)?$ ]] || fail "IOS_DEPLOYMENT_TARGET must look like 14.0."
+[[ "$IOS_DEPLOYMENT_TARGET" =~ ^[0-9]+([.][0-9]+)?$ ]] || fail "IOS_DEPLOYMENT_TARGET must look like 15.0."
 [[ -f "$ROOT/project.godot" ]] || fail "project.godot is missing. Run this kit from a full OpenBuckshotRoulette repository."
 
-# Official Godot 4.7 iOS templates are compiled with
-# -miphoneos-version-min=14.0, and the Metal renderer requires iOS 14+.
+# Godot 4.7 official iOS templates are built with an Xcode 26-era Apple SDK.
+# Apple's Xcode 26 deployment-target range starts at iOS 15, so 15.0 is the
+# lowest honest target for this prebuilt template + hosted-runner toolchain.
 python3 - "$IOS_DEPLOYMENT_TARGET" <<'PY'
 import sys
 requested = tuple(int(x) for x in (sys.argv[1].split(".") + ["0"])[:2])
-if requested < (14, 0):
+if requested < (15, 0):
     raise SystemExit(
-        "error: Godot 4.7 cannot produce a genuine iOS " + sys.argv[1] +
-        " build. Its official iOS engine library is compiled for iOS 14.0 "
-        "and the Metal renderer requires iOS 14+. Use IOS_DEPLOYMENT_TARGET=14.0 "
-        "or port the project to a legacy engine/toolchain."
+        "error: This Godot 4.7/Xcode 26 build cannot produce a genuine iOS " + sys.argv[1] +
+        " IPA. Xcode 26 supports deployment targets beginning at iOS 15.0, "
+        "and the official Godot 4.7 template references Xcode 26 SDK symbols. "
+        "Use IOS_DEPLOYMENT_TARGET=15.0 or rebuild Godot and its dependencies "
+        "from source with a deliberately older compatible toolchain."
     )
 PY
+
+XCODE_VERSION="$(xcodebuild -version | awk 'NR==1 {print $2}')"
+XCODE_MAJOR="${XCODE_VERSION%%.*}"
+if [[ ! "$XCODE_MAJOR" =~ ^[0-9]+$ ]] || (( XCODE_MAJOR < 26 )); then
+  fail "Godot 4.7 official iOS templates require Xcode 26 or newer; selected Xcode $XCODE_VERSION. Xcode 15/16 produces missing Swift/Metal SDK symbols at link time."
+fi
 
 case "$EXPORT_METHOD" in
   development|ad-hoc|app-store-connect) ;;
@@ -65,6 +73,8 @@ cd "$ROOT"
 echo "Godot: $("$GODOT_BIN" --version)"
 echo "Xcode: $(xcodebuild -version | tr '\n' ' ')"
 echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
+echo "iPhoneOS SDK path: $(xcrun --sdk iphoneos --show-sdk-path)"
+echo "Swift compiler: $(xcrun --toolchain default --find swiftc)"
 echo "Build mode: $([[ "$UNSIGNED" == "1" ]] && echo unsigned || echo signed)"
 echo "Requested/effective minimum iOS: $IOS_DEPLOYMENT_TARGET"
 echo "Godot project Team ID: $PROJECT_TEAM_ID"

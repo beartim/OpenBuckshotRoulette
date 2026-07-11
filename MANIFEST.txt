@@ -1,16 +1,16 @@
-.github/workflows/build-ios.yml
-CHANGELOG-v2.md
-CHANGELOG-v3.md
-CHANGELOG-v4.md
-ERROR-ANALYSIS-29157863459.md
-ERROR-ANALYSIS-LATEST.md
-LICENSE-NOTICE.md
-PORT_STATUS.md
-README.zh-CN.md
-ios_port/ExportOptions.plist.template
-ios_port/__pycache__/apply_ios_port.cpython-313.pyc
-ios_port/apply_ios_port.py
-ios_port/build_ios.sh
-ios_port/export_presets.cfg.template
-patches/0001-ios-mod-directory.patch
-patches/0002-ios-touch-input.patch
+a6cd4fe90f047b270f4059872f51f2883e51b3eccda7dc3ffb46c63cbe5eea39  ./.github/workflows/build-ios.yml
+b331c3717499174e0bfda46e854e04e45912f45f90fe8228c5db9b1ff15877ad  ./CHANGELOG-v2.md
+76c97cc310928617d82b65ddda879e0df898bfa2bba4e792408a95383366e154  ./CHANGELOG-v3.md
+12919f75f4d3188df7dee77a6875dca87689bddfed61115f671354e61c8712ea  ./CHANGELOG-v4.md
+97f1ccb5650b0bb5167f4f15fb8745c155912ac6a0082699e3b89e826faad581  ./CHANGELOG-v5.md
+bc925a8a7fdce08c5126f1dab629f2868699c3bd926160c5e3e7bc49d093116a  ./ERROR-ANALYSIS-29157863459.md
+578f69b8c072b14c31a6e98f57e50b45e69d9fcc03783c6ca61a057b39de1a22  ./ERROR-ANALYSIS-LATEST.md
+4486b286b6cbcab50e941397b971df1b418bdfdad999a655505ddf6d06bb9d4e  ./LICENSE-NOTICE.md
+d70ba6b76f106b8df13229a7b58ec1bb7466d9c169d8653b174d4f46da55eb39  ./PORT_STATUS.md
+72417a7f026b9bb8b28822f02a7bdab59aa250248742e59500fbb56a79c8adab  ./README.zh-CN.md
+2bbacb0aaf598dfe572004329cebda18ea827eea4aa6c31d0689d286191dc687  ./ios_port/ExportOptions.plist.template
+bf9d19c7e7b9295805779172c95dc53508b2d57d15eba78594c61d33d5f9b209  ./ios_port/apply_ios_port.py
+f9e04182bf603453f3964b606e648fe1d831d2d020e6410fdb41bd44c9bbc2cb  ./ios_port/build_ios.sh
+a57f915b092c872d95350a54ad63144e8d47d1ef44da374635793fec9cc7d214  ./ios_port/export_presets.cfg.template
+0194f6d838d21a9a50ad3c2cf420a081d00cd3cf41c050005b6b06aa497066f8  ./patches/0001-ios-mod-directory.patch
+951f2ca0a4f60305e644975f16df7c8081399f68704360d1232520e1b72f750a  ./patches/0002-ios-touch-input.patch
