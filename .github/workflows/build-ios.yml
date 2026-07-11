@@ -1,76 +1,116 @@
-name: Build iOS unsigned IPA
+name: Build OpenBuckshotRoulette iOS 14 IPA
 
 on:
   workflow_dispatch:
     inputs:
       bundle_id:
-        description: Bundle identifier used for the unsigned build
+        description: Bundle identifier for the unsigned IPA
         required: true
         default: com.example.openbuckshotroulette
-      ios_deployment_target:
-        description: Minimum iOS version (Xcode 26 supports 15.0 or later)
-        required: true
-        default: "15.0"
+
+permissions:
+  contents: read
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   GODOT_VERSION: 4.7-stable
+  XCODE_VERSION: "16.4"
+  IOS_DEPLOYMENT_TARGET: "14.0"
+  LOCAL_TEMPLATE_DIR: godot-4.7-ios14-xcode16.4-template
+  LOCAL_TEMPLATE_ZIP: godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip
 
 jobs:
-  build:
-    runs-on: macos-26
-    timeout-minutes: 75
-    permissions:
-      contents: read
+  build-ios14:
+    runs-on: macos-15
+    timeout-minutes: 120
 
     steps:
-      - name: Checkout source
+      - name: Checkout source and Git LFS files
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
           lfs: true
           persist-credentials: false
 
-      - name: Select Xcode 26
+      - name: Ensure Git LFS template is materialized
         shell: bash
         run: |
           set -euo pipefail
-          XCODE_APP="$(python3 - <<'PY'
-          from pathlib import Path
-          import re
+          mkdir -p build/logs
 
-          candidates = []
-          for path in Path('/Applications').glob('Xcode_26*.app'):
-              match = re.search(r'Xcode_([0-9]+(?:\.[0-9]+)*)', path.name)
-              if match:
-                  version = tuple(int(part) for part in match.group(1).split('.'))
-                  candidates.append((version, str(path)))
-          default = Path('/Applications/Xcode.app')
-          if default.is_dir():
-              candidates.append(((26,), str(default)))
-          candidates.sort()
-          print(candidates[-1][1] if candidates else '')
+          git lfs version | tee build/logs/git-lfs-version.txt
+          git lfs install --local
+          git lfs pull
+          git lfs checkout
+          git lfs ls-files | tee build/logs/git-lfs-files.txt || true
+
+          TEMPLATE_ZIP="$LOCAL_TEMPLATE_ZIP"
+          if [[ ! -f "$TEMPLATE_ZIP" ]]; then
+            echo "::error file=$TEMPLATE_ZIP::The local Godot iOS 14 template ZIP is missing."
+            find . -maxdepth 3 -type f -print | sort > build/logs/repository-files.txt
+            exit 1
+          fi
+
+          if grep -q '^version https://git-lfs.github.com/spec/v1' "$TEMPLATE_ZIP"; then
+            echo "::error file=$TEMPLATE_ZIP::The file is still a Git LFS pointer instead of the real template ZIP."
+            cat "$TEMPLATE_ZIP"
+            exit 1
+          fi
+
+          SIZE="$(stat -f '%z' "$TEMPLATE_ZIP")"
+          echo "Template size: $SIZE bytes" | tee build/logs/local-template-size.txt
+          if (( SIZE < 1000000 )); then
+            echo "::error file=$TEMPLATE_ZIP::The template is unexpectedly small; Git LFS download probably failed."
+            exit 1
+          fi
+
+      - name: Select Xcode 16.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          find /Applications -maxdepth 1 -type d -name 'Xcode*.app' -print \
+            | sort > build/logs/available-xcodes.txt
+
+          XCODE_APP="/Applications/Xcode_${XCODE_VERSION}.app"
+          if [[ ! -d "$XCODE_APP" ]]; then
+            XCODE_APP="$(python3 - <<'PY'
+          from pathlib import Path
+          candidates = sorted(Path('/Applications').glob('Xcode_16.4*.app'))
+          print(candidates[-1] if candidates else '')
           PY
           )"
-          if [[ -z "$XCODE_APP" ]]; then
-            echo "::error::No Xcode 26 installation is available on this runner."
-            find /Applications -maxdepth 1 -name 'Xcode*.app' -print || true
-            exit 1
           fi
-          sudo xcode-select --switch "$XCODE_APP/Contents/Developer"
-          XCODE_VERSION="$(xcodebuild -version | awk 'NR==1 {print $2}')"
-          XCODE_MAJOR="${XCODE_VERSION%%.*}"
-          if [[ "$XCODE_MAJOR" -lt 26 ]]; then
-            echo "::error::Godot 4.7 official iOS templates require an Xcode 26-era SDK/toolchain; selected $XCODE_VERSION."
-            exit 1
-          fi
-          xcodebuild -version
-          echo "Xcode app: $XCODE_APP"
-          echo "Xcode developer directory: $(xcode-select -p)"
-          echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
-          xcrun --sdk iphoneos --show-sdk-path
 
-      - name: Verify repository layout
+          if [[ -z "${XCODE_APP:-}" || ! -d "$XCODE_APP" ]]; then
+            echo "::error::Xcode 16.4 is not installed on this runner."
+            cat build/logs/available-xcodes.txt
+            exit 1
+          fi
+
+          sudo xcode-select --switch "$XCODE_APP/Contents/Developer"
+
+          XCODE_OUTPUT="$(xcodebuild -version 2>&1)"
+          printf '%s\n' "$XCODE_OUTPUT" | tee build/logs/xcode-version.txt
+          ACTUAL_VERSION="$(sed -nE \
+            's/^Xcode[[:space:]]+([^[:space:]]+).*/\1/p' \
+            <<< "$XCODE_OUTPUT")"
+
+          if [[ "$ACTUAL_VERSION" != 16.4* ]]; then
+            echo "::error::Expected Xcode 16.4, got ${ACTUAL_VERSION:-unknown}."
+            exit 1
+          fi
+
+          CLANG_OUTPUT="$(xcrun clang --version 2>&1)"
+          {
+            printf '%s\n' "$XCODE_OUTPUT"
+            printf '%s\n' "$CLANG_OUTPUT"
+            echo "Xcode app: $XCODE_APP"
+            echo "Developer directory: $(xcode-select -p)"
+            echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
+            echo "iPhoneOS SDK path: $(xcrun --sdk iphoneos --show-sdk-path)"
+          } | tee build/logs/xcode-environment.txt
+
+      - name: Verify repository layout and local template
         shell: bash
         run: |
           set -euo pipefail
@@ -79,67 +119,89 @@ jobs:
             project.godot \
             scripts/ModLoader.gd \
             ios_port/apply_ios_port.py \
-            ios_port/build_ios.sh \
-            ios_port/export_presets.cfg.template; do
+            ios_port/build_ios14.sh \
+            ios_port/export_presets.ios14.cfg.template \
+            "$LOCAL_TEMPLATE_ZIP"; do
             if [[ ! -f "$file" ]]; then
-              echo "::error file=$file::Required file is missing. Copy the iOS kit into a full OpenBuckshotRoulette fork."
+              echo "::error file=$file::Required file is missing."
               missing=1
             fi
           done
           (( missing == 0 )) || exit 1
-          chmod +x ios_port/build_ios.sh ios_port/apply_ios_port.py
+          chmod +x ios_port/apply_ios_port.py ios_port/build_ios14.sh
 
-      - name: Download Godot 4.7 and export templates
+          find "$LOCAL_TEMPLATE_DIR" -maxdepth 2 -type f -print \
+            | sort | tee build/logs/local-template-directory.txt
+
+          unzip -t "$LOCAL_TEMPLATE_ZIP" \
+            | tee build/logs/local-template-integrity.txt
+          unzip -l "$LOCAL_TEMPLATE_ZIP" \
+            > build/logs/local-template-contents.txt
+          shasum -a 256 "$LOCAL_TEMPLATE_ZIP" \
+            | tee build/logs/local-template.sha256
+
+          for entry in \
+            'godot_apple_embedded.xcodeproj/project.pbxproj' \
+            'libgodot.ios.debug.xcframework/ios-arm64/libgodot.a' \
+            'libgodot.ios.release.xcframework/ios-arm64/libgodot.a'; do
+            if ! unzip -Z1 "$LOCAL_TEMPLATE_ZIP" | grep -Fxq "$entry"; then
+              echo "::error file=$LOCAL_TEMPLATE_ZIP::Required template entry is missing: $entry"
+              exit 1
+            fi
+          done
+
+          for report in \
+            template-build-versions.txt \
+            template-integrity.txt \
+            template-contents.txt \
+            xcode-environment.txt \
+            godot-commit.txt; do
+            if [[ -f "$LOCAL_TEMPLATE_DIR/$report" ]]; then
+              cp "$LOCAL_TEMPLATE_DIR/$report" "build/logs/template-$report"
+            fi
+          done
+
+      - name: Download Godot 4.7 editor
         shell: bash
         run: |
           set -euo pipefail
-          GODOT_ZIP="Godot_v${GODOT_VERSION}_macos.universal.zip"
-          TEMPLATE_TPZ="Godot_v${GODOT_VERSION}_export_templates.tpz"
           RELEASE_BASE="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}"
+          GODOT_ZIP="Godot_v${GODOT_VERSION}_macos.universal.zip"
 
           curl --fail --location --retry 5 --retry-all-errors \
-            --output godot.zip "${RELEASE_BASE}/${GODOT_ZIP}"
-          unzip -q godot.zip
-
-          curl --fail --location --retry 5 --retry-all-errors \
-            --output templates.tpz "${RELEASE_BASE}/${TEMPLATE_TPZ}"
-          rm -rf template_unpack
-          mkdir -p template_unpack
-          unzip -q templates.tpz -d template_unpack
-
-          TEMPLATE_DIR="$HOME/Library/Application Support/Godot/export_templates/4.7.stable"
-          mkdir -p "$TEMPLATE_DIR"
-          cp -R template_unpack/templates/. "$TEMPLATE_DIR/"
-
+            --output godot-editor.zip "${RELEASE_BASE}/${GODOT_ZIP}"
+          unzip -q godot-editor.zip
           chmod +x Godot.app/Contents/MacOS/Godot
-          Godot.app/Contents/MacOS/Godot --version
-          test -f "$TEMPLATE_DIR/ios.zip"
 
-      - name: Build unsigned IPA
+          GODOT_OUTPUT="$(Godot.app/Contents/MacOS/Godot --version 2>&1)"
+          printf '%s\n' "$GODOT_OUTPUT" | tee build/logs/godot-editor-version.txt
+
+      - name: Build unsigned iOS 14 IPA
         shell: bash
         env:
           GODOT_BIN: ${{ github.workspace }}/Godot.app/Contents/MacOS/Godot
           BUNDLE_ID: ${{ inputs.bundle_id }}
-          IOS_DEPLOYMENT_TARGET: ${{ inputs.ios_deployment_target }}
+          IOS_DEPLOYMENT_TARGET: "14.0"
+          IOS_CUSTOM_TEMPLATE: res://godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip
           UNSIGNED: "1"
           UNSIGNED_PROJECT_TEAM_ID: ABCDE12XYZ
           ALLOW_INSECURE_WS: "1"
-        run: ./ios_port/build_ios.sh
+        run: ./ios_port/build_ios14.sh
 
-      - name: Upload unsigned IPA
+      - name: Upload unsigned iOS 14 IPA
         if: success()
         uses: actions/upload-artifact@v7
         with:
-          name: OpenBuckshotRoulette-iOS-unsigned
-          path: build/ipa/*.ipa
+          name: OpenBuckshotRoulette-iOS14-unsigned
+          path: build/ipa/OpenBuckshotRoulette-iOS14-unsigned.ipa
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
 
-      - name: Upload diagnostic logs
+      - name: Upload build diagnostics
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: OpenBuckshotRoulette-iOS-build-logs
+          name: OpenBuckshotRoulette-iOS14-build-logs
           path: build/logs/
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 30
