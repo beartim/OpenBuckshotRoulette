@@ -104,19 +104,44 @@ mkdir -p build/ios/project build/ipa "$LOG_DIR"
   --import \
   2>&1 | tee "$LOG_DIR/godot-import.log"
 
-IOS_EXPORT_ZIP="$ROOT/build/ios/OpenBuckshotRoulette.zip"
+# With application/export_project_only=true, Godot 4.7 normally writes the
+# Xcode project directly into build/ios even when the requested path ends in
+# .zip. Older/custom exporter variants may still produce a ZIP. Support both.
+IOS_EXPORT_REQUEST="$ROOT/build/ios/OpenBuckshotRoulette.zip"
 "$GODOT_BIN" \
   --headless \
   --verbose \
   --path "$ROOT" \
-  --export-release "iOS 14 Custom" "$IOS_EXPORT_ZIP" \
+  --export-release "iOS 14 Custom" "$IOS_EXPORT_REQUEST" \
   2>&1 | tee "$LOG_DIR/godot-export.log"
 
-[[ -s "$IOS_EXPORT_ZIP" ]] || fail "Godot did not create the iOS Xcode-project ZIP."
-unzip -q "$IOS_EXPORT_ZIP" -d "$ROOT/build/ios/project"
+{
+  echo "Requested export path: $IOS_EXPORT_REQUEST"
+  echo "Export directory contents:"
+  find "$ROOT/build/ios" -maxdepth 5 -print | sort
+} > "$LOG_DIR/ios-export-output.txt"
 
-PROJECT="$(find "$ROOT/build/ios/project" -name '*.xcodeproj' -print -quit)"
-[[ -n "$PROJECT" ]] || fail "No Xcode project was generated."
+# Preferred/current behavior: direct project output.
+PROJECT="$(find "$ROOT/build/ios" \
+  -path "$ROOT/build/ios/project" -prune -o \
+  -type d -name '*.xcodeproj' -print -quit 2>/dev/null || true)"
+
+# Compatibility behavior: archive output. Extract only if no direct project
+# was found, because the direct output is already complete and avoids a second
+# copy of the large XCFramework.
+if [[ -z "$PROJECT" && -s "$IOS_EXPORT_REQUEST" ]]; then
+  rm -rf "$ROOT/build/ios/project"
+  mkdir -p "$ROOT/build/ios/project"
+  unzip -q "$IOS_EXPORT_REQUEST" -d "$ROOT/build/ios/project"
+  PROJECT="$(find "$ROOT/build/ios/project" -type d -name '*.xcodeproj' -print -quit 2>/dev/null || true)"
+fi
+
+if [[ -z "$PROJECT" ]]; then
+  cat "$LOG_DIR/ios-export-output.txt"
+  fail "Godot finished exporting but no Xcode project was found in either direct or ZIP output."
+fi
+
+echo "Detected Xcode project: $PROJECT" | tee "$LOG_DIR/detected-xcode-project.txt"
 PBXPROJ="$PROJECT/project.pbxproj"
 [[ -s "$PBXPROJ" ]] || fail "Generated project.pbxproj is missing."
 cp "$PBXPROJ" "$LOG_DIR/generated-project.before-fix.pbxproj"

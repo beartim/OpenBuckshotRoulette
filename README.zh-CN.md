@@ -1,19 +1,35 @@
-# OpenBuckshotRoulette iOS 14 本地模板构建 Action
+# OpenBuckshotRoulette iOS 14：Godot 直接 Xcode 工程输出修复
 
-本版本按照仓库当前实际目录结构生成：
+## 本次错误
+
+Godot 实际已经完成 iOS 导出，并生成：
 
 ```text
-godot-4.7-ios14-xcode16.4-template/
-├── godot-4.7-ios14-xcode16.4.zip
-├── template-build-versions.txt
-├── template-contents.txt
-├── template-integrity.txt
-├── xcode-environment.txt
-└── ...
+build/ios/OpenBuckshotRoulette.xcodeproj
+build/ios/OpenBuckshotRoulette/
+build/ios/OpenBuckshotRoulette.xcframework/
 ```
 
-工作流不再访问另一个仓库、不再下载 Actions Artifact，也不需要
-`GODOT_ARTIFACT_TOKEN`。模板直接由 `actions/checkout` 从当前仓库检出。
+但旧脚本只接受：
+
+```text
+build/ios/OpenBuckshotRoulette.zip
+```
+
+所以在导出成功后错误退出：
+
+```text
+error: Godot did not create the iOS Xcode-project ZIP.
+```
+
+## 修复
+
+新版 `build_ios14.sh` 同时支持：
+
+1. `application/export_project_only=true` 生成的直接 Xcode 工程；
+2. 旧版或其他模板生成的 ZIP Xcode 工程。
+
+它会优先使用直接生成的 `.xcodeproj`，只有找不到时才解压 ZIP。
 
 ## 覆盖文件
 
@@ -23,24 +39,15 @@ ios_port/build_ios14.sh
 ios_port/export_presets.ios14.cfg.template
 ```
 
-## Git LFS
+真正必须更新的是 `ios_port/build_ios14.sh`；其余两个文件一并提供，避免版本混用。
 
-工作流启用了 `lfs: true`，并额外运行 `git lfs pull` 和 `git lfs checkout`。
-如果模板 ZIP 实际仍是 LFS 指针，工作流会在编译前明确报错，而不会等到
-Godot 导出时才失败。
+## 提交
 
-## 构建结果
-
-成功后下载 Artifact：
-
-```text
-OpenBuckshotRoulette-iOS14-unsigned
+```bash
+git add .github/workflows/build-ios.yml
+git add ios_port/build_ios14.sh
+git add ios_port/export_presets.ios14.cfg.template
+git update-index --chmod=+x ios_port/build_ios14.sh
+git commit -m "Accept direct Godot iOS Xcode project export"
+git push
 ```
-
-内含：
-
-```text
-OpenBuckshotRoulette-iOS14-unsigned.ipa
-```
-
-这是未签名 IPA，需要重签名后安装。
