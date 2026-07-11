@@ -7,14 +7,6 @@ on:
         description: Bundle identifier for the unsigned build
         required: true
         default: com.example.openbuckshotroulette
-      template_artifact_name:
-        description: Artifact name produced by the Godot template workflow
-        required: true
-        default: godot-4.7-ios14-xcode16.4-template
-      template_run_id:
-        description: Optional successful template workflow run ID; leave empty to use the newest non-expired artifact
-        required: false
-        default: ""
 
 permissions:
   contents: read
@@ -25,6 +17,9 @@ env:
   GODOT_VERSION: 4.7-stable
   IOS_DEPLOYMENT_TARGET: "14.0"
   XCODE_VERSION: "16.4"
+  TEMPLATE_REPOSITORY: beartim/Godot_4.7_iOS14
+  TEMPLATE_RUN_ID: "29162215438"
+  TEMPLATE_ARTIFACT_ID: "8251361551"
 
 jobs:
   build-ios14:
@@ -101,87 +96,72 @@ jobs:
           (( missing == 0 )) || exit 1
           chmod +x ios_port/apply_ios_port.py ios_port/build_ios14.sh
 
-      - name: Find custom template artifact run
-        id: template_run
+      - name: Verify cross-repository artifact token
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
-          ARTIFACT_NAME: ${{ inputs.template_artifact_name }}
-          REQUESTED_RUN_ID: ${{ inputs.template_run_id }}
+          GODOT_ARTIFACT_TOKEN: ${{ secrets.GODOT_ARTIFACT_TOKEN }}
         run: |
           set -euo pipefail
+          mkdir -p build/logs
+          if [[ -z "${GODOT_ARTIFACT_TOKEN:-}" ]]; then
+            echo "::error::Repository secret GODOT_ARTIFACT_TOKEN is missing. Create a fine-grained PAT with Actions: Read permission for beartim/Godot_4.7_iOS14, then save it as an Actions repository secret in OpenBuckshotRoulette."
+            exit 1
+          fi
+
+          curl --fail --silent --show-error --location \
+            --retry 4 --retry-all-errors \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GODOT_ARTIFACT_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${TEMPLATE_REPOSITORY}/actions/artifacts/${TEMPLATE_ARTIFACT_ID}" \
+            --output build/logs/template-artifact-metadata.json
+
           python3 - <<'PY'
           import json
           import os
-          import urllib.parse
-          import urllib.request
+          from pathlib import Path
 
-          repository = os.environ["REPOSITORY"]
-          artifact_name = os.environ["ARTIFACT_NAME"]
-          requested_run_id = os.environ.get("REQUESTED_RUN_ID", "").strip()
-          token = os.environ["GH_TOKEN"]
+          metadata_path = Path("build/logs/template-artifact-metadata.json")
+          metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
 
-          if requested_run_id:
-              url = (
-                  f"https://api.github.com/repos/{repository}/actions/runs/"
-                  f"{requested_run_id}/artifacts?per_page=100"
-              )
-          else:
-              encoded = urllib.parse.quote(artifact_name, safe="")
-              url = (
-                  f"https://api.github.com/repos/{repository}/actions/artifacts"
-                  f"?name={encoded}&per_page=100"
-              )
+          expected_artifact_id = int(os.environ["TEMPLATE_ARTIFACT_ID"])
+          expected_run_id = int(os.environ["TEMPLATE_RUN_ID"])
+          actual_artifact_id = int(metadata.get("id", -1))
+          actual_run_id = int((metadata.get("workflow_run") or {}).get("id", -1))
 
-          request = urllib.request.Request(
-              url,
-              headers={
-                  "Accept": "application/vnd.github+json",
-                  "Authorization": f"Bearer {token}",
-                  "X-GitHub-Api-Version": "2022-11-28",
-                  "User-Agent": "OpenBuckshotRoulette-iOS14-builder",
-              },
-          )
-          with urllib.request.urlopen(request) as response:
-              payload = json.load(response)
-
-          artifacts = [
-              item
-              for item in payload.get("artifacts", [])
-              if item.get("name") == artifact_name and not item.get("expired", True)
-          ]
-          artifacts.sort(key=lambda item: item.get("created_at", ""), reverse=True)
-
-          if not artifacts:
+          if actual_artifact_id != expected_artifact_id:
               raise SystemExit(
-                  f"error: no non-expired artifact named {artifact_name!r} was found"
+                  f"error: expected artifact ID {expected_artifact_id}, got {actual_artifact_id}"
               )
+          if actual_run_id != expected_run_id:
+              raise SystemExit(
+                  f"error: artifact belongs to run {actual_run_id}, expected {expected_run_id}"
+              )
+          if metadata.get("expired", True):
+              raise SystemExit("error: the fixed Godot template artifact has expired")
 
-          artifact = artifacts[0]
-          run_id = str(artifact["workflow_run"]["id"])
-          artifact_id = str(artifact["id"])
-          print(f"Using artifact {artifact_name!r}, artifact ID {artifact_id}, run ID {run_id}")
-
-          output_path = os.environ["GITHUB_OUTPUT"]
-          with open(output_path, "a", encoding="utf-8") as output:
-              output.write(f"run_id={run_id}\n")
-              output.write(f"artifact_id={artifact_id}\n")
+          print(
+              "Using Godot template artifact: "
+              f"name={metadata.get('name')!r}, id={actual_artifact_id}, "
+              f"run={actual_run_id}, size={metadata.get('size_in_bytes')} bytes"
+          )
           PY
 
-      - name: Download custom Godot iOS 14 template
+      - name: Download fixed Godot iOS 14 template artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{ inputs.template_artifact_name }}
+          artifact-ids: ${{ env.TEMPLATE_ARTIFACT_ID }}
           path: custom-template-artifact
-          github-token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          run-id: ${{ steps.template_run.outputs.run_id }}
+          github-token: ${{ secrets.GODOT_ARTIFACT_TOKEN }}
+          repository: ${{ env.TEMPLATE_REPOSITORY }}
+          run-id: ${{ env.TEMPLATE_RUN_ID }}
 
       - name: Prepare and verify custom template
         shell: bash
         run: |
           set -euo pipefail
+          echo "Template source: https://github.com/${TEMPLATE_REPOSITORY}/actions/runs/${TEMPLATE_RUN_ID}/artifacts/${TEMPLATE_ARTIFACT_ID}" \
+            | tee build/logs/template-artifact-source.txt
           find custom-template-artifact -maxdepth 4 -type f -print \
             | sort | tee build/logs/custom-template-artifact-files.txt
 
