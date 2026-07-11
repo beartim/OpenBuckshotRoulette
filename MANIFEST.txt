@@ -8,3 +8,4 @@ ios_port/ExportOptions.plist.template   Xcode archive export configuration
 patches/0001-ios-mod-directory.patch    Human-readable source patch
 patches/0002-ios-touch-input.patch       Human-readable project setting patch
 .github/workflows/build-ios.yml         macOS CI unsigned IPA workflow
+CHANGELOG-v2.md                         GitHub Actions/Node 24 and build fixes

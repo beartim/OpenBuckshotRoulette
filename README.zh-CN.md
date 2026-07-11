@@ -85,3 +85,15 @@ UNSIGNED=1 ./ios_port/build_ios.sh
 ## 重要许可提示
 
 上游代码标注 GPL-3.0，但 README 同时说明游戏本体归 MIKE KLUBNIKA 所有，并要求使用者在 itch.io 或 Steam 账户中拥有 Buckshot Roulette。此套件仅用于技术移植，不授予你重新分发游戏美术、音频、商标或完整 IPA 的权利。公开发布前应自行取得相应授权并履行 GPL 源码义务。
+
+## GitHub Actions 退出码 1 / Node.js 24 修复
+
+2026 年的 GitHub Actions Runner 会把仍声明 Node.js 20 的旧 action 强制放到 Node.js 24 上运行。旧版工作流中的 `actions/checkout@v4` 提示本身通常只是警告，不是构建退出码 1 的根因。本套件 v2 已同时完成以下修复：
+
+- `actions/checkout@v7` 与 `actions/upload-artifact@v7`，原生使用 Node.js 24。
+- Godot 资源导入改为 `--import`，不再使用可能过早退出的 `--quit-after 2`。
+- iOS 命令行导出改为生成 `.zip`，随后解压其中的 Xcode 工程。
+- 增加源码结构检查；如果仓库中只有移植套件而没有完整游戏源码，会给出明确错误。
+- 无论成功或失败都会上传 `OpenBuckshotRoulette-iOS-build-logs`，便于定位真正失败的命令。
+
+替换 `.github/workflows/build-ios.yml` 和 `ios_port/build_ios.sh` 后重新运行工作流即可。若再次失败，请下载 Actions 页面中的 `OpenBuckshotRoulette-iOS-build-logs`，首先查看 `build-ios.log`、`godot-export.log` 和 `xcode-build.log`。

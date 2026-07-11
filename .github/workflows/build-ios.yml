@@ -8,30 +8,74 @@ on:
         required: true
         default: com.example.openbuckshotroulette
 
+# GitHub-hosted runners support Node.js 24. Keeping this explicit also makes
+# accidental use of an old JavaScript action visible during migration.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  GODOT_VERSION: 4.7-stable
+
 jobs:
   build:
     runs-on: macos-15
+    timeout-minutes: 60
     permissions:
       contents: read
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          lfs: true
+          persist-credentials: false
+
+      - name: Verify repository layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for file in \
+            project.godot \
+            scripts/ModLoader.gd \
+            ios_port/apply_ios_port.py \
+            ios_port/build_ios.sh \
+            ios_port/export_presets.cfg.template; do
+            if [[ ! -f "$file" ]]; then
+              echo "::error file=$file::Required file is missing. Copy the iOS kit into a full OpenBuckshotRoulette fork, not into an empty repository."
+              missing=1
+            fi
+          done
+          (( missing == 0 )) || exit 1
+          chmod +x ios_port/build_ios.sh ios_port/apply_ios_port.py
+          xcodebuild -version
+          echo "Xcode developer directory: $(xcode-select -p)"
+          echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
 
       - name: Download Godot 4.7 and export templates
         shell: bash
         run: |
           set -euo pipefail
-          curl -fL -o godot.zip \
-            https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_macos.universal.zip
+          GODOT_ZIP="Godot_v${GODOT_VERSION}_macos.universal.zip"
+          TEMPLATE_TPZ="Godot_v${GODOT_VERSION}_export_templates.tpz"
+          RELEASE_BASE="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}"
+
+          curl --fail --location --retry 5 --retry-all-errors \
+            --output godot.zip "${RELEASE_BASE}/${GODOT_ZIP}"
           unzip -q godot.zip
-          curl -fL -o templates.tpz \
-            https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_export_templates.tpz
+
+          curl --fail --location --retry 5 --retry-all-errors \
+            --output templates.tpz "${RELEASE_BASE}/${TEMPLATE_TPZ}"
           rm -rf template_unpack
-          mkdir template_unpack
+          mkdir -p template_unpack
           unzip -q templates.tpz -d template_unpack
+
           TEMPLATE_DIR="$HOME/Library/Application Support/Godot/export_templates/4.7.stable"
           mkdir -p "$TEMPLATE_DIR"
           cp -R template_unpack/templates/. "$TEMPLATE_DIR/"
+
           chmod +x Godot.app/Contents/MacOS/Godot
+          Godot.app/Contents/MacOS/Godot --version
+          test -f "$TEMPLATE_DIR/ios.zip"
 
       - name: Build unsigned IPA
         shell: bash
@@ -39,13 +83,24 @@ jobs:
           GODOT_BIN: ${{ github.workspace }}/Godot.app/Contents/MacOS/Godot
           APPLE_TEAM_ID: AAAAAAAAAA
           BUNDLE_ID: ${{ inputs.bundle_id }}
-          UNSIGNED: '1'
-          ALLOW_INSECURE_WS: '1'
+          UNSIGNED: "1"
+          ALLOW_INSECURE_WS: "1"
         run: ./ios_port/build_ios.sh
 
       - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4
+        if: success()
+        uses: actions/upload-artifact@v7
         with:
           name: OpenBuckshotRoulette-iOS-unsigned
           path: build/ipa/*.ipa
           if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: OpenBuckshotRoulette-iOS-build-logs
+          path: build/logs/
+          if-no-files-found: ignore
+          retention-days: 14
