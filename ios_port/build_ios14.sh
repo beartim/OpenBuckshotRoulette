@@ -9,13 +9,14 @@ EXPORT_METHOD="${EXPORT_METHOD:-development}"
 UNSIGNED="${UNSIGNED:-1}"
 ALLOW_INSECURE_WS="${ALLOW_INSECURE_WS:-1}"
 IOS_DEPLOYMENT_TARGET="${IOS_DEPLOYMENT_TARGET:-14.0}"
+IOS_RENDERER="${IOS_RENDERER:-metal}"
 IOS_CUSTOM_TEMPLATE="${IOS_CUSTOM_TEMPLATE:-res://godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip}"
-MOLTENVK_XCFRAMEWORK="${MOLTENVK_XCFRAMEWORK:-$ROOT/ios_port/deps/MoltenVK.xcframework}"
 UNSIGNED_PROJECT_TEAM_ID="${UNSIGNED_PROJECT_TEAM_ID:-ABCDE12XYZ}"
 LOG_DIR="$ROOT/build/logs"
+SYMBOL_DIR="$ROOT/build/symbols"
 
-mkdir -p "$LOG_DIR"
-exec > >(tee -a "$LOG_DIR/build-ios14.log") 2>&1
+mkdir -p "$LOG_DIR" "$SYMBOL_DIR"
+exec > >(tee -a "$LOG_DIR/build-ios14-${IOS_RENDERER}.log") 2>&1
 
 fail() { echo "error: $*" >&2; exit 1; }
 trap 'rc=$?; echo "error: command failed at line ${BASH_LINENO[0]}: ${BASH_COMMAND} (exit ${rc})" >&2; exit "$rc"' ERR
@@ -30,6 +31,8 @@ command -v ditto >/dev/null || fail "ditto is missing."
 [[ -f "$ROOT/ios_port/apply_ios_port.py" ]] || fail "apply_ios_port.py is missing."
 [[ "$BUNDLE_ID" =~ ^[A-Za-z0-9.-]+$ ]] || fail "Invalid bundle identifier: $BUNDLE_ID"
 [[ "$IOS_DEPLOYMENT_TARGET" == "14.0" ]] || fail "This workflow is intentionally fixed to iOS 14.0."
+case "$IOS_RENDERER" in metal|opengl3) ;; *) fail "IOS_RENDERER must be metal or opengl3." ;; esac
+[[ -f "$ROOT/ios_port/prepare_ios14_runtime.py" ]] || fail "prepare_ios14_runtime.py is missing."
 
 CUSTOM_TEMPLATE_FILE=""
 case "$IOS_CUSTOM_TEMPLATE" in
@@ -69,8 +72,10 @@ echo "Xcode: $XCODE_VERSION"
 echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
 echo "Minimum iOS: $IOS_DEPLOYMENT_TARGET"
 echo "Custom template: $IOS_CUSTOM_TEMPLATE"
+echo "Renderer: $IOS_RENDERER"
 
 python3 ios_port/apply_ios_port.py --project-root "$ROOT"
+python3 ios_port/prepare_ios14_runtime.py --project-root "$ROOT" --renderer "$IOS_RENDERER" --log-dir build/logs
 
 python3 - \
   "$PROJECT_TEAM_ID" \
@@ -96,8 +101,8 @@ Path("export_presets.cfg").write_text(out, encoding="utf-8")
 PY
 cp export_presets.cfg "$LOG_DIR/export_presets.generated.cfg"
 
-rm -rf build/ios build/archive build/ipa build/DerivedData build/Payload
-mkdir -p build/ios/project build/ipa "$LOG_DIR"
+rm -rf .godot build/ios build/archive build/ipa build/DerivedData build/Payload
+mkdir -p build/ios/project build/ipa "$LOG_DIR" "$SYMBOL_DIR"
 
 "$GODOT_BIN" \
   --headless \
@@ -145,59 +150,8 @@ fi
 
 echo "Detected Xcode project: $PROJECT" | tee "$LOG_DIR/detected-xcode-project.txt"
 
-# Godot's iOS Xcode template always references MoltenVK.xcframework when the
-# Vulkan/Forward+ path is enabled. The custom Godot bundle was generated
-# without a Vulkan SDK present, so its ZIP contains the reference but not the
-# actual framework. Install/copy the official Khronos static framework here.
-PROJECT_PARENT="$(dirname "$PROJECT")"
-MOLTENVK_DEST="$PROJECT_PARENT/MoltenVK.xcframework"
-
-resolve_moltenvk_source() {
-  local candidates=(
-    "$MOLTENVK_XCFRAMEWORK"
-    "$ROOT/ios_port/deps/MoltenVK.xcframework"
-    "/opt/homebrew/Frameworks/MoltenVK.xcframework"
-    "/usr/local/Frameworks/MoltenVK.xcframework"
-  )
-  local candidate
-  for candidate in "${candidates[@]}"; do
-    if [[ -d "$candidate" && -f "$candidate/Info.plist" && -f "$candidate/ios-arm64/libMoltenVK.a" ]]; then
-      printf '%s\n' "$candidate"
-      return 0
-    fi
-  done
-  return 1
-}
-
-if [[ ! -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]]; then
-  MOLTENVK_SOURCE="$(resolve_moltenvk_source || true)"
-  [[ -n "$MOLTENVK_SOURCE" ]] || fail \
-    "MoltenVK.xcframework is missing. The workflow must download the Khronos static iOS framework before running this script."
-  rm -rf "$MOLTENVK_DEST"
-  ditto "$MOLTENVK_SOURCE" "$MOLTENVK_DEST"
-fi
-
-[[ -f "$MOLTENVK_DEST/Info.plist" ]] || fail "MoltenVK Info.plist is missing."
-[[ -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]] || fail "MoltenVK iOS arm64 static library is missing."
-
-plutil -lint "$MOLTENVK_DEST/Info.plist" | tee "$LOG_DIR/moltenvk-info-plist-lint.log"
-{
-  echo "MoltenVK source: ${MOLTENVK_SOURCE:-already present in export}"
-  echo "MoltenVK destination: $MOLTENVK_DEST"
-  echo "MoltenVK size:"
-  du -sh "$MOLTENVK_DEST"
-  echo "MoltenVK files:"
-  find "$MOLTENVK_DEST" -maxdepth 3 -type f -print | sort
-} > "$LOG_DIR/moltenvk-framework.txt"
-
-# Keep the object-level deployment information for diagnosis. Some versions of
-# otool can inspect archive members directly; failure here is non-fatal because
-# the final linked application is checked strictly below.
-xcrun otool -l "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" \
-  > "$LOG_DIR/moltenvk-build-versions.txt" 2>&1 || true
-grep -E -A3 'LC_BUILD_VERSION|LC_VERSION_MIN_IPHONEOS|minos|version' \
-  "$LOG_DIR/moltenvk-build-versions.txt" \
-  > "$LOG_DIR/moltenvk-minimum-summary.txt" 2>/dev/null || true
+# Native Metal and GL Compatibility do not need MoltenVK.
+# The generated project is checked after PBX repair to ensure the override worked.
 
 PBXPROJ="$PROJECT/project.pbxproj"
 [[ -s "$PBXPROJ" ]] || fail "Generated project.pbxproj is missing."
@@ -238,6 +192,9 @@ cp "$PBXPROJ" "$LOG_DIR/generated-project.pbxproj"
 nl -ba "$PBXPROJ" | sed -n '35,95p' > "$LOG_DIR/generated-project-lines-35-95.txt"
 cat "$LOG_DIR/pbxproj-fixes.log"
 plutil -lint "$PBXPROJ" | tee "$LOG_DIR/pbxproj-lint.log"
+if grep -q 'MoltenVK.xcframework' "$PBXPROJ"; then
+  fail "Generated project still references MoltenVK for IOS_RENDERER=$IOS_RENDERER."
+fi
 
 INFO_PLIST="$(find "$(dirname "$PROJECT")" -type f -name '*-Info.plist' -print -quit)"
 [[ -n "$INFO_PLIST" ]] || fail "Generated Info.plist was not found."
@@ -252,6 +209,8 @@ min_ios = sys.argv[3]
 with path.open("rb") as handle:
     data = plistlib.load(handle)
 data["MinimumOSVersion"] = min_ios
+data["UIFileSharingEnabled"] = True
+data["LSSupportsOpeningDocumentsInPlace"] = True
 if allow_insecure_ws:
     ats = data.setdefault("NSAppTransportSecurity", {})
     domains = ats.setdefault("NSExceptionDomains", {})
@@ -279,8 +238,6 @@ PY
 
 echo "Xcode project: $PROJECT"
 echo "Scheme: $SCHEME"
-echo "MoltenVK: $MOLTENVK_DEST"
-[[ -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]] || fail "MoltenVK disappeared before Xcode build."
 
 COMMON_XCODE_ARGS=(
   -project "$PROJECT"
@@ -291,6 +248,12 @@ COMMON_XCODE_ARGS=(
   -derivedDataPath "$ROOT/build/DerivedData"
   IPHONEOS_DEPLOYMENT_TARGET="$IOS_DEPLOYMENT_TARGET"
   PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE_ID"
+  DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
+  GCC_GENERATE_DEBUGGING_SYMBOLS=YES
+  COPY_PHASE_STRIP=NO
+  STRIP_INSTALLED_PRODUCT=NO
+  LD_GENERATE_MAP_FILE=YES
+  LD_MAP_FILE_PATH="$SYMBOL_DIR/OpenBuckshotRoulette-${IOS_RENDERER}.linkmap"
 )
 
 if [[ "$UNSIGNED" == "1" ]]; then
@@ -324,13 +287,22 @@ if ! grep -Eq 'minos[[:space:]]+14\.0' "$LOG_DIR/final-mach-o-build-version.txt"
   fail "Final executable does not report Mach-O minos 14.0."
 fi
 
+dwarfdump --uuid "$APP/$EXECUTABLE" | tee "$SYMBOL_DIR/app-binary-uuid.txt"
+DSYM="$(find "$ROOT/build/DerivedData" -type d -name '*.app.dSYM' -print -quit 2>/dev/null || true)"
+if [[ -n "$DSYM" ]]; then
+  ditto "$DSYM" "$SYMBOL_DIR/$(basename "$DSYM")"
+  dwarfdump --uuid "$DSYM" | tee "$SYMBOL_DIR/dsym-uuid.txt"
+else
+  echo "warning: no dSYM found" | tee "$SYMBOL_DIR/dsym-missing.txt"
+fi
+
 mkdir -p "$ROOT/build/Payload"
 ditto "$APP" "$ROOT/build/Payload/$(basename "$APP")"
 (
   cd "$ROOT/build"
-  /usr/bin/zip -qry "ipa/OpenBuckshotRoulette-iOS14-unsigned.ipa" Payload
+  /usr/bin/zip -qry "ipa/OpenBuckshotRoulette-iOS14-${IOS_RENDERER}-unsigned.ipa" Payload
 )
-[[ -s "$ROOT/build/ipa/OpenBuckshotRoulette-iOS14-unsigned.ipa" ]] || fail "IPA packaging failed."
-shasum -a 256 "$ROOT/build/ipa/OpenBuckshotRoulette-iOS14-unsigned.ipa" \
+[[ -s "$ROOT/build/ipa/OpenBuckshotRoulette-iOS14-${IOS_RENDERER}-unsigned.ipa" ]] || fail "IPA packaging failed."
+shasum -a 256 "$ROOT/build/ipa/OpenBuckshotRoulette-iOS14-${IOS_RENDERER}-unsigned.ipa" \
   | tee "$LOG_DIR/ipa.sha256"
-echo "Created: $ROOT/build/ipa/OpenBuckshotRoulette-iOS14-unsigned.ipa"
+echo "Created: $ROOT/build/ipa/OpenBuckshotRoulette-iOS14-${IOS_RENDERER}-unsigned.ipa"

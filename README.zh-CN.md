@@ -1,36 +1,27 @@
-# OpenBuckshotRoulette iOS 14 MoltenVK 修复
+# iOS 14 启动闪退修复
 
-## 本次错误
+崩溃日志显示应用在 iPad7,11、iOS 14.3 上启动约 0.86 秒后，主线程发生 `EXC_BAD_ACCESS`。这不是签名、最低系统版本或 dyld 缺库错误；Godot 工作线程、音频和运动线程均已建立。旧 IPA 没有匹配 dSYM，因此当前地址无法精确符号化。
 
-Xcode 已正确读取工程，但构建失败：
+项目原本使用 Forward Plus，并通过 MoltenVK 进入 Vulkan/RenderingDevice。新构建默认改为：
 
-```text
-There is no XCFramework found at 'build/ios/MoltenVK.xcframework'
-```
+- `metal`：Mobile renderer + Godot 原生 Metal，完全不链接 MoltenVK；先测试这个。
+- `opengl3`：GL Compatibility + OpenGL 3；若 Metal 仍闪退，用这个兜底。高级 shader 或粒子效果可能降级。
 
-自编译 Godot 模板 ZIP 内没有 `MoltenVK.xcframework`，而 Xcode 工程仍引用它。
-
-## 修复方式
-
-工作流从 KhronosGroup/MoltenVK 官方 v1.3.0 Release 下载
-`MoltenVK-all.tar`，提取静态 `MoltenVK.xcframework`，在 Godot 导出后复制到
-生成的 `.xcodeproj` 同级目录。随后才运行 Xcode。
-
-使用 v1.3.0 是为了避免使用由更新 Xcode 工具链编译的 MoltenVK；该版本发布说明
-包含使用 Xcode 14 的 legacy build，能与当前 Xcode 16.4/iOS 14 构建链兼容。
-
-## 覆盖文件
+覆盖：
 
 ```text
 .github/workflows/build-ios.yml
 ios_port/build_ios14.sh
+ios_port/prepare_ios14_runtime.py
 ios_port/export_presets.ios14.cfg.template
 ```
 
-提交后重新运行 `Build OpenBuckshotRoulette iOS 14 IPA`。
+提交后运行 Action，先选 `metal`。新版还会上传 `*-symbols`，包含 dSYM、Link Map 和 UUID。
 
-## 长期修复
+**测试前必须为该应用关闭 tweak injection，或在越狱安全模式测试。** 这份 `.ips` 显示进程中注入了 Substrate、SnowBoard、FPSIndicator、ShijimaInApp 等多个第三方动态库，插件冲突不能通过重新编译游戏本身消除。
 
-更干净的做法是在重新编译 Godot 模板时，先安装 Vulkan SDK/MoltenVK，并向 SCons
-传入 `vulkan_sdk_path`，让 `generate_bundle=yes` 直接把
-`MoltenVK.xcframework` 放进模板 ZIP。当前修复无需再次编译 100 MB Godot 模板。
+新版开启 Godot 文件日志，并在 Info.plist 中开启文件共享。若日志初始化成功，可从应用 Documents 中读取：
+
+```text
+logs/godot.log
+```
