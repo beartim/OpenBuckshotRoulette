@@ -1,0 +1,59 @@
+Archive:  output/godot-4.7-ios14-xcode16.4.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  07-11-2026 17:46   godot_apple_embedded/
+        0  07-11-2026 17:46   godot_apple_embedded.xcodeproj/
+        0  07-11-2026 17:46   libgodot.ios.debug.xcframework/
+        0  07-11-2026 17:46   libgodot.ios.release.xcframework/
+        0  07-11-2026 17:46   libgodot_camera.ios.debug.xcframework/
+        0  07-11-2026 17:46   libgodot_camera.ios.release.xcframework/
+        0  07-11-2026 17:46   data.pck
+      277  07-11-2026 17:46   PrivacyInfo.xcprivacy
+        0  07-11-2026 18:13   libgodot.ios.release.xcframework/ios-arm64/
+        0  07-11-2026 17:46   libgodot.ios.release.xcframework/ios-arm64_x86_64-simulator/
+     1028  07-11-2026 17:46   libgodot.ios.release.xcframework/Info.plist
+       42  07-11-2026 17:46   libgodot.ios.release.xcframework/ios-arm64_x86_64-simulator/empty
+       42  07-11-2026 17:46   libgodot.ios.release.xcframework/ios-arm64/empty
+187648672  07-11-2026 18:13   libgodot.ios.release.xcframework/ios-arm64/libgodot.a
+        0  07-11-2026 17:46   godot_apple_embedded/Images.xcassets/
+        0  07-11-2026 17:46   godot_apple_embedded/dylibs/
+        0  07-11-2026 17:46   godot_apple_embedded/en.lproj/
+     2230  07-11-2026 17:46   godot_apple_embedded/godot_apple_embedded-Info.plist
+     2244  07-11-2026 17:46   godot_apple_embedded/dummy.cpp
+     2991  07-11-2026 17:46   godot_apple_embedded/Launch Screen.storyboard
+     2252  07-11-2026 17:46   godot_apple_embedded/dummy.swift
+      493  07-11-2026 17:46   godot_apple_embedded/export_options.plist
+     2285  07-11-2026 17:46   godot_apple_embedded/dummy.h
+      207  07-11-2026 17:46   godot_apple_embedded/godot_apple_embedded.entitlements
+       44  07-11-2026 17:46   godot_apple_embedded/en.lproj/InfoPlist.strings
+        0  07-11-2026 17:46   godot_apple_embedded/Images.xcassets/SplashImage.imageset/
+    14701  07-11-2026 17:46   godot_apple_embedded/Images.xcassets/SplashImage.imageset/splash@3x.png
+    14701  07-11-2026 17:46   godot_apple_embedded/Images.xcassets/SplashImage.imageset/splash@2x.png
+      343  07-11-2026 17:46   godot_apple_embedded/Images.xcassets/SplashImage.imageset/Contents.json
+       42  07-11-2026 17:46   godot_apple_embedded/dylibs/empty
+        0  07-11-2026 18:13   libgodot_camera.ios.debug.xcframework/ios-arm64/
+        0  07-11-2026 17:46   libgodot_camera.ios.debug.xcframework/ios-arm64_x86_64-simulator/
+     1042  07-11-2026 17:46   libgodot_camera.ios.debug.xcframework/Info.plist
+       42  07-11-2026 17:46   libgodot_camera.ios.debug.xcframework/ios-arm64_x86_64-simulator/empty
+       42  07-11-2026 17:46   libgodot_camera.ios.debug.xcframework/ios-arm64/empty
+    83992  07-11-2026 18:13   libgodot_camera.ios.debug.xcframework/ios-arm64/libgodot_camera.a
+        0  07-11-2026 18:13   libgodot.ios.debug.xcframework/ios-arm64/
+        0  07-11-2026 17:46   libgodot.ios.debug.xcframework/ios-arm64_x86_64-simulator/
+     1028  07-11-2026 17:46   libgodot.ios.debug.xcframework/Info.plist
+       42  07-11-2026 17:46   libgodot.ios.debug.xcframework/ios-arm64_x86_64-simulator/empty
+       42  07-11-2026 17:46   libgodot.ios.debug.xcframework/ios-arm64/empty
+222156016  07-11-2026 18:13   libgodot.ios.debug.xcframework/ios-arm64/libgodot.a
+        0  07-11-2026 18:13   libgodot_camera.ios.release.xcframework/ios-arm64/
+        0  07-11-2026 17:46   libgodot_camera.ios.release.xcframework/ios-arm64_x86_64-simulator/
+     1042  07-11-2026 17:46   libgodot_camera.ios.release.xcframework/Info.plist
+       42  07-11-2026 17:46   libgodot_camera.ios.release.xcframework/ios-arm64_x86_64-simulator/empty
+       42  07-11-2026 17:46   libgodot_camera.ios.release.xcframework/ios-arm64/empty
+    76808  07-11-2026 18:13   libgodot_camera.ios.release.xcframework/ios-arm64/libgodot_camera.a
+        0  07-11-2026 17:46   godot_apple_embedded.xcodeproj/project.xcworkspace/
+        0  07-11-2026 17:46   godot_apple_embedded.xcodeproj/xcshareddata/
+    15664  07-11-2026 17:46   godot_apple_embedded.xcodeproj/project.pbxproj
+      152  07-11-2026 17:46   godot_apple_embedded.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+        0  07-11-2026 17:46   godot_apple_embedded.xcodeproj/xcshareddata/xcschemes/
+     3501  07-11-2026 17:46   godot_apple_embedded.xcodeproj/xcshareddata/xcschemes/godot_apple_embedded.xcscheme
+---------                     -------
+410032091                     54 files

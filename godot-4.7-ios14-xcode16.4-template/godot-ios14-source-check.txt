@@ -1,0 +1,7 @@
+godot/platform/ios/detect.py:112:env.Append(ASFLAGS=["-miphoneos-version-min=14.0"])
+godot/platform/ios/detect.py:113:env.Append(CCFLAGS=["-miphoneos-version-min=14.0"])
+godot/platform/ios/detect.py:106:env.Append(ASFLAGS=["-mios-simulator-version-min=14.0"])
+godot/platform/ios/detect.py:107:env.Append(CCFLAGS=["-mios-simulator-version-min=14.0"])
+godot/platform_methods.py:314:target_suffix = "ios14.0"  # iOS 14.0 needed for SwiftUI lifecycle
+godot/platform_methods.py:317:target_suffix = "ios14.0-simulator"  # iOS 14.0 needed for SwiftUI lifecycle
+godot/SConstruct:756:"Detected Apple Clang version older than 16, supported versions are Apple Clang 16 (Xcode 16) and later."

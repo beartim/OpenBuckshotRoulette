@@ -1,0 +1,7 @@
+Godot ref: 4.7-stable
+Godot commit: 5b4e0cb0fd279832bbdd69fed5354d4e5ad26f88
+Requested deployment target: 14.0
+Host architecture: arm64
+Logical CPUs: 3
+Available memory:
+hw.memsize: 7516192768
