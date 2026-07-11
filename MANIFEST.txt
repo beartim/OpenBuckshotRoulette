@@ -1,11 +1,16 @@
-README.zh-CN.md                         Usage and limitations
-PORT_STATUS.md                          Port compatibility matrix and risks
-LICENSE-NOTICE.md                       Redistribution/legal notice
-ios_port/apply_ios_port.py              Repeatable source patcher
-ios_port/build_ios.sh                   macOS/Xcode signed or unsigned IPA builder
-ios_port/export_presets.cfg.template    Godot 4.7 iOS export preset template
-ios_port/ExportOptions.plist.template   Xcode archive export configuration
-patches/0001-ios-mod-directory.patch    Human-readable source patch
-patches/0002-ios-touch-input.patch       Human-readable project setting patch
-.github/workflows/build-ios.yml         macOS CI unsigned IPA workflow
-CHANGELOG-v2.md                         GitHub Actions/Node 24 and build fixes
+.github/workflows/build-ios.yml
+CHANGELOG-v2.md
+CHANGELOG-v3.md
+CHANGELOG-v4.md
+ERROR-ANALYSIS-29157863459.md
+ERROR-ANALYSIS-LATEST.md
+LICENSE-NOTICE.md
+PORT_STATUS.md
+README.zh-CN.md
+ios_port/ExportOptions.plist.template
+ios_port/__pycache__/apply_ios_port.cpython-313.pyc
+ios_port/apply_ios_port.py
+ios_port/build_ios.sh
+ios_port/export_presets.cfg.template
+patches/0001-ios-mod-directory.patch
+patches/0002-ios-touch-input.patch

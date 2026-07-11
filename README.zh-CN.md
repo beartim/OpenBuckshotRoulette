@@ -1,99 +1,51 @@
-# OpenBuckshotRoulette iOS 移植套件
+# OpenBuckshotRoulette iOS 移植套件 v4
 
-适用上游：`1503Dev/OpenBuckshotRoulette`（Godot 4.7+）。本套件不是完整游戏源码，而是应复制到上游仓库根目录的 **iOS 移植补丁与构建工具**。
+## 本次已修复
 
-## 已处理的兼容点
+这次错误来自语言名称 `ES LATAM`。Godot 4.7 把带空格的名称和路径直接写进
+`project.pbxproj`，但没有添加引号，导致 Xcode 报 `missing semicolon`。
 
-- 修复模组目录：iOS 只扫描 `user://mods/`，不访问只读 App Bundle，也不再把 iOS 当成 Android 去访问 `/sdcard/`。
-- 开启“触摸模拟鼠标”，复用项目现有 GUI/鼠标交互与最新版移动触控代码。
-- 生成 Godot iOS 导出预设。
-- 提供 macOS/Xcode 构建脚本：
-  - `UNSIGNED=1`：生成未签名 IPA，仅供后续重签名或 CI 验证，不能直接安装。
-  - 默认模式：用 Apple Development/Distribution 签名并导出可安装 IPA。
-- 可选地为上游默认 `ws://buckds.1503dev.top:14122` 添加域名级 ATS 例外。发布 App Store 时建议服务端改为 `wss://`，然后关闭该例外。
+v4 会在 Xcode 读取工程前自动把它修复为：
 
-## 一、准备源码
-
-```bash
-git clone https://github.com/1503Dev/OpenBuckshotRoulette.git
-cd OpenBuckshotRoulette
+```text
+name = "ES LATAM";
+path = "ES LATAM.lproj/InfoPlist.strings";
 ```
 
-把本套件里的 `ios_port/`、`patches/`、`.github/` 复制到仓库根目录。
+修复器不是只处理这一种语言，而是会处理所有未加引号且包含空格的 PBX
+`name` 和 `path` 字段。
 
-## 二、应用 iOS 补丁
+## 最低 iOS 版本
 
-```bash
-python3 ios_port/apply_ios_port.py --project-root .
+本套件把可真实运行的最低版本设置为 **iOS 14.0**。工作流、Godot 导出预设、
+Xcode 构建参数、Info.plist 和最终 Mach-O 都会进行设置或校验。
+
+无法把 Godot 4.7 版本真实降到 iOS 9.0，原因是官方 iOS 引擎模板本身以
+`-miphoneos-version-min=14.0` 编译，并且 Metal 渲染器要求 iOS 14 以上。
+只把 Info.plist 改成 9.0 会生成“看起来支持 iOS 9、实际无法启动”的 IPA，
+所以 v4 会拒绝低于 14.0 的目标。
+
+真正支持 iOS 9 需要把整个项目从 Godot 4.7 反向移植到旧版 Godot，替换渲染、
+脚本和资源格式，并使用旧 Xcode/SDK 重新编译引擎；这不是修改一个版本号即可完成。
+
+## 覆盖文件
+
+将套件中的以下目录复制到完整项目根目录：
+
+```text
+.github/workflows/build-ios.yml
+ios_port/build_ios.sh
+ios_port/export_presets.cfg.template
 ```
 
-脚本可重复执行；首次修改时会在 `.ios-port-backup/` 保存原文件。
-
-## 三、在 Mac 上生成 IPA
-
-要求：macOS、Xcode、Godot 4.7 与对应的 iOS Export Templates。
-
-### 可安装的签名 IPA
-
-先在 Xcode 登录 Apple ID，并确保 Bundle ID 对应的签名权限可用：
+提交并推送：
 
 ```bash
-export APPLE_TEAM_ID="ABCDE12XYZ"             # 10 位 Team ID
-export BUNDLE_ID="com.yourdomain.openbuckshot"
-export EXPORT_METHOD="development"            # development / ad-hoc / app-store-connect
-export GODOT_BIN="/Applications/Godot.app/Contents/MacOS/Godot"
-
-./ios_port/build_ios.sh
+git add .github/workflows/build-ios.yml ios_port/build_ios.sh ios_port/export_presets.cfg.template
+git update-index --chmod=+x ios_port/build_ios.sh
+git commit -m "Fix iOS PBX localization paths and deployment target"
+git push
 ```
 
-输出位置：`build/ipa/*.ipa`
-
-若默认联机服务器仍使用明文 WebSocket，脚本默认添加域名级 ATS 例外。服务端改为 WSS 后，使用：
-
-```bash
-ALLOW_INSECURE_WS=0 ./ios_port/build_ios.sh
-```
-
-### 未签名 IPA（不能直接安装）
-
-```bash
-export APPLE_TEAM_ID="AAAAAAAAAA"              # Godot 导出器要求非空 10 位值
-export BUNDLE_ID="com.example.openbuckshot"
-UNSIGNED=1 ./ios_port/build_ios.sh
-```
-
-未签名产物只适合：检查 iOS 编译结果、在你自己的签名工具中重签、或交给拥有证书的 Mac 完成签名。
-
-## 四、GitHub Actions 构建
-
-将整个套件提交到你自己的 fork，然后在 Actions 页面手动运行 **Build iOS unsigned IPA**。工作流会在 GitHub 的 macOS Runner 上生成未签名 IPA，并作为构建产物上传。
-
-要生成签名 IPA，推荐在本地 Mac 上运行 `build_ios.sh`。不要把 `.p12` 密码、证书或 provisioning profile 直接提交到仓库。
-
-## 当前功能状态
-
-| 功能 | iOS 状态 | 说明 |
-|---|---|---|
-| 单人游戏 | 预计可用 | 纯 GDScript/Godot 资源，不依赖桌面原生库 |
-| 触摸菜单/操作 | 已做基础适配 | 复用鼠标交互；仍建议真机逐场景测试点击区域与手势 |
-| 手柄 | Godot 原生支持 | 需要真机验证具体映射 |
-| Steam | 自动降级 | iOS 无 Steam 单例时走项目的 SteamShim/非 Steam 路径 |
-| 模组 | 有限制 | 仅 `user://mods/`；iOS 没有桌面式“打开模组文件夹”体验 |
-| 在线联机 | 有条件 | 默认服务器是明文 `ws://`；个人侧载可用 ATS 例外，正式发布应换 `wss://` |
-| App Store 发布 | 未保证 | 还涉及版权授权、隐私申报、网络安全与审核要求 |
-
-## 重要许可提示
-
-上游代码标注 GPL-3.0，但 README 同时说明游戏本体归 MIKE KLUBNIKA 所有，并要求使用者在 itch.io 或 Steam 账户中拥有 Buckshot Roulette。此套件仅用于技术移植，不授予你重新分发游戏美术、音频、商标或完整 IPA 的权利。公开发布前应自行取得相应授权并履行 GPL 源码义务。
-
-## GitHub Actions 退出码 1 / Node.js 24 修复
-
-2026 年的 GitHub Actions Runner 会把仍声明 Node.js 20 的旧 action 强制放到 Node.js 24 上运行。旧版工作流中的 `actions/checkout@v4` 提示本身通常只是警告，不是构建退出码 1 的根因。本套件 v2 已同时完成以下修复：
-
-- `actions/checkout@v7` 与 `actions/upload-artifact@v7`，原生使用 Node.js 24。
-- Godot 资源导入改为 `--import`，不再使用可能过早退出的 `--quit-after 2`。
-- iOS 命令行导出改为生成 `.zip`，随后解压其中的 Xcode 工程。
-- 增加源码结构检查；如果仓库中只有移植套件而没有完整游戏源码，会给出明确错误。
-- 无论成功或失败都会上传 `OpenBuckshotRoulette-iOS-build-logs`，便于定位真正失败的命令。
-
-替换 `.github/workflows/build-ios.yml` 和 `ios_port/build_ios.sh` 后重新运行工作流即可。若再次失败，请下载 Actions 页面中的 `OpenBuckshotRoulette-iOS-build-logs`，首先查看 `build-ios.log`、`godot-export.log` 和 `xcode-build.log`。
+在 GitHub Actions 手动运行时，`ios_deployment_target` 保持 `14.0`。
+构建成功后下载 `OpenBuckshotRoulette-iOS-unsigned`。
