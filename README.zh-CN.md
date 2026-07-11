@@ -1,27 +1,36 @@
-# iOS 14 启动闪退修复
+# OpenBuckshotRoulette iOS 14 Metal PBX 修复
 
-崩溃日志显示应用在 iPad7,11、iOS 14.3 上启动约 0.86 秒后，主线程发生 `EXC_BAD_ACCESS`。这不是签名、最低系统版本或 dyld 缺库错误；Godot 工作线程、音频和运动线程均已建立。旧 IPA 没有匹配 dSYM，因此当前地址无法精确符号化。
-
-项目原本使用 Forward Plus，并通过 MoltenVK 进入 Vulkan/RenderingDevice。新构建默认改为：
-
-- `metal`：Mobile renderer + Godot 原生 Metal，完全不链接 MoltenVK；先测试这个。
-- `opengl3`：GL Compatibility + OpenGL 3；若 Metal 仍闪退，用这个兜底。高级 shader 或粒子效果可能降级。
-
-覆盖：
+本次日志表明 Godot 已成功导出 Xcode 工程，`ES LATAM` 路径也已修复。真正导致退出的是构建脚本自己的检查：
 
 ```text
-.github/workflows/build-ios.yml
+error: Generated project still references MoltenVK for IOS_RENDERER=metal.
+```
+
+生成的 `project.pbxproj` 里只有 4 条 MoltenVK 记录，分别属于 PBXBuildFile、PBXFileReference、Frameworks build phase 和 Frameworks group；没有其他 Vulkan/MoltenVK 链接参数。
+
+新版 `build_ios14.sh` 不再看到引用就终止，而是自动删除这些陈旧 PBX 记录，然后通过 `plutil -lint` 重新校验工程，再继续 Xcode 编译。
+
+## 覆盖方法
+
+最少只需覆盖：
+
+```text
 ios_port/build_ios14.sh
-ios_port/prepare_ios14_runtime.py
-ios_port/export_presets.ios14.cfg.template
 ```
 
-提交后运行 Action，先选 `metal`。新版还会上传 `*-symbols`，包含 dSYM、Link Map 和 UUID。
+建议按压缩包目录整体覆盖，并提交：
 
-**测试前必须为该应用关闭 tweak injection，或在越狱安全模式测试。** 这份 `.ips` 显示进程中注入了 Substrate、SnowBoard、FPSIndicator、ShijimaInApp 等多个第三方动态库，插件冲突不能通过重新编译游戏本身消除。
+```bash
+git add .github/workflows/build-ios.yml \
+        ios_port/build_ios14.sh \
+        ios_port/prepare_ios14_runtime.py \
+        ios_port/export_presets.ios14.cfg.template
 
-新版开启 Godot 文件日志，并在 Info.plist 中开启文件共享。若日志初始化成功，可从应用 Documents 中读取：
+git update-index --chmod=+x ios_port/build_ios14.sh
+git update-index --chmod=+x ios_port/prepare_ios14_runtime.py
 
-```text
-logs/godot.log
+git commit -m "Remove stale MoltenVK PBX references for native Metal"
+git push
 ```
+
+重新运行 Action，`renderer` 选择 `metal`。

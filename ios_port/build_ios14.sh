@@ -166,8 +166,9 @@ path = Path(sys.argv[1])
 min_ios = sys.argv[2]
 log_path = Path(sys.argv[3])
 text = path.read_text(encoding="utf-8")
-changes = []
+changes: list[str] = []
 
+# Quote unquoted PBX name/path values containing spaces, such as ES LATAM.
 assignment = re.compile(r'\b(name|path) = ([^";\n][^;\n]*\s+[^;\n]*);')
 
 def quote_value(match: re.Match[str]) -> str:
@@ -178,12 +179,31 @@ def quote_value(match: re.Match[str]) -> str:
     return f'{key} = "{escaped}";'
 
 text = assignment.sub(quote_value, text)
-text, count = re.subn(
+text, deployment_count = re.subn(
     r"IPHONEOS_DEPLOYMENT_TARGET\s*=\s*[^;]+;",
     f"IPHONEOS_DEPLOYMENT_TARGET = {min_ios};",
     text,
 )
-changes.append(f"set IPHONEOS_DEPLOYMENT_TARGET={min_ios} in {count} build settings")
+changes.append(
+    f"set IPHONEOS_DEPLOYMENT_TARGET={min_ios} in "
+    f"{deployment_count} build settings"
+)
+
+# The Godot Xcode skeleton can retain MoltenVK records even when the project
+# is configured for native Metal or GL Compatibility. This custom iOS 14
+# template contains no MoltenVK framework, so delete those stale PBX records.
+kept_lines: list[str] = []
+removed_lines: list[str] = []
+for line in text.splitlines(keepends=True):
+    if "MoltenVK" in line:
+        removed_lines.append(line.rstrip("\r\n"))
+    else:
+        kept_lines.append(line)
+text = "".join(kept_lines)
+changes.append(f"removed {len(removed_lines)} stale MoltenVK PBX entries")
+for line in removed_lines:
+    changes.append(f"removed PBX line: {line.strip()}")
+
 path.write_text(text, encoding="utf-8")
 log_path.write_text("\n".join(changes) + "\n", encoding="utf-8")
 PY
@@ -192,8 +212,8 @@ cp "$PBXPROJ" "$LOG_DIR/generated-project.pbxproj"
 nl -ba "$PBXPROJ" | sed -n '35,95p' > "$LOG_DIR/generated-project-lines-35-95.txt"
 cat "$LOG_DIR/pbxproj-fixes.log"
 plutil -lint "$PBXPROJ" | tee "$LOG_DIR/pbxproj-lint.log"
-if grep -q 'MoltenVK.xcframework' "$PBXPROJ"; then
-  fail "Generated project still references MoltenVK for IOS_RENDERER=$IOS_RENDERER."
+if grep -q 'MoltenVK' "$PBXPROJ"; then
+  fail "MoltenVK references remain after PBX repair for IOS_RENDERER=$IOS_RENDERER."
 fi
 
 INFO_PLIST="$(find "$(dirname "$PROJECT")" -type f -name '*-Info.plist' -print -quit)"
