@@ -1,34 +1,31 @@
-# OpenBuckshotRoulette iOS 14 Metal link failure analysis
+# Error analysis: force-load v1 guard contradiction
 
-The latest log still ran the older PBX-removal script. It explicitly reports:
-
-```text
-removed 4 stale MoltenVK PBX entries
-```
-
-The final linker command contains only `-lgodot`; it contains neither
-`MoltenVK.xcframework`, `libMoltenVK.a`, nor `-force_load`. Because the custom
-`libgodot.a` includes the Vulkan driver, the linker then reports hundreds of
-undefined `_vk*` symbols.
-
-## Robust fix
-
-This revision does not depend on generated Xcode PBX framework records. It:
-
-1. Copies the static `MoltenVK.xcframework` next to the Xcode project.
-2. Verifies that `libMoltenVK.a` exports `_vkCreateInstance` and
-   `_vkGetInstanceProcAddr`.
-3. Removes any generated MoltenVK PBX records to prevent duplicate or stale
-   references.
-4. Passes the static archive directly through Xcode `OTHER_LDFLAGS` using:
+The supplied run did use the new force-load script:
 
 ```text
--Wl,-force_load,/absolute/path/MoltenVK.xcframework/ios-arm64/libMoltenVK.a
+Build script revision: 2026-07-12-moltenvk-force-load-v1
 ```
 
-5. Explicitly links the iOS system frameworks listed by the MoltenVK runtime
-   integration guide.
-6. Runs `xcodebuild -showBuildSettings` and refuses to compile unless the
-   `-force_load` path is present.
-7. Uses a visible script revision marker so GitHub Actions detects accidental
-   deployment of an older script before the expensive Godot export begins.
+Godot exported the Xcode project successfully. The script then intentionally
+removed four generated `MoltenVK.xcframework` PBX lines because v1 was designed
+to link `libMoltenVK.a` explicitly with `OTHER_LDFLAGS=-Wl,-force_load,...`.
+
+Immediately afterward, an obsolete guard did the opposite check:
+
+```bash
+if ! grep -q 'MoltenVK.xcframework' "$PBXPROJ"; then
+    fail "Generated project has no MoltenVK reference..."
+fi
+```
+
+That made the script fail before `xcodebuild -showBuildSettings` and before the
+actual Xcode build. No linker was invoked in this run.
+
+## v2 fix
+
+- PBX MoltenVK references are expected to be absent in force-load mode.
+- The script now fails only if stale PBX references remain, because that could
+  link MoltenVK twice.
+- It verifies that `libMoltenVK.a` exists and is non-empty.
+- It still verifies the effective Xcode `OTHER_LDFLAGS` contains the exact
+  `-force_load,<absolute archive path>` before compiling.

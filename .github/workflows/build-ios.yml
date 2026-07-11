@@ -1,4 +1,4 @@
-name: Build OpenBuckshotRoulette iOS 14 IPA (MoltenVK force-load)
+name: Build OpenBuckshotRoulette iOS 14 IPA (MoltenVK force-load v2)
 on:
   workflow_dispatch:
     inputs:
@@ -18,7 +18,7 @@ env:
   XCODE_VERSION: "16.4"
   LOCAL_TEMPLATE_ZIP: godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip
   MOLTENVK_VERSION: "1.3.0"
-  IOS_BUILD_SCRIPT_REVISION: "2026-07-12-moltenvk-force-load-v1"
+  IOS_BUILD_SCRIPT_REVISION: "2026-07-12-moltenvk-force-load-v2"
 jobs:
   build-ios14:
     runs-on: macos-15

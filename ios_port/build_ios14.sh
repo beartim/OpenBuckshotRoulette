@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-IOS_BUILD_SCRIPT_REVISION="2026-07-12-moltenvk-force-load-v1"
+IOS_BUILD_SCRIPT_REVISION="2026-07-12-moltenvk-force-load-v2"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GODOT_BIN="${GODOT_BIN:-/Applications/Godot.app/Contents/MacOS/Godot}"
@@ -272,10 +272,14 @@ cp "$PBXPROJ" "$LOG_DIR/generated-project.pbxproj"
 nl -ba "$PBXPROJ" | sed -n '35,95p' > "$LOG_DIR/generated-project-lines-35-95.txt"
 cat "$LOG_DIR/pbxproj-fixes.log"
 plutil -lint "$PBXPROJ" | tee "$LOG_DIR/pbxproj-lint.log"
-if ! grep -q 'MoltenVK.xcframework' "$PBXPROJ"; then
-  fail "Generated project has no MoltenVK reference, but custom libgodot.a requires Vulkan symbol resolution."
+# In force-load mode the PBX project must NOT contain a MoltenVK framework
+# reference. The archive is linked explicitly through OTHER_LDFLAGS below.
+if grep -q 'MoltenVK.xcframework' "$PBXPROJ"; then
+  fail "Stale MoltenVK PBX references remain after cleanup; explicit force-load could link it twice."
 fi
-[[ -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]] || fail "MoltenVK disappeared before Xcode build."
+[[ -f "$MOLTENVK_STATIC" ]] || fail "MoltenVK static archive disappeared before Xcode build: $MOLTENVK_STATIC"
+[[ -s "$MOLTENVK_STATIC" ]] || fail "MoltenVK static archive is empty: $MOLTENVK_STATIC"
+echo "PBX MoltenVK references: 0 (expected for force-load mode)" | tee "$LOG_DIR/moltenvk-pbx-mode.txt"
 
 INFO_PLIST="$(find "$(dirname "$PROJECT")" -type f -name '*-Info.plist' -print -quit)"
 [[ -n "$INFO_PLIST" ]] || fail "Generated Info.plist was not found."
