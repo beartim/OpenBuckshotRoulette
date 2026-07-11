@@ -1,35 +1,23 @@
-# OpenBuckshotRoulette iOS 14：Godot 直接 Xcode 工程输出修复
+# OpenBuckshotRoulette iOS 14 MoltenVK 修复
 
 ## 本次错误
 
-Godot 实际已经完成 iOS 导出，并生成：
+Xcode 已正确读取工程，但构建失败：
 
 ```text
-build/ios/OpenBuckshotRoulette.xcodeproj
-build/ios/OpenBuckshotRoulette/
-build/ios/OpenBuckshotRoulette.xcframework/
+There is no XCFramework found at 'build/ios/MoltenVK.xcframework'
 ```
 
-但旧脚本只接受：
+自编译 Godot 模板 ZIP 内没有 `MoltenVK.xcframework`，而 Xcode 工程仍引用它。
 
-```text
-build/ios/OpenBuckshotRoulette.zip
-```
+## 修复方式
 
-所以在导出成功后错误退出：
+工作流从 KhronosGroup/MoltenVK 官方 v1.3.0 Release 下载
+`MoltenVK-all.tar`，提取静态 `MoltenVK.xcframework`，在 Godot 导出后复制到
+生成的 `.xcodeproj` 同级目录。随后才运行 Xcode。
 
-```text
-error: Godot did not create the iOS Xcode-project ZIP.
-```
-
-## 修复
-
-新版 `build_ios14.sh` 同时支持：
-
-1. `application/export_project_only=true` 生成的直接 Xcode 工程；
-2. 旧版或其他模板生成的 ZIP Xcode 工程。
-
-它会优先使用直接生成的 `.xcodeproj`，只有找不到时才解压 ZIP。
+使用 v1.3.0 是为了避免使用由更新 Xcode 工具链编译的 MoltenVK；该版本发布说明
+包含使用 Xcode 14 的 legacy build，能与当前 Xcode 16.4/iOS 14 构建链兼容。
 
 ## 覆盖文件
 
@@ -39,15 +27,10 @@ ios_port/build_ios14.sh
 ios_port/export_presets.ios14.cfg.template
 ```
 
-真正必须更新的是 `ios_port/build_ios14.sh`；其余两个文件一并提供，避免版本混用。
+提交后重新运行 `Build OpenBuckshotRoulette iOS 14 IPA`。
 
-## 提交
+## 长期修复
 
-```bash
-git add .github/workflows/build-ios.yml
-git add ios_port/build_ios14.sh
-git add ios_port/export_presets.ios14.cfg.template
-git update-index --chmod=+x ios_port/build_ios14.sh
-git commit -m "Accept direct Godot iOS Xcode project export"
-git push
-```
+更干净的做法是在重新编译 Godot 模板时，先安装 Vulkan SDK/MoltenVK，并向 SCons
+传入 `vulkan_sdk_path`，让 `generate_bundle=yes` 直接把
+`MoltenVK.xcframework` 放进模板 ZIP。当前修复无需再次编译 100 MB Godot 模板。

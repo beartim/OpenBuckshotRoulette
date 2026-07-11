@@ -10,6 +10,7 @@ UNSIGNED="${UNSIGNED:-1}"
 ALLOW_INSECURE_WS="${ALLOW_INSECURE_WS:-1}"
 IOS_DEPLOYMENT_TARGET="${IOS_DEPLOYMENT_TARGET:-14.0}"
 IOS_CUSTOM_TEMPLATE="${IOS_CUSTOM_TEMPLATE:-res://godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip}"
+MOLTENVK_XCFRAMEWORK="${MOLTENVK_XCFRAMEWORK:-$ROOT/ios_port/deps/MoltenVK.xcframework}"
 UNSIGNED_PROJECT_TEAM_ID="${UNSIGNED_PROJECT_TEAM_ID:-ABCDE12XYZ}"
 LOG_DIR="$ROOT/build/logs"
 
@@ -23,6 +24,7 @@ trap 'rc=$?; echo "error: command failed at line ${BASH_LINENO[0]}: ${BASH_COMMA
 command -v xcodebuild >/dev/null || fail "xcodebuild is missing."
 command -v xcrun >/dev/null || fail "xcrun is missing."
 command -v plutil >/dev/null || fail "plutil is missing."
+command -v ditto >/dev/null || fail "ditto is missing."
 [[ -x "$GODOT_BIN" ]] || fail "Godot editor is missing: $GODOT_BIN"
 [[ -f "$ROOT/project.godot" ]] || fail "project.godot is missing."
 [[ -f "$ROOT/ios_port/apply_ios_port.py" ]] || fail "apply_ios_port.py is missing."
@@ -142,6 +144,61 @@ if [[ -z "$PROJECT" ]]; then
 fi
 
 echo "Detected Xcode project: $PROJECT" | tee "$LOG_DIR/detected-xcode-project.txt"
+
+# Godot's iOS Xcode template always references MoltenVK.xcframework when the
+# Vulkan/Forward+ path is enabled. The custom Godot bundle was generated
+# without a Vulkan SDK present, so its ZIP contains the reference but not the
+# actual framework. Install/copy the official Khronos static framework here.
+PROJECT_PARENT="$(dirname "$PROJECT")"
+MOLTENVK_DEST="$PROJECT_PARENT/MoltenVK.xcframework"
+
+resolve_moltenvk_source() {
+  local candidates=(
+    "$MOLTENVK_XCFRAMEWORK"
+    "$ROOT/ios_port/deps/MoltenVK.xcframework"
+    "/opt/homebrew/Frameworks/MoltenVK.xcframework"
+    "/usr/local/Frameworks/MoltenVK.xcframework"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -d "$candidate" && -f "$candidate/Info.plist" && -f "$candidate/ios-arm64/libMoltenVK.a" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+if [[ ! -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]]; then
+  MOLTENVK_SOURCE="$(resolve_moltenvk_source || true)"
+  [[ -n "$MOLTENVK_SOURCE" ]] || fail \
+    "MoltenVK.xcframework is missing. The workflow must download the Khronos static iOS framework before running this script."
+  rm -rf "$MOLTENVK_DEST"
+  ditto "$MOLTENVK_SOURCE" "$MOLTENVK_DEST"
+fi
+
+[[ -f "$MOLTENVK_DEST/Info.plist" ]] || fail "MoltenVK Info.plist is missing."
+[[ -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]] || fail "MoltenVK iOS arm64 static library is missing."
+
+plutil -lint "$MOLTENVK_DEST/Info.plist" | tee "$LOG_DIR/moltenvk-info-plist-lint.log"
+{
+  echo "MoltenVK source: ${MOLTENVK_SOURCE:-already present in export}"
+  echo "MoltenVK destination: $MOLTENVK_DEST"
+  echo "MoltenVK size:"
+  du -sh "$MOLTENVK_DEST"
+  echo "MoltenVK files:"
+  find "$MOLTENVK_DEST" -maxdepth 3 -type f -print | sort
+} > "$LOG_DIR/moltenvk-framework.txt"
+
+# Keep the object-level deployment information for diagnosis. Some versions of
+# otool can inspect archive members directly; failure here is non-fatal because
+# the final linked application is checked strictly below.
+xcrun otool -l "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" \
+  > "$LOG_DIR/moltenvk-build-versions.txt" 2>&1 || true
+grep -E -A3 'LC_BUILD_VERSION|LC_VERSION_MIN_IPHONEOS|minos|version' \
+  "$LOG_DIR/moltenvk-build-versions.txt" \
+  > "$LOG_DIR/moltenvk-minimum-summary.txt" 2>/dev/null || true
+
 PBXPROJ="$PROJECT/project.pbxproj"
 [[ -s "$PBXPROJ" ]] || fail "Generated project.pbxproj is missing."
 cp "$PBXPROJ" "$LOG_DIR/generated-project.before-fix.pbxproj"
@@ -222,6 +279,8 @@ PY
 
 echo "Xcode project: $PROJECT"
 echo "Scheme: $SCHEME"
+echo "MoltenVK: $MOLTENVK_DEST"
+[[ -f "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" ]] || fail "MoltenVK disappeared before Xcode build."
 
 COMMON_XCODE_ARGS=(
   -project "$PROJECT"
