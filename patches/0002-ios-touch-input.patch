@@ -1,0 +1,11 @@
+--- a/project.godot
++++ b/project.godot
+@@
+ mouse_cursor/custom_image_hotspot=Vector2(9, 0)
+ 
++[input_devices]
++
++pointing/emulate_mouse_from_touch=true
++pointing/emulate_touch_from_mouse=false
++
+ [input]

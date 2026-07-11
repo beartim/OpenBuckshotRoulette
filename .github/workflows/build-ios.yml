@@ -1,0 +1,51 @@
+name: Build iOS unsigned IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: Bundle identifier used for the unsigned build
+        required: true
+        default: com.example.openbuckshotroulette
+
+jobs:
+  build:
+    runs-on: macos-15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Godot 4.7 and export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL -o godot.zip \
+            https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_macos.universal.zip
+          unzip -q godot.zip
+          curl -fL -o templates.tpz \
+            https://github.com/godotengine/godot-builds/releases/download/4.7-stable/Godot_v4.7-stable_export_templates.tpz
+          rm -rf template_unpack
+          mkdir template_unpack
+          unzip -q templates.tpz -d template_unpack
+          TEMPLATE_DIR="$HOME/Library/Application Support/Godot/export_templates/4.7.stable"
+          mkdir -p "$TEMPLATE_DIR"
+          cp -R template_unpack/templates/. "$TEMPLATE_DIR/"
+          chmod +x Godot.app/Contents/MacOS/Godot
+
+      - name: Build unsigned IPA
+        shell: bash
+        env:
+          GODOT_BIN: ${{ github.workspace }}/Godot.app/Contents/MacOS/Godot
+          APPLE_TEAM_ID: AAAAAAAAAA
+          BUNDLE_ID: ${{ inputs.bundle_id }}
+          UNSIGNED: '1'
+          ALLOW_INSECURE_WS: '1'
+        run: ./ios_port/build_ios.sh
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenBuckshotRoulette-iOS-unsigned
+          path: build/ipa/*.ipa
+          if-no-files-found: error

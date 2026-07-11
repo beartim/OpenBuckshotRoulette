@@ -1,0 +1,17 @@
+--- a/scripts/ModLoader.gd
++++ b/scripts/ModLoader.gd
+@@
+ func _get_mod_directories() -> Array[String]:
+ 	var dirs: Array[String] = []
+ 	dirs.append("user://mods/")
++
++	# The iOS application bundle is read-only. Keep mods inside the app sandbox.
++	if OS.has_feature("ios") or OS.has_feature("iOS"):
++		return dirs
++
+ 	var exec_dir = OS.get_executable_path().get_base_dir()
+ 	dirs.append(exec_dir.path_join("mods"))
+-	if OS.has_feature("mobile"):
++	if OS.has_feature("android"):
+ 		dirs.append("/sdcard/open_buckshot_roulette/mods/")
+ 	return dirs
