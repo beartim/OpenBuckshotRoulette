@@ -1,24 +1,28 @@
-# OpenBuckshotRoulette iOS 14 运动传感器启动崩溃修复
+# OpenBuckshotRoulette iOS 14 MoltenVK force-load v2
 
-## 已精确定位的根因
+## 本次错误
 
-符号包和 Vulkan 崩溃 IPA 的 UUID 完全一致。符号化后的调用链为：
+这次不是 Godot、MoltenVK 或 Xcode 编译失败。脚本已经：
+
+1. 成功导出 Xcode 工程；
+2. 成功安装 `MoltenVK.xcframework`；
+3. 按设计删除 PBX 中的 4 条 MoltenVK 引用；
+4. 准备通过 `OTHER_LDFLAGS=-Wl,-force_load,.../libMoltenVK.a` 显式链接。
+
+但旧检查随后又因为 PBX 中不存在 MoltenVK 引用而主动退出，逻辑互相矛盾。
+
+## v2 修复
+
+- force-load 模式下，PBX 中 MoltenVK 引用应为 0。
+- 验证静态库存在且非空。
+- 验证 Xcode 最终 Build Settings 中包含准确的 `-force_load` 路径。
+- 构建脚本修订号升级为：
 
 ```text
-GDTView.drawView
-  -> GDTView.handleMotion
-    -> DisplayServerAppleEmbedded.update_gravity
-      -> Input::set_gravity
+2026-07-12-moltenvk-force-load-v2
 ```
 
-Godot 4.7 的 Apple Embedded 代码在每帧调用 `handleMotion`，但四个运动传感器
-更新函数直接使用 `Input::get_singleton()`，没有检查它是否已经创建。iOS 14.3
-设备上的启动时序使 CoreMotion 回调先于 Input 单例就绪，于是通过空指针访问
-成员偏移 `0x118`，产生 `EXC_BAD_ACCESS`。
-
-## 方案 A：立即测试，不重编 Godot 模板
-
-覆盖以下文件：
+## 覆盖位置
 
 ```text
 .github/workflows/build-ios.yml
@@ -27,56 +31,25 @@ ios_port/prepare_ios14_runtime.py
 ios_port/export_presets.ios14.cfg.template
 ```
 
-构建脚本会在 Godot 导出后，把一段 Objective-C Runtime 替换逻辑写入 Xcode
-工程原本就会编译的 `dummy.cpp`，在应用启动前将 `-[GDTView handleMotion]`
-替换成空函数。
-
-OpenBuckshotRoulette 不使用重力计、加速度计、磁力计或陀螺仪，因此禁用这些
-传感器不会影响游戏功能。Metal、Vulkan 和 OpenGL 三种 Action 选项都可使用。
-
-提交后重新运行 Action：
+提交：
 
 ```bash
-git add .github/workflows/build-ios.yml ios_port/
+git add .github/workflows/build-ios.yml \
+        ios_port/build_ios14.sh \
+        ios_port/prepare_ios14_runtime.py \
+        ios_port/export_presets.ios14.cfg.template
+
 git update-index --chmod=+x ios_port/build_ios14.sh
 git update-index --chmod=+x ios_port/prepare_ios14_runtime.py
-git commit -m "Work around Godot iOS motion startup crash"
+
+git commit -m "Fix contradictory MoltenVK force-load guard"
 git push
 ```
 
-新日志必须出现：
+重新运行时选择 `renderer = metal`。新日志应包含：
 
 ```text
-Build script revision: 2026-07-12-motion-sensor-workaround-v1
-OPENBUCKSHOT_GODOT47_DISABLE_MOTION_V1
+Build script revision: 2026-07-12-moltenvk-force-load-v2
+PBX MoltenVK references: 0 (expected for force-load mode)
+OTHER_LDFLAGS: $(inherited) -Wl,-force_load,.../libMoltenVK.a ...
 ```
-
-先测试 `renderer=metal`，再测试 `renderer=vulkan`。
-
-## 方案 B：永久修复，自编译新 Godot 模板
-
-运行：
-
-```text
-.github/workflows/build-godot-ios14-motion-fixed-template.yml
-```
-
-该工作流会在编译 Godot 4.7 之前，给 `update_gravity`、
-`update_accelerometer`、`update_magnetometer`、`update_gyroscope` 都加入 Input
-单例空指针检查，然后重新生成 iOS 14 模板。
-
-成功后下载 Artifact：
-
-```text
-godot-4.7-ios14-motion-fixed-xcode16.4-template
-```
-
-其中的 ZIP 仍命名为：
-
-```text
-godot-4.7-ios14-xcode16.4.zip
-```
-
-用它覆盖仓库根目录现有模板 ZIP。永久修复模板使用时，方案 A 的运行时禁用
-补丁可以保留，也可以从 `build_ios14.sh` 中删除；保留不会影响游戏，只是继续
-禁用传感器。

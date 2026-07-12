@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-IOS_BUILD_SCRIPT_REVISION="2026-07-12-motion-sensor-workaround-v1"
+IOS_BUILD_SCRIPT_REVISION="2026-07-12-moltenvk-force-load-v2"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GODOT_BIN="${GODOT_BIN:-/Applications/Godot.app/Contents/MacOS/Godot}"
@@ -34,7 +34,7 @@ command -v ditto >/dev/null || fail "ditto is missing."
 [[ -f "$ROOT/ios_port/apply_ios_port.py" ]] || fail "apply_ios_port.py is missing."
 [[ "$BUNDLE_ID" =~ ^[A-Za-z0-9.-]+$ ]] || fail "Invalid bundle identifier: $BUNDLE_ID"
 [[ "$IOS_DEPLOYMENT_TARGET" == "14.0" ]] || fail "This workflow is intentionally fixed to iOS 14.0."
-case "$IOS_RENDERER" in vulkan|metal|opengl3) ;; *) fail "IOS_RENDERER must be vulkan, metal, or opengl3." ;; esac
+case "$IOS_RENDERER" in metal|opengl3) ;; *) fail "IOS_RENDERER must be metal or opengl3." ;; esac
 [[ -f "$ROOT/ios_port/prepare_ios14_runtime.py" ]] || fail "prepare_ios14_runtime.py is missing."
 
 CUSTOM_TEMPLATE_FILE=""
@@ -212,70 +212,6 @@ xcrun otool -l "$MOLTENVK_DEST/ios-arm64/libMoltenVK.a" \
 
 PBXPROJ="$PROJECT/project.pbxproj"
 [[ -s "$PBXPROJ" ]] || fail "Generated project.pbxproj is missing."
-
-# Work around a Godot 4.7 Apple Embedded startup bug. GDTView polls
-# CoreMotion from drawView before Input::get_singleton() is guaranteed to be
-# initialized. The unguarded update_gravity()/accelerometer/etc. calls then
-# dereference a null Input pointer. OpenBuckshotRoulette does not use motion
-# sensors, so replace -[GDTView handleMotion] with a no-op at process startup.
-#
-# This workaround is injected into Godot's generated dummy.cpp, which is
-# already part of the application target. It does not modify the precompiled
-# libgodot.a and therefore avoids rebuilding the 100 MB custom template.
-MOTION_WORKAROUND_MARKER="OPENBUCKSHOT_GODOT47_DISABLE_MOTION_V1"
-DUMMY_CPP="$PROJECT_PARENT/dummy.cpp"
-if [[ ! -f "$DUMMY_CPP" ]]; then
-  DUMMY_CPP="$(find "$PROJECT_PARENT" -maxdepth 3 -type f -name dummy.cpp -print -quit 2>/dev/null || true)"
-fi
-[[ -n "$DUMMY_CPP" && -f "$DUMMY_CPP" ]] || fail "Godot generated project has no dummy.cpp for the motion workaround."
-if ! grep -q 'path = dummy.cpp;' "$PBXPROJ"; then
-  fail "Generated Xcode target does not reference dummy.cpp; refusing to inject an uncompiled workaround."
-fi
-if ! grep -Fq "$MOTION_WORKAROUND_MARKER" "$DUMMY_CPP"; then
-  cat >> "$DUMMY_CPP" <<'CPP'
-
-// OPENBUCKSHOT_GODOT47_DISABLE_MOTION_V1
-// Runtime workaround for Godot 4.7 Apple Embedded startup crash:
-// GDTView::handleMotion can call Input::set_gravity before the Input singleton
-// exists. Objective-C classes are registered before C/C++ constructors run,
-// so safely replace this optional sensor callback before UIApplicationMain.
-#include <objc/objc.h>
-#include <objc/runtime.h>
-
-extern "C" {
-static void openbuckshot_noop_handle_motion(id self, SEL command) {
-    (void)self;
-    (void)command;
-}
-
-__attribute__((constructor))
-static void openbuckshot_disable_godot_motion_polling(void) {
-    Class view_class = objc_getClass("GDTView");
-    if (view_class == Nil) {
-        return;
-    }
-
-    SEL selector = sel_registerName("handleMotion");
-    Method method = class_getInstanceMethod(view_class, selector);
-    if (method == nullptr) {
-        return;
-    }
-
-    method_setImplementation(method, (IMP)openbuckshot_noop_handle_motion);
-}
-}
-CPP
-fi
-
-grep -Fq "$MOTION_WORKAROUND_MARKER" "$DUMMY_CPP" || fail "Motion workaround marker was not written to dummy.cpp."
-cp "$DUMMY_CPP" "$LOG_DIR/generated-dummy-with-motion-workaround.cpp"
-{
-  echo "revision=$MOTION_WORKAROUND_MARKER"
-  echo "source=$DUMMY_CPP"
-  echo "pbx_reference_count=$(grep -c 'path = dummy.cpp;' "$PBXPROJ" || true)"
-  grep -n -A35 -B3 "$MOTION_WORKAROUND_MARKER" "$DUMMY_CPP"
-} | tee "$LOG_DIR/motion-workaround.txt"
-
 cp "$PBXPROJ" "$LOG_DIR/generated-project.before-fix.pbxproj"
 
 python3 - "$PBXPROJ" "$IOS_DEPLOYMENT_TARGET" "$LOG_DIR/pbxproj-fixes.log" <<'PY'
