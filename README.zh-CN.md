@@ -1,82 +1,57 @@
-# OpenBuckshotRoulette iOS 14 运动传感器启动崩溃修复
+# OpenBuckshotRoulette iOS 移植套件 v4
 
-## 已精确定位的根因
+## 本次已修复
 
-符号包和 Vulkan 崩溃 IPA 的 UUID 完全一致。符号化后的调用链为：
+这次错误来自语言名称 `ES LATAM`。Godot 4.7 把带空格的名称和路径直接写进
+`project.pbxproj`，但没有添加引号，导致 Xcode 报 `missing semicolon`。
+
+v4 会在 Xcode 读取工程前自动把它修复为：
 
 ```text
-GDTView.drawView
-  -> GDTView.handleMotion
-    -> DisplayServerAppleEmbedded.update_gravity
-      -> Input::set_gravity
+name = "ES LATAM";
+path = "ES LATAM.lproj/InfoPlist.strings";
 ```
 
-Godot 4.7 的 Apple Embedded 代码在每帧调用 `handleMotion`，但四个运动传感器
-更新函数直接使用 `Input::get_singleton()`，没有检查它是否已经创建。iOS 14.3
-设备上的启动时序使 CoreMotion 回调先于 Input 单例就绪，于是通过空指针访问
-成员偏移 `0x118`，产生 `EXC_BAD_ACCESS`。
+修复器不是只处理这一种语言，而是会处理所有未加引号且包含空格的 PBX
+`name` 和 `path` 字段。
 
-## 方案 A：立即测试，不重编 Godot 模板
+## 最低 iOS 版本
 
-覆盖以下文件：
+本套件把可真实运行的最低版本设置为 **iOS 15.0**。工作流、Godot 导出预设、
+Xcode 构建参数、Info.plist 和最终 Mach-O 都会进行设置或校验。
+
+无法把 Godot 4.7 版本真实降到 iOS 9.0，原因是官方 iOS 引擎模板本身以
+`-miphoneos-version-min=15.0` 编译，并且 Metal 渲染器要求 iOS 14 以上。
+只把 Info.plist 改成 9.0 会生成“看起来支持 iOS 9、实际无法启动”的 IPA，
+所以 v4 会拒绝低于 15.0 的目标。
+
+真正支持 iOS 9 需要把整个项目从 Godot 4.7 反向移植到旧版 Godot，替换渲染、
+脚本和资源格式，并使用旧 Xcode/SDK 重新编译引擎；这不是修改一个版本号即可完成。
+
+## 覆盖文件
+
+将套件中的以下目录复制到完整项目根目录：
 
 ```text
 .github/workflows/build-ios.yml
-ios_port/build_ios14.sh
-ios_port/prepare_ios14_runtime.py
-ios_port/export_presets.ios14.cfg.template
+ios_port/build_ios.sh
+ios_port/export_presets.cfg.template
 ```
 
-构建脚本会在 Godot 导出后，把一段 Objective-C Runtime 替换逻辑写入 Xcode
-工程原本就会编译的 `dummy.cpp`，在应用启动前将 `-[GDTView handleMotion]`
-替换成空函数。
-
-OpenBuckshotRoulette 不使用重力计、加速度计、磁力计或陀螺仪，因此禁用这些
-传感器不会影响游戏功能。Metal、Vulkan 和 OpenGL 三种 Action 选项都可使用。
-
-提交后重新运行 Action：
+提交并推送：
 
 ```bash
-git add .github/workflows/build-ios.yml ios_port/
-git update-index --chmod=+x ios_port/build_ios14.sh
-git update-index --chmod=+x ios_port/prepare_ios14_runtime.py
-git commit -m "Work around Godot iOS motion startup crash"
+git add .github/workflows/build-ios.yml ios_port/build_ios.sh ios_port/export_presets.cfg.template
+git update-index --chmod=+x ios_port/build_ios.sh
+git commit -m "Fix iOS PBX localization paths and deployment target"
 git push
 ```
 
-新日志必须出现：
+在 GitHub Actions 手动运行时，`ios_deployment_target` 保持 `15.0`。
+构建成功后下载 `OpenBuckshotRoulette-iOS-unsigned`。
 
-```text
-Build script revision: 2026-07-12-motion-sensor-workaround-v1
-OPENBUCKSHOT_GODOT47_DISABLE_MOTION_V1
-```
+## v6：iOS 中文方框修复
 
-先测试 `renderer=metal`，再测试 `renderer=vulkan`。
+v6 会在构建前自动安装 `IOSFontFallback` Autoload。它保留游戏原来的英文字体，只在原字体找不到中文字形时依次使用项目自带的 Noto Sans SC/TC 和 iOS PingFang 系统字体。
 
-## 方案 B：永久修复，自编译新 Godot 模板
-
-运行：
-
-```text
-.github/workflows/build-godot-ios14-motion-fixed-template.yml
-```
-
-该工作流会在编译 Godot 4.7 之前，给 `update_gravity`、
-`update_accelerometer`、`update_magnetometer`、`update_gyroscope` 都加入 Input
-单例空指针检查，然后重新生成 iOS 14 模板。
-
-成功后下载 Artifact：
-
-```text
-godot-4.7-ios14-motion-fixed-xcode16.4-template
-```
-
-其中的 ZIP 仍命名为：
-
-```text
-godot-4.7-ios14-xcode16.4.zip
-```
-
-用它覆盖仓库根目录现有模板 ZIP。永久修复模板使用时，方案 A 的运行时禁用
-补丁可以保留，也可以从 `build_ios14.sh` 中删除；保留不会影响游戏，只是继续
-禁用传感器。
+无需手工修改每个 `.tscn`。覆盖 v6 的 `ios_port` 与工作流文件后重新构建即可。

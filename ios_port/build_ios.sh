@@ -81,6 +81,18 @@ echo "Godot project Team ID: $PROJECT_TEAM_ID"
 
 python3 ios_port/apply_ios_port.py --project-root "$ROOT"
 
+CJK_SC_FONT="$ROOT/fonts/fonts language/NotoSansSC-Regular_simplified chinese_new.ttf"
+CJK_TC_FONT="$ROOT/fonts/fonts language/NotoSansTC-Regular_traditional chinese_new.ttf"
+CJK_FALLBACK_SCRIPT="$ROOT/scripts/IOSFontFallback.gd"
+[[ -s "$CJK_SC_FONT" ]] || fail "Simplified Chinese fallback font is missing: $CJK_SC_FONT"
+[[ -s "$CJK_TC_FONT" ]] || fail "Traditional Chinese fallback font is missing: $CJK_TC_FONT"
+[[ -s "$CJK_FALLBACK_SCRIPT" ]] || fail "CJK fallback autoload was not generated: $CJK_FALLBACK_SCRIPT"
+{
+  echo "Simplified Chinese font: $(stat -f '%z bytes' "$CJK_SC_FONT")"
+  echo "Traditional Chinese font: $(stat -f '%z bytes' "$CJK_TC_FONT")"
+  grep -n '^IOSFontFallback=' "$ROOT/project.godot" || true
+} | tee "$LOG_DIR/cjk-font-fallback-check.txt"
+
 python3 - "$PROJECT_TEAM_ID" "$BUNDLE_ID" "$DEBUG_SIGN_IDENTITY" "$RELEASE_SIGN_IDENTITY" "$IOS_DEPLOYMENT_TARGET" <<'PY'
 from pathlib import Path
 import sys
@@ -107,6 +119,10 @@ mkdir -p build/ios/project build/ipa
   --path "$ROOT" \
   --import \
   2>&1 | tee "$LOG_DIR/godot-import.log"
+
+if grep -Eiq '(SCRIPT ERROR|Parse Error).*IOSFontFallback|IOSFontFallback.gd.*(SCRIPT ERROR|Parse Error)' "$LOG_DIR/godot-import.log"; then
+  fail "IOSFontFallback.gd did not parse. Check godot-import.log."
+fi
 
 IOS_EXPORT_ZIP="$ROOT/build/ios/OpenBuckshotRoulette.zip"
 "$GODOT_BIN" \
