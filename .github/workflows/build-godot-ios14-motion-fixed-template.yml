@@ -1,0 +1,370 @@
+name: Build Godot 4.7 iOS 14 Templates (motion null-guard fixed)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/build-godot-4.7-ios14-template.yml"
+
+permissions:
+  contents: read
+
+env:
+  GODOT_REF: 4.7-stable
+  IOS_DEPLOYMENT_TARGET: "14.0"
+  XCODE_VERSION: "16.4"
+
+jobs:
+  build-ios-templates:
+    # Godot 4.7 requires Apple Clang 16+, which is provided by Xcode 16.
+    runs-on: macos-15
+    timeout-minutes: 300
+
+    steps:
+      - name: Checkout project repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Select Xcode 16.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build-logs
+
+          # Record what is installed before selecting anything. This file is
+          # still available if version detection fails later in this step.
+          find /Applications -maxdepth 1 -type d -name 'Xcode*.app' -print \
+            | sort > build-logs/available-xcodes.txt
+
+          XCODE_APP="/Applications/Xcode_${XCODE_VERSION}.app"
+          if [[ ! -d "$XCODE_APP" ]]; then
+            XCODE_APP="$(find /Applications -maxdepth 1 -type d \
+              \( -name 'Xcode_16.4.app' -o -name 'Xcode_16.4.0.app' \) \
+              -print -quit)"
+          fi
+
+          if [[ -z "${XCODE_APP:-}" || ! -d "$XCODE_APP" ]]; then
+            echo "::error::Xcode 16.4 is not installed on this runner."
+            cat build-logs/available-xcodes.txt || true
+            exit 1
+          fi
+
+          sudo xcode-select --switch "$XCODE_APP/Contents/Developer"
+
+          # Do not pipe xcodebuild into `awk ... exit` or `head`. On current
+          # macOS runners that closes stdout early and xcodebuild can abort with
+          # NSFileHandleOperationException / Broken pipe (exit code 134).
+          XCODE_OUTPUT="$(xcodebuild -version 2>&1)"
+          printf '%s\n' "$XCODE_OUTPUT" | tee build-logs/xcode-version.txt
+          ACTUAL_XCODE_VERSION="$(sed -nE 's/^Xcode[[:space:]]+([^[:space:]]+).*/\1/p' <<< "$XCODE_OUTPUT")"
+
+          if [[ -z "$ACTUAL_XCODE_VERSION" || "$ACTUAL_XCODE_VERSION" != 16.4* ]]; then
+            echo "::error::Expected Xcode 16.4, got: ${ACTUAL_XCODE_VERSION:-unknown}"
+            exit 1
+          fi
+
+          CLANG_OUTPUT="$(xcrun clang --version 2>&1)"
+          printf '%s\n' "$CLANG_OUTPUT" > build-logs/clang-version.txt
+          CLANG_VERSION="${CLANG_OUTPUT%%$'\n'*}"
+          CLANG_MAJOR="$(sed -nE 's/.*Apple clang version ([0-9]+).*/\1/p' <<< "$CLANG_OUTPUT")"
+
+          if [[ -z "$CLANG_MAJOR" || "$CLANG_MAJOR" -lt 16 ]]; then
+            echo "::error::Godot 4.7 requires Apple Clang 16 or later; detected: $CLANG_VERSION"
+            exit 1
+          fi
+
+          {
+            printf '%s\n' "$XCODE_OUTPUT"
+            printf '%s\n' "$CLANG_VERSION"
+            echo "Selected Xcode app: $XCODE_APP"
+            echo "Developer directory: $(xcode-select -p)"
+            echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
+            echo "iPhoneOS SDK path: $(xcrun --sdk iphoneos --show-sdk-path)"
+            echo "Toolchain path: $(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain"
+          } | tee build-logs/xcode-environment.txt
+
+      - name: Verify Xcode can compile an iOS 14 object
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
+
+          cat > /tmp/godot_ios14_smoke.mm <<'EOF'
+          #import <Foundation/Foundation.h>
+          int godot_ios14_smoke(void) {
+              @autoreleasepool {
+                  return (int)[NSProcessInfo processInfo].processorCount;
+              }
+          }
+          EOF
+
+          xcrun --sdk iphoneos clang++ \
+            -arch arm64 \
+            -isysroot "$SDKROOT" \
+            -miphoneos-version-min="$IOS_DEPLOYMENT_TARGET" \
+            -fobjc-arc \
+            -c /tmp/godot_ios14_smoke.mm \
+            -o /tmp/godot_ios14_smoke.o \
+            2>&1 | tee build-logs/ios14-smoke-compile.txt
+
+          test -s /tmp/godot_ios14_smoke.o
+          xcrun vtool -show-build /tmp/godot_ios14_smoke.o \
+            | tee build-logs/ios14-smoke-build-version.txt || true
+
+      - name: Install SCons
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew list scons >/dev/null 2>&1 || brew install scons
+          scons --version
+          python3 --version
+
+      - name: Clone Godot 4.7 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf godot
+          git clone \
+            --branch "$GODOT_REF" \
+            --depth 1 \
+            https://github.com/godotengine/godot.git godot
+          git -C godot rev-parse HEAD | tee build-logs/godot-commit.txt
+
+
+      - name: Apply Apple Embedded motion Input null-guard fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("godot/drivers/apple_embedded/display_server_apple_embedded.mm")
+          text = path.read_text(encoding="utf-8")
+
+          replacements = {
+              "gravity": ("p_gravity", "set_gravity(p_gravity)"),
+              "accelerometer": (
+                  "p_accelerometer",
+                  "set_accelerometer(p_accelerometer / kDisplayServerIOSAcceleration)",
+              ),
+              "magnetometer": ("p_magnetometer", "set_magnetometer(p_magnetometer)"),
+              "gyroscope": ("p_gyroscope", "set_gyroscope(p_gyroscope)"),
+          }
+
+          counts = {}
+          for method, (argument, setter) in replacements.items():
+              pattern = re.compile(
+                  rf"void DisplayServerAppleEmbedded::update_{method}"
+                  rf"\(const Vector3 &{argument}\) \{{\s*"
+                  rf"Input::get_singleton\(\)->{re.escape(setter)};\s*\}}",
+                  re.MULTILINE,
+              )
+              replacement = (
+                  f"void DisplayServerAppleEmbedded::update_{method}(const Vector3 &{argument}) {{\n"
+                  "\tInput *input_singleton = Input::get_singleton();\n"
+                  "\tif (input_singleton == nullptr) {\n"
+                  "\t\treturn;\n"
+                  "\t}\n"
+                  f"\tinput_singleton->{setter};\n"
+                  "}"
+              )
+              text, count = pattern.subn(replacement, text, count=1)
+              counts[method] = count
+              if count != 1:
+                  raise SystemExit(
+                      f"error: expected exactly one update_{method} block, replaced {count}"
+                  )
+
+          path.write_text(text, encoding="utf-8")
+          report = "\n".join(f"update_{name}: {count}" for name, count in counts.items()) + "\n"
+          Path("build-logs/motion-null-guard-patch.txt").write_text(report, encoding="utf-8")
+          print(report, end="")
+          PY
+
+          git -C godot diff --check
+          git -C godot diff -- drivers/apple_embedded/display_server_apple_embedded.mm \
+            | tee build-logs/motion-null-guard.diff
+          grep -Fq 'Input *input_singleton = Input::get_singleton();' \
+            godot/drivers/apple_embedded/display_server_apple_embedded.mm
+
+      - name: Verify iOS 14 target in Godot source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          checks = {
+              Path("godot/platform/ios/detect.py"): (
+                  "miphoneos-version-min=14.0",
+                  "mios-simulator-version-min=14.0",
+              ),
+              Path("godot/platform_methods.py"): (
+                  'target_suffix = "ios14.0"',
+                  'target_suffix = "ios14.0-simulator"',
+              ),
+              Path("godot/SConstruct"): (
+                  "Detected Apple Clang version older than 16",
+              ),
+          }
+
+          report = []
+          for path, expected_strings in checks.items():
+              if not path.is_file():
+                  raise SystemExit(f"error: required Godot source file is missing: {path}")
+
+              text = path.read_text(encoding="utf-8")
+              lines = text.splitlines()
+              for expected in expected_strings:
+                  matches = [
+                      f"{path}:{line_number}:{line.strip()}"
+                      for line_number, line in enumerate(lines, start=1)
+                      if expected in line
+                  ]
+                  if not matches:
+                      raise SystemExit(
+                          f"error: expected source setting {expected!r} was not found in {path}"
+                      )
+                  report.extend(matches)
+
+          output = "\n".join(report) + "\n"
+          print(output, end="")
+          Path("build-logs/godot-ios14-source-check.txt").write_text(output, encoding="utf-8")
+          PY
+
+      - name: Prepare build directories and logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf output
+          mkdir -p build-logs output
+
+          {
+            echo "Godot ref: $GODOT_REF"
+            echo "Godot commit: $(cat build-logs/godot-commit.txt)"
+            echo "Requested deployment target: $IOS_DEPLOYMENT_TARGET"
+            echo "Host architecture: $(uname -m)"
+            echo "Logical CPUs: $(sysctl -n hw.logicalcpu)"
+            echo "Available memory:"
+            sysctl hw.memsize
+          } | tee build-logs/environment.txt
+
+      - name: Build debug iOS template
+        working-directory: godot
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
+          TOOLCHAIN="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain"
+
+          scons \
+            platform=ios \
+            target=template_debug \
+            arch=arm64 \
+            APPLE_SDK_PATH="$SDKROOT" \
+            APPLE_TOOLCHAIN_PATH="$TOOLCHAIN" \
+            debug_symbols=no \
+            progress=yes \
+            -j"$(sysctl -n hw.logicalcpu)" \
+            2>&1 | tee ../build-logs/scons-debug.log
+
+      - name: Build release iOS template and bundle
+        working-directory: godot
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
+          TOOLCHAIN="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain"
+
+          scons \
+            platform=ios \
+            target=template_release \
+            arch=arm64 \
+            APPLE_SDK_PATH="$SDKROOT" \
+            APPLE_TOOLCHAIN_PATH="$TOOLCHAIN" \
+            debug_symbols=no \
+            production=yes \
+            generate_bundle=yes \
+            progress=yes \
+            -j"$(sysctl -n hw.logicalcpu)" \
+            2>&1 | tee ../build-logs/scons-release.log
+
+      - name: Collect and validate templates
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          find godot/bin -maxdepth 5 -type f -print | sort \
+            | tee output/bin-files.txt
+
+          TEMPLATE_ZIP="$(find godot/bin -maxdepth 2 -type f \
+            \( -name 'godot_ios*.zip' -o -name '*ios*.zip' \) \
+            -print -quit)"
+
+          if [[ -z "$TEMPLATE_ZIP" ]]; then
+            echo "::error::No generated iOS template ZIP was found in godot/bin."
+            find godot/bin -maxdepth 5 -print | tee build-logs/bin-tree.txt || true
+            exit 1
+          fi
+
+          OUTPUT_ZIP="output/godot-4.7-ios14-xcode16.4.zip"
+          cp "$TEMPLATE_ZIP" "$OUTPUT_ZIP"
+          cp build-logs/godot-commit.txt output/
+          cp build-logs/godot-ios14-source-check.txt output/
+          cp build-logs/environment.txt output/
+          cp build-logs/xcode-environment.txt output/
+
+          shasum -a 256 "$OUTPUT_ZIP" \
+            | tee "$OUTPUT_ZIP.sha256"
+
+          unzip -t "$OUTPUT_ZIP" \
+            | tee output/template-integrity.txt
+
+          unzip -l "$OUTPUT_ZIP" \
+            | tee output/template-contents.txt
+
+          test -s "$OUTPUT_ZIP"
+
+          rm -rf template-inspection
+          mkdir template-inspection
+          unzip -q "$OUTPUT_ZIP" -d template-inspection
+
+          {
+            echo "Requested minimum iOS: $IOS_DEPLOYMENT_TARGET"
+            echo
+            while IFS= read -r file; do
+              FILE_DESCRIPTION="$(file "$file")"
+              if grep -Eq 'Mach-O|current ar archive' <<< "$FILE_DESCRIPTION"; then
+                echo "===== $file ====="
+                echo "$FILE_DESCRIPTION"
+                xcrun vtool -show-build "$file" 2>&1 || true
+                otool -l "$file" 2>&1 \
+                  | grep -A6 -E 'LC_BUILD_VERSION|LC_VERSION_MIN_IPHONEOS' || true
+                echo
+              fi
+            done < <(find template-inspection -type f -print | sort)
+          } | tee output/template-build-versions.txt
+
+          if ! grep -Eq 'minos[[:space:]]+14\.0|version[[:space:]]+14\.0' \
+              output/template-build-versions.txt; then
+            echo "::warning::Could not automatically confirm iOS 14.0 from the packaged archive. Review template-build-versions.txt."
+          fi
+
+      - name: Upload iOS 14 template
+        uses: actions/upload-artifact@v7
+        with:
+          name: godot-4.7-ios14-motion-fixed-xcode16.4-template
+          path: output/
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: godot-4.7-ios14-build-logs
+          path: build-logs/
+          if-no-files-found: ignore
+          retention-days: 30

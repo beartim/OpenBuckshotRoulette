@@ -1,0 +1,40 @@
+diff --git a/drivers/apple_embedded/display_server_apple_embedded.mm b/drivers/apple_embedded/display_server_apple_embedded.mm
+--- a/drivers/apple_embedded/display_server_apple_embedded.mm
++++ b/drivers/apple_embedded/display_server_apple_embedded.mm
+@@ -718,20 +718,40 @@ void DisplayServerAppleEmbedded::perform_event(const Ref<InputEvent> &p_event) {
+ // MARK: Motion
+ void DisplayServerAppleEmbedded::update_gravity(const Vector3 &p_gravity) {
+-	Input::get_singleton()->set_gravity(p_gravity);
++	Input *input_singleton = Input::get_singleton();
++	if (input_singleton == nullptr) {
++		return;
++	}
++	input_singleton->set_gravity(p_gravity);
+ }
+ 
+ void DisplayServerAppleEmbedded::update_accelerometer(const Vector3 &p_accelerometer) {
+-	Input::get_singleton()->set_accelerometer(p_accelerometer / kDisplayServerIOSAcceleration);
++	Input *input_singleton = Input::get_singleton();
++	if (input_singleton == nullptr) {
++		return;
++	}
++	input_singleton->set_accelerometer(p_accelerometer / kDisplayServerIOSAcceleration);
+ }
+ 
+ void DisplayServerAppleEmbedded::update_magnetometer(const Vector3 &p_magnetometer) {
+-	Input::get_singleton()->set_magnetometer(p_magnetometer);
++	Input *input_singleton = Input::get_singleton();
++	if (input_singleton == nullptr) {
++		return;
++	}
++	input_singleton->set_magnetometer(p_magnetometer);
+ }
++
+ void DisplayServerAppleEmbedded::update_gyroscope(const Vector3 &p_gyroscope) {
+-	Input::get_singleton()->set_gyroscope(p_gyroscope);
++	Input *input_singleton = Input::get_singleton();
++	if (input_singleton == nullptr) {
++		return;
++	}
++	input_singleton->set_gyroscope(p_gyroscope);
+ }
