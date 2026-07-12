@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-IOS_BUILD_SCRIPT_REVISION="2026-07-12-moltenvk-force-load-v2"
+IOS_BUILD_SCRIPT_REVISION="2026-07-12-vulkan-moltenvk-runtime-v1"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GODOT_BIN="${GODOT_BIN:-/Applications/Godot.app/Contents/MacOS/Godot}"
@@ -11,7 +11,7 @@ EXPORT_METHOD="${EXPORT_METHOD:-development}"
 UNSIGNED="${UNSIGNED:-1}"
 ALLOW_INSECURE_WS="${ALLOW_INSECURE_WS:-1}"
 IOS_DEPLOYMENT_TARGET="${IOS_DEPLOYMENT_TARGET:-14.0}"
-IOS_RENDERER="${IOS_RENDERER:-metal}"
+IOS_RENDERER="${IOS_RENDERER:-vulkan}"
 IOS_CUSTOM_TEMPLATE="${IOS_CUSTOM_TEMPLATE:-res://godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip}"
 MOLTENVK_XCFRAMEWORK="${MOLTENVK_XCFRAMEWORK:-$ROOT/ios_port/deps/MoltenVK.xcframework}"
 UNSIGNED_PROJECT_TEAM_ID="${UNSIGNED_PROJECT_TEAM_ID:-ABCDE12XYZ}"
@@ -34,7 +34,10 @@ command -v ditto >/dev/null || fail "ditto is missing."
 [[ -f "$ROOT/ios_port/apply_ios_port.py" ]] || fail "apply_ios_port.py is missing."
 [[ "$BUNDLE_ID" =~ ^[A-Za-z0-9.-]+$ ]] || fail "Invalid bundle identifier: $BUNDLE_ID"
 [[ "$IOS_DEPLOYMENT_TARGET" == "14.0" ]] || fail "This workflow is intentionally fixed to iOS 14.0."
-case "$IOS_RENDERER" in metal|opengl3) ;; *) fail "IOS_RENDERER must be metal or opengl3." ;; esac
+case "$IOS_RENDERER" in
+  vulkan|metal|opengl3) ;;
+  *) fail "IOS_RENDERER must be vulkan, metal, or opengl3." ;;
+esac
 [[ -f "$ROOT/ios_port/prepare_ios14_runtime.py" ]] || fail "prepare_ios14_runtime.py is missing."
 
 CUSTOM_TEMPLATE_FILE=""

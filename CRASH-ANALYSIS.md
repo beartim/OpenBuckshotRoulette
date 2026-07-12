@@ -1,10 +1,38 @@
-# Crash analysis
+# Native Metal crash analysis
 
-- Device: iPad7,11, iOS 14.3
-- Exception: EXC_BAD_ACCESS / SIGSEGV at 0x118
-- Launch-to-crash: ~0.86 s
-- Main binary UUID: 6b6f8a72-d190-3da1-b940-851b2714a715
-- App offsets: 0x287c718, 0xef0d40, 0xeef1f4
-- Multiple MobileSubstrate dylibs were injected
+Device and OS:
 
-The build is changed from Forward Plus + MoltenVK/Vulkan to native Metal Mobile, with GL Compatibility available as a fallback. Matching symbols are now retained for exact symbolication of any subsequent crash.
+- iPad7,11 (A10-class device)
+- iOS 14.3
+
+The two supplied native-Metal crash reports have different application UUIDs,
+but exactly the same application-relative crashing frames:
+
+- `+42452760`
+- `+15662400`
+- `+15655412`
+
+Both terminate on the main thread with `EXC_BAD_ACCESS / KERN_INVALID_ADDRESS
+0x118`, less than one second after launch. The OpenGL build runs successfully.
+This strongly isolates the failure to the RenderingDevice/native-Metal startup
+path rather than signing, game scripts, bundle resources, or deployment target.
+
+The reports are not symbolicated. A source-level native-Metal fix would require
+the matching dSYM from that exact IPA and likely a Godot engine patch/rebuild.
+
+## Practical workaround
+
+Use:
+
+```ini
+renderer/rendering_method="mobile"
+rendering_device/driver.ios="vulkan"
+```
+
+Godot then uses the Mobile renderer through Vulkan over MoltenVK. MoltenVK
+translates Vulkan to Apple's Metal API, so this retains the modern renderer
+without entering Godot's native-Metal driver that crashes on this device.
+
+The device still injects MobileSubstrate tweaks into the process. Testing with
+tweak injection disabled remains necessary before attributing every crash to
+Godot itself.

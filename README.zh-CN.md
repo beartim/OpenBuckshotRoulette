@@ -1,28 +1,19 @@
-# OpenBuckshotRoulette iOS 14 MoltenVK force-load v2
+# OpenBuckshotRoulette iOS 14 Vulkan/MoltenVK 运行时修复
 
-## 本次错误
+## 结论
 
-这次不是 Godot、MoltenVK 或 Xcode 编译失败。脚本已经：
-
-1. 成功导出 Xcode 工程；
-2. 成功安装 `MoltenVK.xcframework`；
-3. 按设计删除 PBX 中的 4 条 MoltenVK 引用；
-4. 准备通过 `OTHER_LDFLAGS=-Wl,-force_load,.../libMoltenVK.a` 显式链接。
-
-但旧检查随后又因为 PBX 中不存在 MoltenVK 引用而主动退出，逻辑互相矛盾。
-
-## v2 修复
-
-- force-load 模式下，PBX 中 MoltenVK 引用应为 0。
-- 验证静态库存在且非空。
-- 验证 Xcode 最终 Build Settings 中包含准确的 `-force_load` 路径。
-- 构建脚本修订号升级为：
+原生 Metal 版本在 iPad7,11 / iOS 14.3 上仍会于启动后约 0.8 秒发生
+`EXC_BAD_ACCESS`。新的崩溃报告与旧报告虽然 UUID 不同，但应用内相对崩溃
+地址完全一致。OpenGL 版本能够运行，因此最现实的高性能修复方案是：
 
 ```text
-2026-07-12-moltenvk-force-load-v2
+Godot Mobile renderer + Vulkan driver + MoltenVK
 ```
 
-## 覆盖位置
+它并非 OpenGL。Godot 输出 Vulkan 命令，MoltenVK 将其转换为 Metal 命令交给
+Apple GPU，因此仍使用 Metal 图形栈，但避开 Godot 4.7 的原生 Metal 驱动。
+
+## 覆盖文件
 
 ```text
 .github/workflows/build-ios.yml
@@ -31,25 +22,25 @@ ios_port/prepare_ios14_runtime.py
 ios_port/export_presets.ios14.cfg.template
 ```
 
-提交：
+提交后运行 Action，renderer 选择 `vulkan`。
 
-```bash
-git add .github/workflows/build-ios.yml \
-        ios_port/build_ios14.sh \
-        ios_port/prepare_ios14_runtime.py \
-        ios_port/export_presets.ios14.cfg.template
-
-git update-index --chmod=+x ios_port/build_ios14.sh
-git update-index --chmod=+x ios_port/prepare_ios14_runtime.py
-
-git commit -m "Fix contradictory MoltenVK force-load guard"
-git push
-```
-
-重新运行时选择 `renderer = metal`。新日志应包含：
+成功产物：
 
 ```text
-Build script revision: 2026-07-12-moltenvk-force-load-v2
-PBX MoltenVK references: 0 (expected for force-load mode)
-OTHER_LDFLAGS: $(inherited) -Wl,-force_load,.../libMoltenVK.a ...
+OpenBuckshotRoulette-iOS14-vulkan-unsigned
 ```
+
+## 渲染模式
+
+- `vulkan`：推荐。Mobile renderer，通过 MoltenVK 转译到 Metal。
+- `opengl3`：最稳定，适合最终兜底。
+- `metal`：保留用于测试，但该设备当前已重复验证会崩溃。
+
+Vulkan 模式还会开启 `fallback_to_opengl3=true` 并关闭 Godot pipeline cache，
+以减少旧 iOS 上首次启动缓存初始化带来的变量。
+
+## 测试前
+
+崩溃报告仍显示 SnowBoard、FPSIndicator、ShijimaInApp 等 MobileSubstrate
+模块被注入。请先使用 Choicy 为应用关闭 tweak injection，或者在越狱安全模式
+测试。否则不能完全排除 UIKit/Metal Hook 对结果的影响。
