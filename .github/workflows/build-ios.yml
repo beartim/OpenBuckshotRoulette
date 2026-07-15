@@ -1,145 +1,151 @@
-name: Build iOS unsigned IPA
-
+name: Build OpenBuckshotRoulette iOS 14 IPA (MoltenVK force-load v2)
 on:
   workflow_dispatch:
     inputs:
       bundle_id:
-        description: Bundle identifier used for the unsigned build
+        description: Bundle identifier
         required: true
-        default: com.example.openbuckshotroulette
-      ios_deployment_target:
-        description: Minimum iOS version (Xcode 26 supports 15.0 or later)
+        default: com.wzn.openbuckshotroulette
+      renderer:
+        description: Test metal first; use opengl3 if Metal still crashes
         required: true
-        default: "15.0"
-
+        type: choice
+        default: metal
+        options: [metal, opengl3]
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   GODOT_VERSION: 4.7-stable
-
+  XCODE_VERSION: "16.4"
+  LOCAL_TEMPLATE_ZIP: godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip
+  MOLTENVK_VERSION: "1.3.0"
+  IOS_BUILD_SCRIPT_REVISION: "2026-07-12-moltenvk-force-load-v2"
 jobs:
-  build:
-    runs-on: macos-26
-    timeout-minutes: 75
+  build-ios14:
+    runs-on: macos-15
+    timeout-minutes: 120
     permissions:
       contents: read
-
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
           lfs: true
           persist-credentials: false
-
-      - name: Select Xcode 26
+      - name: Materialize template
         shell: bash
         run: |
           set -euo pipefail
-          XCODE_APP="$(python3 - <<'PY'
-          from pathlib import Path
-          import re
+          mkdir -p build/logs
+          git lfs install --local
+          git lfs pull
+          git lfs checkout
+          test -s "$LOCAL_TEMPLATE_ZIP"
+          if grep -q '^version https://git-lfs.github.com/spec/v1' "$LOCAL_TEMPLATE_ZIP"; then exit 1; fi
+          unzip -t "$LOCAL_TEMPLATE_ZIP" > build/logs/template-integrity.txt
+      - name: Select Xcode 16.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo xcode-select --switch "/Applications/Xcode_${XCODE_VERSION}.app/Contents/Developer"
+          xcodebuild -version | tee build/logs/xcode-version.txt
+      - name: Verify files
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in project.godot scripts/ModLoader.gd ios_port/apply_ios_port.py ios_port/prepare_ios14_runtime.py ios_port/build_ios14.sh ios_port/export_presets.ios14.cfg.template; do test -f "$f"; done
+          chmod +x ios_port/*.py ios_port/build_ios14.sh
+          grep -Fq "${IOS_BUILD_SCRIPT_REVISION}" ios_port/build_ios14.sh || {
+            echo "::error::The repository is still using an older build_ios14.sh. Expected revision ${IOS_BUILD_SCRIPT_REVISION}."
+            sed -n '1,30p' ios_port/build_ios14.sh
+            exit 1
+          }
+      - name: Download static MoltenVK for link-time Vulkan symbols
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/logs ios_port/deps /tmp/moltenvk-package
+          URL="https://github.com/KhronosGroup/MoltenVK/releases/download/v${MOLTENVK_VERSION}/MoltenVK-all.tar"
+          curl --fail --location --retry 5 --retry-all-errors \
+            --output /tmp/MoltenVK-all.tar "$URL"
+          shasum -a 256 /tmp/MoltenVK-all.tar \
+            | tee build/logs/moltenvk-download.sha256
+          tar -tf /tmp/MoltenVK-all.tar \
+            > build/logs/moltenvk-archive-contents.txt
+          tar -xf /tmp/MoltenVK-all.tar -C /tmp/moltenvk-package
 
-          candidates = []
-          for path in Path('/Applications').glob('Xcode_26*.app'):
-              match = re.search(r'Xcode_([0-9]+(?:\.[0-9]+)*)', path.name)
-              if match:
-                  version = tuple(int(part) for part in match.group(1).split('.'))
-                  candidates.append((version, str(path)))
-          default = Path('/Applications/Xcode.app')
-          if default.is_dir():
-              candidates.append(((26,), str(default)))
-          candidates.sort()
-          print(candidates[-1][1] if candidates else '')
+          MOLTENVK_SOURCE="$(python3 - <<'PY'
+          from pathlib import Path
+          matches = list(Path("/tmp/moltenvk-package").rglob("MoltenVK.xcframework"))
+          valid = [
+              p for p in matches
+              if (p / "Info.plist").is_file()
+              and (p / "ios-arm64" / "libMoltenVK.a").is_file()
+          ]
+          print(valid[0] if valid else "")
           PY
           )"
-          if [[ -z "$XCODE_APP" ]]; then
-            echo "::error::No Xcode 26 installation is available on this runner."
-            find /Applications -maxdepth 1 -name 'Xcode*.app' -print || true
+          if [[ -z "$MOLTENVK_SOURCE" ]]; then
+            echo "::error::MoltenVK release does not contain the static ios-arm64 XCFramework."
+            find /tmp/moltenvk-package -maxdepth 7 -print \
+              | sort | tee build/logs/moltenvk-extracted-files.txt
             exit 1
           fi
-          sudo xcode-select --switch "$XCODE_APP/Contents/Developer"
-          XCODE_VERSION="$(xcodebuild -version | awk 'NR==1 {print $2}')"
-          XCODE_MAJOR="${XCODE_VERSION%%.*}"
-          if [[ "$XCODE_MAJOR" -lt 26 ]]; then
-            echo "::error::Godot 4.7 official iOS templates require an Xcode 26-era SDK/toolchain; selected $XCODE_VERSION."
-            exit 1
-          fi
-          xcodebuild -version
-          echo "Xcode app: $XCODE_APP"
-          echo "Xcode developer directory: $(xcode-select -p)"
-          echo "iPhoneOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
-          xcrun --sdk iphoneos --show-sdk-path
+          rm -rf ios_port/deps/MoltenVK.xcframework
+          ditto "$MOLTENVK_SOURCE" ios_port/deps/MoltenVK.xcframework
+          test -f ios_port/deps/MoltenVK.xcframework/Info.plist
+          test -f ios_port/deps/MoltenVK.xcframework/ios-arm64/libMoltenVK.a
+          plutil -lint ios_port/deps/MoltenVK.xcframework/Info.plist \
+            | tee build/logs/moltenvk-source-info-plist-lint.txt
+          {
+            echo "Version: $MOLTENVK_VERSION"
+            echo "URL: $URL"
+            echo "Source: $MOLTENVK_SOURCE"
+            du -sh ios_port/deps/MoltenVK.xcframework
+            find ios_port/deps/MoltenVK.xcframework -maxdepth 3 -type f -print | sort
+          } | tee build/logs/moltenvk-installation.txt
 
-      - name: Verify repository layout
+      - name: Download Godot editor
         shell: bash
         run: |
           set -euo pipefail
-          missing=0
-          for file in \
-            project.godot \
-            scripts/ModLoader.gd \
-            ios_port/apply_ios_port.py \
-            ios_port/build_ios.sh \
-            ios_port/export_presets.cfg.template; do
-            if [[ ! -f "$file" ]]; then
-              echo "::error file=$file::Required file is missing. Copy the iOS kit into a full OpenBuckshotRoulette fork."
-              missing=1
-            fi
-          done
-          (( missing == 0 )) || exit 1
-          chmod +x ios_port/build_ios.sh ios_port/apply_ios_port.py
-
-      - name: Download Godot 4.7 and export templates
-        shell: bash
-        run: |
-          set -euo pipefail
-          GODOT_ZIP="Godot_v${GODOT_VERSION}_macos.universal.zip"
-          TEMPLATE_TPZ="Godot_v${GODOT_VERSION}_export_templates.tpz"
-          RELEASE_BASE="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}"
-
-          curl --fail --location --retry 5 --retry-all-errors \
-            --output godot.zip "${RELEASE_BASE}/${GODOT_ZIP}"
-          unzip -q godot.zip
-
-          curl --fail --location --retry 5 --retry-all-errors \
-            --output templates.tpz "${RELEASE_BASE}/${TEMPLATE_TPZ}"
-          rm -rf template_unpack
-          mkdir -p template_unpack
-          unzip -q templates.tpz -d template_unpack
-
-          TEMPLATE_DIR="$HOME/Library/Application Support/Godot/export_templates/4.7.stable"
-          mkdir -p "$TEMPLATE_DIR"
-          cp -R template_unpack/templates/. "$TEMPLATE_DIR/"
-
+          BASE="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}"
+          curl -fL --retry 5 --retry-all-errors -o godot-editor.zip "$BASE/Godot_v${GODOT_VERSION}_macos.universal.zip"
+          unzip -q godot-editor.zip
           chmod +x Godot.app/Contents/MacOS/Godot
-          Godot.app/Contents/MacOS/Godot --version
-          test -f "$TEMPLATE_DIR/ios.zip"
-
-      - name: Build unsigned IPA
+      - name: Build runtime-safe IPA
         shell: bash
         env:
           GODOT_BIN: ${{ github.workspace }}/Godot.app/Contents/MacOS/Godot
           BUNDLE_ID: ${{ inputs.bundle_id }}
-          IOS_DEPLOYMENT_TARGET: ${{ inputs.ios_deployment_target }}
+          IOS_DEPLOYMENT_TARGET: "14.0"
+          IOS_RENDERER: ${{ inputs.renderer }}
+          IOS_CUSTOM_TEMPLATE: res://godot-4.7-ios14-xcode16.4-template/godot-4.7-ios14-xcode16.4.zip
           UNSIGNED: "1"
           UNSIGNED_PROJECT_TEAM_ID: ABCDE12XYZ
           ALLOW_INSECURE_WS: "1"
-        run: ./ios_port/build_ios.sh
-
-      - name: Upload unsigned IPA
+          MOLTENVK_XCFRAMEWORK: ${{ github.workspace }}/ios_port/deps/MoltenVK.xcframework
+        run: ./ios_port/build_ios14.sh
+      - name: Upload IPA
         if: success()
         uses: actions/upload-artifact@v7
         with:
-          name: OpenBuckshotRoulette-iOS-unsigned
+          name: OpenBuckshotRoulette-iOS14-${{ inputs.renderer }}-unsigned
           path: build/ipa/*.ipa
           if-no-files-found: error
-          retention-days: 14
-
-      - name: Upload diagnostic logs
+          retention-days: 30
+      - name: Upload symbols
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: OpenBuckshotRoulette-iOS-build-logs
+          name: OpenBuckshotRoulette-iOS14-${{ inputs.renderer }}-symbols
+          path: build/symbols/
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: OpenBuckshotRoulette-iOS14-${{ inputs.renderer }}-build-logs
           path: build/logs/
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 30
