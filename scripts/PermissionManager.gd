@@ -14,70 +14,73 @@ func _ready():
 	pass
 
 func SetIndicators(state : bool):
-	if (state):
-		for i in range(indicatorArray.size()):
-			indicatorArray[i].interactionAllowed = true
-	if (!state):
-		for i in range(indicatorArray.size()):
-			indicatorArray[i].interactionAllowed = false
-			indicatorArray[i].moving = false
+	for indicator in indicatorArray:
+		if !is_instance_valid(indicator):
+			continue
+		indicator.interactionAllowed = state
+		if !state:
+			indicator.moving = false
 
 func DisableShotgun():
-	for i in range (interactionBranchArray.size()):
-		if (interactionBranchArray[i].interactionAlias == "shotgun"):
-			interactionBranchArray[i].interactionAllowed = false
+	for branch in interactionBranchArray:
+		if is_instance_valid(branch) and branch.interactionAlias == "shotgun":
+			branch.interactionAllowed = false
 			break
-	for i in range (indicatorArray.size()):
-		if (indicatorArray[i].itemName == "SHOTGUN"):
-			indicatorArray[i].interactionAllowed = false
+	for indicator in indicatorArray:
+		if is_instance_valid(indicator) and indicator.itemName == "SHOTGUN":
+			indicator.interactionAllowed = false
 			break
-			
 
 func SetInteractionPermissions(state : bool):
-	if (state):
-		for i in range(interactionBranchArray.size()):
-			interactionBranchArray[i].interactionAllowed = true
-	if (!state):
-		for i in range(interactionBranchArray.size()):
-			interactionBranchArray[i].interactionAllowed = false
-	if (roundManager.roundArray[roundManager.currentRound].usingItems && itemManager.items_dynamicIndicatorArray.size() != 0):
-		if (state):
-			for i in range(itemManager.items_dynamicInteractionArray.size()):
-				itemManager.items_dynamicInteractionArray[i].interactionAllowed = true
-				itemManager.items_dynamicIndicatorArray[i].interactionAllowed = true
-		else:
-			for i in range(itemManager.items_dynamicInteractionArray.size()):
-				itemManager.items_dynamicInteractionArray[i].interactionAllowed = false
-				itemManager.items_dynamicIndicatorArray[i].interactionAllowed = false
+	for branch in interactionBranchArray:
+		if is_instance_valid(branch):
+			branch.interactionAllowed = state
+
+	if !roundManager.roundArray[roundManager.currentRound].usingItems:
+		return
+	var pair_count := mini(itemManager.items_dynamicInteractionArray.size(), itemManager.items_dynamicIndicatorArray.size())
+	for i in range(pair_count):
+		var branch := itemManager.items_dynamicInteractionArray[i]
+		var indicator := itemManager.items_dynamicIndicatorArray[i]
+		if !is_instance_valid(branch) or !is_instance_valid(indicator):
+			continue
+		branch.interactionAllowed = state
+		indicator.interactionAllowed = state
 
 func SetItemInteraction(state : bool):
-	var children = userItemsParent.get_children()
-	for i in range(children.size()):
-		if (children[i].get_child(0) != null):
-			if (children[i].get_child(0) is PickupIndicator):
-				var tempindicator : PickupIndicator = children[i].get_child(0)
-				tempindicator.interactionAllowed = state
-			if (children[i].get_child(1) is InteractionBranch):
-				var tempBranch : InteractionBranch = children[i].get_child(1)
-				tempBranch.interactionAllowed = state
+	for child in userItemsParent.get_children():
+		if !is_instance_valid(child) or child.get_child_count() < 2:
+			continue
+		var indicator := child.get_child(0) as PickupIndicator
+		var branch := child.get_child(1) as InteractionBranch
+		if indicator != null:
+			indicator.interactionAllowed = state
+		if branch != null:
+			branch.interactionAllowed = state
 
 @export var inter : ItemInteraction
 func SetStackInvalidIndicators():
-	if (inter.stealing): stackDisabledItemArray_bools[5] = true
-	else: stackDisabledItemArray_bools[5] = false
-	if (roundManager.dealerCuffed): stackDisabledItemArray_bools[4] = true
-	else: stackDisabledItemArray_bools[4] = false
-	if (roundManager.barrelSawedOff): stackDisabledItemArray_bools[0] = true
-	else: stackDisabledItemArray_bools[0] = false
-	if (roundManager.roundArray[roundManager.currentRound].usingItems && itemManager.items_dynamicIndicatorArray.size() != 0):
-		for i in range(stackDisabledItemArray.size()):
-			for c in range(itemManager.items_dynamicInteractionArray.size()):
-				if (itemManager.items_dynamicInteractionArray[c].itemName == stackDisabledItemArray[i] && stackDisabledItemArray_bools[i]):
-					itemManager.items_dynamicInteractionArray[c].interactionInvalid = true
-					itemManager.items_dynamicIndicatorArray[c].interactionInvalid = true
-				if (itemManager.items_dynamicInteractionArray[c].itemName == stackDisabledItemArray[i] && !stackDisabledItemArray_bools[i]):
-					itemManager.items_dynamicInteractionArray[c].interactionInvalid = false
-					itemManager.items_dynamicIndicatorArray[c].interactionInvalid = false
+	if stackDisabledItemArray_bools.size() > 5:
+		stackDisabledItemArray_bools[5] = inter.stealing
+	if stackDisabledItemArray_bools.size() > 4:
+		stackDisabledItemArray_bools[4] = roundManager.dealerCuffed
+	if stackDisabledItemArray_bools.size() > 0:
+		stackDisabledItemArray_bools[0] = roundManager.barrelSawedOff
+
+	if !roundManager.roundArray[roundManager.currentRound].usingItems:
+		return
+	var pair_count := mini(itemManager.items_dynamicInteractionArray.size(), itemManager.items_dynamicIndicatorArray.size())
+	for i in range(stackDisabledItemArray.size()):
+		if i >= stackDisabledItemArray_bools.size():
+			break
+		for c in range(pair_count):
+			var branch := itemManager.items_dynamicInteractionArray[c]
+			var indicator := itemManager.items_dynamicIndicatorArray[c]
+			if !is_instance_valid(branch) or !is_instance_valid(indicator):
+				continue
+			if branch.itemName == stackDisabledItemArray[i]:
+				branch.interactionInvalid = stackDisabledItemArray_bools[i]
+				indicator.interactionInvalid = stackDisabledItemArray_bools[i]
 
 func RevertDescriptionUI():
 	description.EndLerp()

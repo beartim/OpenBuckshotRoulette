@@ -1,0 +1,692 @@
+--- a/scripts/ItemManager.gd
++++ b/scripts/ItemManager.gd
+@@ -396,89 +396,132 @@
+ 
+ var PREVIOUS_items_dyanmicIndicatorArray : Array[PickupIndicator]
+ var PREVIOUS_items_dynamicInteractionArray : Array[InteractionBranch]
+-func SetupItemSteal():
++
++func _save_player_item_interaction_arrays() -> void:
+ 	PREVIOUS_items_dyanmicIndicatorArray = []
+ 	PREVIOUS_items_dynamicInteractionArray = []
+-	PREVIOUS_items_dyanmicIndicatorArray = items_dynamicIndicatorArray
+-	PREVIOUS_items_dynamicInteractionArray = items_dynamicInteractionArray
++	for indicator in items_dynamicIndicatorArray:
++		if is_instance_valid(indicator):
++			PREVIOUS_items_dyanmicIndicatorArray.append(indicator)
++	for branch in items_dynamicInteractionArray:
++		if is_instance_valid(branch):
++			PREVIOUS_items_dynamicInteractionArray.append(branch)
++
++func _restore_player_item_interaction_arrays() -> void:
++	items_dynamicIndicatorArray = []
++	items_dynamicInteractionArray = []
++	for indicator in PREVIOUS_items_dyanmicIndicatorArray:
++		if is_instance_valid(indicator):
++			items_dynamicIndicatorArray.append(indicator)
++	for branch in PREVIOUS_items_dynamicInteractionArray:
++		if is_instance_valid(branch):
++			items_dynamicInteractionArray.append(branch)
++
++func _collect_dealer_steal_targets() -> void:
+ 	items_dynamicIndicatorArray = []
+ 	items_dynamicInteractionArray = []
++	for child in itemSpawnParent.get_children():
++		if !is_instance_valid(child) or child.get_child_count() < 2:
++			continue
++		var indicator := child.get_child(0) as PickupIndicator
++		var branch := child.get_child(1) as InteractionBranch
++		if indicator == null or branch == null:
++			continue
++		# Adrenaline may only target the dealer's currently registered items.
++		# This prevents the player's own items and queued-for-deletion nodes from
++		# entering the temporary interaction arrays.
++		if !indicator.isDealerItem or !itemArray_instances_dealer.has(child):
++			continue
++		items_dynamicIndicatorArray.append(indicator)
++		items_dynamicInteractionArray.append(branch)
++
++func _has_valid_steal_target() -> bool:
++	var pair_count := mini(items_dynamicIndicatorArray.size(), items_dynamicInteractionArray.size())
++	for i in range(pair_count):
++		var indicator := items_dynamicIndicatorArray[i]
++		var branch := items_dynamicInteractionArray[i]
++		if !is_instance_valid(indicator) or !is_instance_valid(branch):
++			continue
++		if !indicator.interactionInvalid and !branch.interactionInvalid:
++			return true
++	return false
++
++func SetupItemSteal():
++	Counter(false)
++	_save_player_item_interaction_arrays()
++	_collect_dealer_steal_targets()
+ 	interaction.pos_hand = interaction.pos_hand_stealing
+ 	interaction.rot_hand = interaction.rot_hand_stealing
+-	
+ 	interaction.stealing = true
+-	
+-	var ch = itemSpawnParent.get_children()
+-	for c in ch.size():
+-		if(ch[c].get_child(0) is PickupIndicator):
+-			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
+-			#var temp_interaction : InteractionBranch = ch[c].get_child(1)
+-			items_dynamicIndicatorArray.append(temp_indicator)
+-			items_dynamicInteractionArray.append(temp_interaction)
+-	
++	interaction.stealing_fs = false
++
++	if items_dynamicIndicatorArray.is_empty():
++		await RevertItemSteal_Timeout()
++		return
++
+ 	camera.BeginLerp("enemy items")
+ 	await GlobalVariables.tree.create_timer(.7, false).timeout
+ 	interaction.stealing_fs = true
+ 	interaction.EnablePermissions()
+ 	interaction.DisableShotgun()
+ 	roundManager.ClearDeskUI(true)
++
++	# Items such as another adrenaline, an already-used saw or handcuffs can be
++	# invalidated by SetStackInvalidIndicators(). If nothing remains usable,
++	# leave steal mode immediately instead of trapping the player for 7 seconds.
++	if !_has_valid_steal_target():
++		await RevertItemSteal_Timeout()
++		return
++
+ 	btnParent_stealing.visible = true
+-	if (cursor.controller_active): btnparent_ff_stealing.grab_focus()
++	if cursor.controller_active:
++		btnparent_ff_stealing.grab_focus()
+ 	controller.previousFocus = btnparent_ff_stealing
+-	#for c in ch.size():
+-		#if(ch[c].get_child(0) is PickupIndicator):
+-			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
+-			#var temp_interaction : InteractionBranch = ch[c].get_child(1)
+ 	Counter(true)
+ 
+-func RevertItemSteal(): 
++func RevertItemSteal() -> void:
++	Counter(false)
+ 	btnParent_stealing.visible = false
+-	items_dynamicIndicatorArray = PREVIOUS_items_dyanmicIndicatorArray
+-	items_dynamicInteractionArray = PREVIOUS_items_dynamicInteractionArray
++	_restore_player_item_interaction_arrays()
+ 
+ func RevertItemSteal_Timeout():
++	Counter(false)
+ 	btnParent_stealing.visible = false
+ 	interaction.stealing = false
++	interaction.stealing_fs = false
+ 	interaction.DisablePermissions()
+-	items_dynamicIndicatorArray = PREVIOUS_items_dyanmicIndicatorArray
+-	items_dynamicInteractionArray = PREVIOUS_items_dynamicInteractionArray
+-	var ch = itemSpawnParent.get_children()
+-	for c in ch.size():
+-		if(ch[c].get_child(0) is PickupIndicator):
+-			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
+-			temp_indicator.Revert()
++
++	# Revert only valid dealer indicators collected for this steal attempt.
++	for indicator in items_dynamicIndicatorArray:
++		if is_instance_valid(indicator):
++			indicator.Revert()
++
++	_restore_player_item_interaction_arrays()
+ 	camera.BeginLerp("home")
+ 	await GlobalVariables.tree.create_timer(.4, false).timeout
+-	interaction.stealing_fs = false
+ 	interaction.pos_hand = interaction.pos_hand_main
+ 	interaction.rot_hand = interaction.rot_hand_main
+ 	interaction.EnablePermissions()
+ 
+ func Counter(starting : bool):
+-	if (starting):
+-		timer_steal_current = 0
+-		counting = true
+-		checking = true
+-		fs = false
+-	else:
+-		timer_steal_current = 0
+-		counting = false
+-		checking = false
+-		fs = true
++	timer_steal_current = 0.0
++	counting = starting
++	checking = starting
++	fs = !starting
+ 
+ var timer_steal_current = 0.0
+ var timer_steal_max = 7.0
+ var counting = false
+ var checking = false
+ func ItemStealTimeout():
+-	if (counting): timer_steal_current += get_process_delta_time()
++	if counting:
++		timer_steal_current += get_process_delta_time()
+ 
+ var fs = false
+ func CheckTimer():
+-	if ((timer_steal_current > timer_steal_max) && checking && !fs):
+-		RevertItemSteal_Timeout()
++	if timer_steal_current > timer_steal_max and checking and !fs:
+ 		fs = true
+-	pass
++		RevertItemSteal_Timeout()
+ 
+ func ResetDealerGrid():
+ 	#CLEAR DEALER GRID
+--- a/scripts/ItemInteraction.gd
++++ b/scripts/ItemInteraction.gd
+@@ -49,66 +49,99 @@
+ var stealing = false
+ var stealing_fs = false
+ func PickupItemFromTable(itemParent : Node3D, passedItemName : String):
+-	if (stealing): 	items.Counter(false)
+-	#SET INTERACTION PERMISSIONS, HIDE CURSOR
++	var was_stealing := stealing and stealing_fs
++	if stealing:
++		items.Counter(false)
++
++	# Item nodes are expected to contain PickupIndicator and InteractionBranch
++	# as children 0 and 1. Validate this before touching them; a queued/freed
++	# node in the old adrenaline arrays caused a native crash on iOS.
++	if !is_instance_valid(itemParent) or itemParent.get_child_count() < 2:
++		if stealing:
++			await items.RevertItemSteal_Timeout()
++		else:
++			EnablePermissions()
++		return
++
++	var indicator := itemParent.get_child(0) as PickupIndicator
++	var branch := itemParent.get_child(1) as InteractionBranch
++	if indicator == null or branch == null:
++		if stealing:
++			await items.RevertItemSteal_Timeout()
++		else:
++			EnablePermissions()
++		return
++
++	# Steal mode must never accept the player's own item or an item that has
++	# already been removed from the dealer's registry.
++	if was_stealing and (!indicator.isDealerItem or !items.itemArray_instances_dealer.has(itemParent)):
++		await items.RevertItemSteal_Timeout()
++		return
++
+ 	perm.SetIndicators(false)
+ 	perm.SetInteractionPermissions(false)
+ 	perm.RevertDescriptionUI()
+ 	cursor.SetCursor(false, false)
+ 	roundManager.ClearDeskUI(true)
+-	#GET VARIABLES
++
+ 	temp_itemParent = itemParent
+-	temp_indicator = itemParent.get_child(0)
+-	temp_interaction = itemParent.get_child(1)
+-	#STEAL
+-	if (stealing && stealing_fs): 
+-		hands.RemoveItem_Remote(temp_itemParent)
++	temp_indicator = indicator
++	temp_interaction = branch
++	var temp_name: String = branch.itemName
++
++	if was_stealing:
++		if !hands.RemoveItem_Remote(temp_itemParent):
++			await items.RevertItemSteal_Timeout()
++			return
+ 		items.RevertItemSteal()
+-	#PLAY PICKUP SOUND
+-	speaker_pickup.stream = temp_indicator.sound_pickup
+-	speaker_pickup.pitch_scale = randf_range(.93, 1.0)
+-	speaker_pickup.play()
+-	#INTERACTION PERMISSIONS
+-	#perm.SetIndicators(false)
+-	#cursor.SetCursor(false, false)
+-	#perm.SetInteractionPermissions(false)
++
++	if temp_indicator.sound_pickup != null:
++		speaker_pickup.stream = temp_indicator.sound_pickup
++		speaker_pickup.pitch_scale = randf_range(.93, 1.0)
++		speaker_pickup.play()
++
+ 	temp_indicator.lerpEnabled = false
+ 	temp_indicator.interactionAllowed = false
+ 	temp_indicator.SnapToMax()
+ 	temp_interaction.interactionAllowed = false
+-	var temp_name = temp_interaction.itemName
+-	#LERP
++
+ 	pos_current = temp_itemParent.transform.origin
+ 	rot_current = temp_itemParent.rotation_degrees
+ 	pos_next = pos_hand
+ 	rot_next = rot_hand
+ 	elapsed = 0
+ 	moving = true
+-	await GlobalVariables.tree.create_timer(lerpDuration -.1, false).timeout
++	await GlobalVariables.tree.create_timer(maxf(lerpDuration - .1, 0.0), false).timeout
+ 	moving = false
+-	if (!stealing): RemovePlayerItemFromGrid(temp_itemParent)
+-	temp_itemParent.queue_free() #check where player grid index is given, and remove item from player item array, unoccupy given grid
+-	if (stealing):
++
++	if !was_stealing:
++		RemovePlayerItemFromGrid(temp_itemParent)
++	temp_itemParent.queue_free()
++
++	if was_stealing:
+ 		camera.BeginLerp("home")
+ 		stealing_fs = false
+ 		await GlobalVariables.tree.create_timer(.4, false).timeout
+ 		pos_hand = pos_hand_main
+ 		rot_hand = rot_hand_main
+-		var amountArray : Array[AmountResource] = amounts.array_amounts
+-		for res in amountArray:
+-			if (res.itemName == temp_name): 
+-				res.amount_dealer -= 1
++		for res in amounts.array_amounts:
++			if res.itemName == temp_name:
++				res.amount_dealer = maxi(0, res.amount_dealer - 1)
+ 				break
+-	InteractWith(passedItemName)
++
++	# A stolen item is used immediately; it never enters the player's grid, so
++	# only normal player-owned items decrement amount_player.
++	InteractWith(temp_name if temp_name != "" else passedItemName, !was_stealing)
+ 	stealing = false
+ 
+-func InteractWith(itemName : String):
+-	#INTERACTION
+-	var amountArray : Array[AmountResource] = amounts.array_amounts
+-	for res in amountArray:
+-		if (res.itemName == itemName): 
+-			res.amount_player -= 1
+-			break
++func InteractWith(itemName : String, consume_player_item := true):
++	# A stolen dealer item is used directly and is not removed from the
++	# player's inventory count.
++	if consume_player_item:
++		for res in amounts.array_amounts:
++			if res.itemName == itemName:
++				res.amount_player = maxi(0, res.amount_player - 1)
++				break
+ 	
+ 	var isdup = false
+ 	for it in roundManager.playerCurrentTurnItemArray:
+@@ -186,20 +219,26 @@
+ 
+ @export var ach : Achievement
+ func CheckAchievement_koni():
+-	if ("cigarettes" in roundManager.playerCurrentTurnItemArray and "beer" in roundManager.playerCurrentTurnItemArray and "expired medicine" in roundManager.playerCurrentTurnItemArray): ach.UnlockAchievement("ach9")
++	if ach != null and ("cigarettes" in roundManager.playerCurrentTurnItemArray and "beer" in roundManager.playerCurrentTurnItemArray and "expired medicine" in roundManager.playerCurrentTurnItemArray):
++		ach.UnlockAchievement("ach9")
+ 
+ func CheckAchievement_full():
+ 	var all = ["handsaw", "magnifying glass", "beer", "cigarettes", "handcuffs", "expired medicine", "burner phone", "adrenaline", "inverter"]
+ 	var pl = roundManager.playerCurrentTurnItemArray
+-	if (all.size() == pl.size()): ach.UnlockAchievement("ach12")
++	if ach != null and all.size() == pl.size():
++		ach.UnlockAchievement("ach12")
+ 
+ @export var anim_pp : AnimationPlayer
+ @export var filter : FilterController
+ func AdrenalineHit():
+-	anim_pp.play("adrenaline brightness")
++	if anim_pp != null:
++		anim_pp.play("adrenaline brightness")
++	if filter == null:
++		return
+ 	filter.BeginPan(filter.lowPassDefaultValue, filter.lowPassMaxValue)
+ 	await GlobalVariables.tree.create_timer(6, false).timeout
+-	filter.BeginPan(filter.effect_lowPass.cutoff_hz, filter.lowPassDefaultValue)
++	if is_instance_valid(filter) and filter.effect_lowPass != null:
++		filter.BeginPan(filter.effect_lowPass.cutoff_hz, filter.lowPassDefaultValue)
+ 
+ func PlaySound(clip : AudioStream):
+ 	speaker_interaction.stream = clip
+--- a/scripts/HandManager.gd
++++ b/scripts/HandManager.gd
+@@ -51,82 +51,114 @@
+ var stealing = false
+ func PickupItemFromTable(itemName : String):
+ 	dealerAI.Speaker_HandCrack()
+-	var activeIndex
+-	var activeInstance
+-	var whichHandToGrabWith
+-	var whichGridSide
+-	var matchIndex
+-	activeItemToGrab = itemName 
++	var activeIndex := -1
++	var activeInstance: Node3D = null
++	var whichHandToGrabWith := ""
++	var whichGridSide := ""
++	var matchIndex := -1
++	activeItemToGrab = itemName
++
+ 	for i in range(itemManager.itemArray_instances_dealer.size()):
+-		if (itemName == itemManager.itemArray_instances_dealer[i].get_child(1).itemName):
+-			activeInstance = itemManager.itemArray_instances_dealer[i]
++		var candidate := itemManager.itemArray_instances_dealer[i]
++		if !is_instance_valid(candidate) or candidate.get_child_count() < 2:
++			continue
++		var branch := candidate.get_child(1) as InteractionBranch
++		if branch != null and itemName == branch.itemName:
++			activeInstance = candidate
+ 			matchIndex = i
+ 			break
+-	activeIndex = activeInstance.get_child(0).dealerGridIndex
++
++	if activeInstance == null or matchIndex < 0:
++		stealing = false
++		HandFailsafe()
++		return
++
++	var indicator := activeInstance.get_child(0) as PickupIndicator
++	if indicator == null:
++		stealing = false
++		HandFailsafe()
++		return
++
++	activeIndex = indicator.dealerGridIndex
++	if activeIndex < 0 or activeIndex >= gridOffsetArray.size():
++		stealing = false
++		HandFailsafe()
++		return
++
+ 	ToggleHandVisible("BOTH", false)
+ 	hand_defaultL.visible = true
+ 	hand_defaultR.visible = true
+-	if (itemName == "beer" or itemName == "cigarettes" or itemName == "expired medicine" or itemName == "inverter" or itemName == "adrenaline"): whichHandToGrabWith = "left"
+-	else: whichHandToGrabWith = "right"
+-	whichGridSide = activeInstance.get_child(0).whichSide
++	if itemName in ["beer", "cigarettes", "expired medicine", "inverter", "adrenaline"]:
++		whichHandToGrabWith = "left"
++	else:
++		whichHandToGrabWith = "right"
++	whichGridSide = indicator.whichSide
+ 	animator_hands.play("RESET")
+ 	BeginHandLerp(whichHandToGrabWith, activeIndex, whichGridSide)
+-	if (whichGridSide == "right"): animator_dealerHeadLook.play("dealer look right")
+-	else: animator_dealerHeadLook.play("dealer look left")
+-	if (stealing):
+-		if (whichGridSide == "right"): cam.BeginLerp("player item grid left")
+-		else: cam.BeginLerp("player item grid right")
+-		var amountArray : Array[AmountResource] = amounts.array_amounts
+-		for res in amountArray:
+-			if res.itemName == itemName: res.amount_player -= 1
+-			break
+-	await GlobalVariables.tree.create_timer(lerpDuration -.4, false).timeout
+-	if (whichHandToGrabWith == "right"): hand_defaultR.visible = false
+-	else: hand_defaultL.visible = false
++	if whichGridSide == "right":
++		animator_dealerHeadLook.play("dealer look right")
++	else:
++		animator_dealerHeadLook.play("dealer look left")
++
++	if stealing:
++		if whichGridSide == "right":
++			cam.BeginLerp("player item grid left")
++		else:
++			cam.BeginLerp("player item grid right")
++		for res in amounts.array_amounts:
++			if res.itemName == itemName:
++				res.amount_player = maxi(0, res.amount_player - 1)
++				break
++
++	await GlobalVariables.tree.create_timer(maxf(lerpDuration - .4, 0.0), false).timeout
++	if whichHandToGrabWith == "right":
++		hand_defaultR.visible = false
++	else:
++		hand_defaultL.visible = false
+ 	dealerAI.Speaker_HandCrack()
+-	match (itemName):
+-		"handsaw":
+-			hand_handsaw.visible = true
+-		"magnifying glass":
+-			hand_magnifier.visible = true
+-		"handcuffs":
+-			hand_handcuffs.visible = true
++
++	match itemName:
++		"handsaw": hand_handsaw.visible = true
++		"magnifying glass": hand_magnifier.visible = true
++		"handcuffs": hand_handcuffs.visible = true
+ 		"cigarettes":
+ 			hand_cigarettepack.visible = true
+-			itemManager.numberOfCigs_dealer -= 1
+-		"beer":
+-			hand_beer.visible = true
+-		"expired medicine":
+-			hand_medicine.visible = true
+-		"inverter":
+-			hand_inverter.visible = true
+-		"burner phone":
+-			hand_burnerphone.visible = true
+-		"adrenaline":
+-			hand_adrenaline.visible = true
++			itemManager.numberOfCigs_dealer = maxi(0, itemManager.numberOfCigs_dealer - 1)
++		"beer": hand_beer.visible = true
++		"expired medicine": hand_medicine.visible = true
++		"inverter": hand_inverter.visible = true
++		"burner phone": hand_burnerphone.visible = true
++		"adrenaline": hand_adrenaline.visible = true
++
+ 	itemManager.itemArray_instances_dealer.remove_at(matchIndex)
+-	var tempindicator = activeInstance.get_child(0)
+-	var gridname = tempindicator.dealerGridName
+-	if (!stealing): itemManager.gridParentArray_enemy_available.append(gridname)
+-	if (stealing): inter.RemovePlayerItemFromGrid(activeInstance)
++	var gridname = indicator.dealerGridName
++	if !stealing and gridname != null and !itemManager.gridParentArray_enemy_available.has(gridname):
++		itemManager.gridParentArray_enemy_available.append(gridname)
++	if stealing:
++		inter.RemovePlayerItemFromGrid(activeInstance)
+ 	activeInstance.queue_free()
+ 	await GlobalVariables.tree.create_timer(.2, false).timeout
+ 	ReturnHand()
+-	if (stealing):
++	if stealing:
+ 		cam.BeginLerp("enemy")
+-	if (whichGridSide == "right"): animator_dealerHeadLook.play("dealer look forward from right")
+-	else: animator_dealerHeadLook.play("dealer look forward from left")
++	if whichGridSide == "right":
++		animator_dealerHeadLook.play("dealer look forward from right")
++	else:
++		animator_dealerHeadLook.play("dealer look forward from left")
+ 	await GlobalVariables.tree.create_timer(lerpDuration + .01, false).timeout
+ 	HandFailsafe()
+-	var animationName = "dealer use " + itemName
++
++	var animationName := "dealer use " + itemName
+ 	PlaySound(itemName)
+ 	animator_hands.play("RESET")
+-	animator_hands.play(animationName)
+-	var length = animator_hands.get_animation(animationName).get_length()
+-	moving = false
+-	await GlobalVariables.tree.create_timer(length, false).timeout
++	if animator_hands.has_animation(animationName):
++		animator_hands.play(animationName)
++		var length := animator_hands.get_animation(animationName).get_length()
++		moving = false
++		await GlobalVariables.tree.create_timer(length, false).timeout
++	else:
++		moving = false
+ 	stealing = false
+-	pass
+ 
+ @export var speaker_interaction : AudioStreamPlayer2D
+ @export var sound_adrenaline : AudioStream
+@@ -148,27 +180,30 @@
+ 			speaker_interaction.stream = sound_inverter
+ 			speaker_interaction.play()
+ 
+-func RemoveItem_Remote(activeInstance : Node3D):
+-	#var activeIndex
+-	#var whichHandToGrabWith
+-	#var whichGridSide
+-	#var matchIndex
+-	itemManager.itemArray_dealer.erase(activeInstance.get_child(1).itemName.to_lower())
+-	itemManager.numberOfItemsGrabbed_enemy -= 1
+-	#activeIndex = activeInstance.get_child(0).dealerGridIndex
+-	#whichGridSide = activeInstance.get_child(0).whichSide
++func RemoveItem_Remote(activeInstance : Node3D) -> bool:
++	if !is_instance_valid(activeInstance) or activeInstance.get_child_count() < 2:
++		return false
++	var indicator := activeInstance.get_child(0) as PickupIndicator
++	var branch := activeInstance.get_child(1) as InteractionBranch
++	if indicator == null or branch == null or !indicator.isDealerItem:
++		return false
++	if !itemManager.itemArray_instances_dealer.has(activeInstance):
++		return false
++
++	itemManager.itemArray_dealer.erase(branch.itemName.to_lower())
++	itemManager.numberOfItemsGrabbed_enemy = maxi(0, itemManager.numberOfItemsGrabbed_enemy - 1)
+ 	itemManager.itemArray_instances_dealer.erase(activeInstance)
+-	var tempindicator = activeInstance.get_child(0)
+-	var gridname = tempindicator.dealerGridName
+-	itemManager.gridParentArray_enemy_available.append(gridname)
+-	pass
++	var gridname = indicator.dealerGridName
++	if gridname != null and !itemManager.gridParentArray_enemy_available.has(gridname):
++		itemManager.gridParentArray_enemy_available.append(gridname)
++	return true
+ 
+ func ToggleHandVisible(selectedHand : String, state : bool):
+-	if (selectedHand == "L" or "BOTH"):
++	if selectedHand == "L" or selectedHand == "BOTH":
+ 		for i in range(handArray_L.size()):
+ 			if (state): handArray_L[i].visible = true
+ 			else: handArray_L[i].visible = false
+-	if (selectedHand == "R" or "BOTH"):
++	if selectedHand == "R" or selectedHand == "BOTH":
+ 		for i in range(handArray_R.size()):
+ 			if (state): handArray_R[i].visible = true
+ 			else: handArray_R[i].visible = false
+--- a/scripts/PermissionManager.gd
++++ b/scripts/PermissionManager.gd
+@@ -14,70 +14,73 @@
+ 	pass
+ 
+ func SetIndicators(state : bool):
+-	if (state):
+-		for i in range(indicatorArray.size()):
+-			indicatorArray[i].interactionAllowed = true
+-	if (!state):
+-		for i in range(indicatorArray.size()):
+-			indicatorArray[i].interactionAllowed = false
+-			indicatorArray[i].moving = false
++	for indicator in indicatorArray:
++		if !is_instance_valid(indicator):
++			continue
++		indicator.interactionAllowed = state
++		if !state:
++			indicator.moving = false
+ 
+ func DisableShotgun():
+-	for i in range (interactionBranchArray.size()):
+-		if (interactionBranchArray[i].interactionAlias == "shotgun"):
+-			interactionBranchArray[i].interactionAllowed = false
++	for branch in interactionBranchArray:
++		if is_instance_valid(branch) and branch.interactionAlias == "shotgun":
++			branch.interactionAllowed = false
+ 			break
+-	for i in range (indicatorArray.size()):
+-		if (indicatorArray[i].itemName == "SHOTGUN"):
+-			indicatorArray[i].interactionAllowed = false
++	for indicator in indicatorArray:
++		if is_instance_valid(indicator) and indicator.itemName == "SHOTGUN":
++			indicator.interactionAllowed = false
+ 			break
+-			
+ 
+ func SetInteractionPermissions(state : bool):
+-	if (state):
+-		for i in range(interactionBranchArray.size()):
+-			interactionBranchArray[i].interactionAllowed = true
+-	if (!state):
+-		for i in range(interactionBranchArray.size()):
+-			interactionBranchArray[i].interactionAllowed = false
+-	if (roundManager.roundArray[roundManager.currentRound].usingItems && itemManager.items_dynamicIndicatorArray.size() != 0):
+-		if (state):
+-			for i in range(itemManager.items_dynamicInteractionArray.size()):
+-				itemManager.items_dynamicInteractionArray[i].interactionAllowed = true
+-				itemManager.items_dynamicIndicatorArray[i].interactionAllowed = true
+-		else:
+-			for i in range(itemManager.items_dynamicInteractionArray.size()):
+-				itemManager.items_dynamicInteractionArray[i].interactionAllowed = false
+-				itemManager.items_dynamicIndicatorArray[i].interactionAllowed = false
++	for branch in interactionBranchArray:
++		if is_instance_valid(branch):
++			branch.interactionAllowed = state
++
++	if !roundManager.roundArray[roundManager.currentRound].usingItems:
++		return
++	var pair_count := mini(itemManager.items_dynamicInteractionArray.size(), itemManager.items_dynamicIndicatorArray.size())
++	for i in range(pair_count):
++		var branch := itemManager.items_dynamicInteractionArray[i]
++		var indicator := itemManager.items_dynamicIndicatorArray[i]
++		if !is_instance_valid(branch) or !is_instance_valid(indicator):
++			continue
++		branch.interactionAllowed = state
++		indicator.interactionAllowed = state
+ 
+ func SetItemInteraction(state : bool):
+-	var children = userItemsParent.get_children()
+-	for i in range(children.size()):
+-		if (children[i].get_child(0) != null):
+-			if (children[i].get_child(0) is PickupIndicator):
+-				var tempindicator : PickupIndicator = children[i].get_child(0)
+-				tempindicator.interactionAllowed = state
+-			if (children[i].get_child(1) is InteractionBranch):
+-				var tempBranch : InteractionBranch = children[i].get_child(1)
+-				tempBranch.interactionAllowed = state
++	for child in userItemsParent.get_children():
++		if !is_instance_valid(child) or child.get_child_count() < 2:
++			continue
++		var indicator := child.get_child(0) as PickupIndicator
++		var branch := child.get_child(1) as InteractionBranch
++		if indicator != null:
++			indicator.interactionAllowed = state
++		if branch != null:
++			branch.interactionAllowed = state
+ 
+ @export var inter : ItemInteraction
+ func SetStackInvalidIndicators():
+-	if (inter.stealing): stackDisabledItemArray_bools[5] = true
+-	else: stackDisabledItemArray_bools[5] = false
+-	if (roundManager.dealerCuffed): stackDisabledItemArray_bools[4] = true
+-	else: stackDisabledItemArray_bools[4] = false
+-	if (roundManager.barrelSawedOff): stackDisabledItemArray_bools[0] = true
+-	else: stackDisabledItemArray_bools[0] = false
+-	if (roundManager.roundArray[roundManager.currentRound].usingItems && itemManager.items_dynamicIndicatorArray.size() != 0):
+-		for i in range(stackDisabledItemArray.size()):
+-			for c in range(itemManager.items_dynamicInteractionArray.size()):
+-				if (itemManager.items_dynamicInteractionArray[c].itemName == stackDisabledItemArray[i] && stackDisabledItemArray_bools[i]):
+-					itemManager.items_dynamicInteractionArray[c].interactionInvalid = true
+-					itemManager.items_dynamicIndicatorArray[c].interactionInvalid = true
+-				if (itemManager.items_dynamicInteractionArray[c].itemName == stackDisabledItemArray[i] && !stackDisabledItemArray_bools[i]):
+-					itemManager.items_dynamicInteractionArray[c].interactionInvalid = false
+-					itemManager.items_dynamicIndicatorArray[c].interactionInvalid = false
++	if stackDisabledItemArray_bools.size() > 5:
++		stackDisabledItemArray_bools[5] = inter.stealing
++	if stackDisabledItemArray_bools.size() > 4:
++		stackDisabledItemArray_bools[4] = roundManager.dealerCuffed
++	if stackDisabledItemArray_bools.size() > 0:
++		stackDisabledItemArray_bools[0] = roundManager.barrelSawedOff
++
++	if !roundManager.roundArray[roundManager.currentRound].usingItems:
++		return
++	var pair_count := mini(itemManager.items_dynamicInteractionArray.size(), itemManager.items_dynamicIndicatorArray.size())
++	for i in range(stackDisabledItemArray.size()):
++		if i >= stackDisabledItemArray_bools.size():
++			break
++		for c in range(pair_count):
++			var branch := itemManager.items_dynamicInteractionArray[c]
++			var indicator := itemManager.items_dynamicIndicatorArray[c]
++			if !is_instance_valid(branch) or !is_instance_valid(indicator):
++				continue
++			if branch.itemName == stackDisabledItemArray[i]:
++				branch.interactionInvalid = stackDisabledItemArray_bools[i]
++				indicator.interactionInvalid = stackDisabledItemArray_bools[i]
+ 
+ func RevertDescriptionUI():
+ 	description.EndLerp()

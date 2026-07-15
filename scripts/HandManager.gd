@@ -51,82 +51,114 @@ func _process(_delta: float) -> void:
 var stealing = false
 func PickupItemFromTable(itemName : String):
 	dealerAI.Speaker_HandCrack()
-	var activeIndex
-	var activeInstance
-	var whichHandToGrabWith
-	var whichGridSide
-	var matchIndex
-	activeItemToGrab = itemName 
+	var activeIndex := -1
+	var activeInstance: Node3D = null
+	var whichHandToGrabWith := ""
+	var whichGridSide := ""
+	var matchIndex := -1
+	activeItemToGrab = itemName
+
 	for i in range(itemManager.itemArray_instances_dealer.size()):
-		if (itemName == itemManager.itemArray_instances_dealer[i].get_child(1).itemName):
-			activeInstance = itemManager.itemArray_instances_dealer[i]
+		var candidate := itemManager.itemArray_instances_dealer[i]
+		if !is_instance_valid(candidate) or candidate.get_child_count() < 2:
+			continue
+		var branch := candidate.get_child(1) as InteractionBranch
+		if branch != null and itemName == branch.itemName:
+			activeInstance = candidate
 			matchIndex = i
 			break
-	activeIndex = activeInstance.get_child(0).dealerGridIndex
+
+	if activeInstance == null or matchIndex < 0:
+		stealing = false
+		HandFailsafe()
+		return
+
+	var indicator := activeInstance.get_child(0) as PickupIndicator
+	if indicator == null:
+		stealing = false
+		HandFailsafe()
+		return
+
+	activeIndex = indicator.dealerGridIndex
+	if activeIndex < 0 or activeIndex >= gridOffsetArray.size():
+		stealing = false
+		HandFailsafe()
+		return
+
 	ToggleHandVisible("BOTH", false)
 	hand_defaultL.visible = true
 	hand_defaultR.visible = true
-	if (itemName == "beer" or itemName == "cigarettes" or itemName == "expired medicine" or itemName == "inverter" or itemName == "adrenaline"): whichHandToGrabWith = "left"
-	else: whichHandToGrabWith = "right"
-	whichGridSide = activeInstance.get_child(0).whichSide
+	if itemName in ["beer", "cigarettes", "expired medicine", "inverter", "adrenaline"]:
+		whichHandToGrabWith = "left"
+	else:
+		whichHandToGrabWith = "right"
+	whichGridSide = indicator.whichSide
 	animator_hands.play("RESET")
 	BeginHandLerp(whichHandToGrabWith, activeIndex, whichGridSide)
-	if (whichGridSide == "right"): animator_dealerHeadLook.play("dealer look right")
-	else: animator_dealerHeadLook.play("dealer look left")
-	if (stealing):
-		if (whichGridSide == "right"): cam.BeginLerp("player item grid left")
-		else: cam.BeginLerp("player item grid right")
-		var amountArray : Array[AmountResource] = amounts.array_amounts
-		for res in amountArray:
-			if res.itemName == itemName: res.amount_player -= 1
-			break
-	await GlobalVariables.tree.create_timer(lerpDuration -.4, false).timeout
-	if (whichHandToGrabWith == "right"): hand_defaultR.visible = false
-	else: hand_defaultL.visible = false
+	if whichGridSide == "right":
+		animator_dealerHeadLook.play("dealer look right")
+	else:
+		animator_dealerHeadLook.play("dealer look left")
+
+	if stealing:
+		if whichGridSide == "right":
+			cam.BeginLerp("player item grid left")
+		else:
+			cam.BeginLerp("player item grid right")
+		for res in amounts.array_amounts:
+			if res.itemName == itemName:
+				res.amount_player = maxi(0, res.amount_player - 1)
+				break
+
+	await GlobalVariables.tree.create_timer(maxf(lerpDuration - .4, 0.0), false).timeout
+	if whichHandToGrabWith == "right":
+		hand_defaultR.visible = false
+	else:
+		hand_defaultL.visible = false
 	dealerAI.Speaker_HandCrack()
-	match (itemName):
-		"handsaw":
-			hand_handsaw.visible = true
-		"magnifying glass":
-			hand_magnifier.visible = true
-		"handcuffs":
-			hand_handcuffs.visible = true
+
+	match itemName:
+		"handsaw": hand_handsaw.visible = true
+		"magnifying glass": hand_magnifier.visible = true
+		"handcuffs": hand_handcuffs.visible = true
 		"cigarettes":
 			hand_cigarettepack.visible = true
-			itemManager.numberOfCigs_dealer -= 1
-		"beer":
-			hand_beer.visible = true
-		"expired medicine":
-			hand_medicine.visible = true
-		"inverter":
-			hand_inverter.visible = true
-		"burner phone":
-			hand_burnerphone.visible = true
-		"adrenaline":
-			hand_adrenaline.visible = true
+			itemManager.numberOfCigs_dealer = maxi(0, itemManager.numberOfCigs_dealer - 1)
+		"beer": hand_beer.visible = true
+		"expired medicine": hand_medicine.visible = true
+		"inverter": hand_inverter.visible = true
+		"burner phone": hand_burnerphone.visible = true
+		"adrenaline": hand_adrenaline.visible = true
+
 	itemManager.itemArray_instances_dealer.remove_at(matchIndex)
-	var tempindicator = activeInstance.get_child(0)
-	var gridname = tempindicator.dealerGridName
-	if (!stealing): itemManager.gridParentArray_enemy_available.append(gridname)
-	if (stealing): inter.RemovePlayerItemFromGrid(activeInstance)
+	var gridname = indicator.dealerGridName
+	if !stealing and gridname != null and !itemManager.gridParentArray_enemy_available.has(gridname):
+		itemManager.gridParentArray_enemy_available.append(gridname)
+	if stealing:
+		inter.RemovePlayerItemFromGrid(activeInstance)
 	activeInstance.queue_free()
 	await GlobalVariables.tree.create_timer(.2, false).timeout
 	ReturnHand()
-	if (stealing):
+	if stealing:
 		cam.BeginLerp("enemy")
-	if (whichGridSide == "right"): animator_dealerHeadLook.play("dealer look forward from right")
-	else: animator_dealerHeadLook.play("dealer look forward from left")
+	if whichGridSide == "right":
+		animator_dealerHeadLook.play("dealer look forward from right")
+	else:
+		animator_dealerHeadLook.play("dealer look forward from left")
 	await GlobalVariables.tree.create_timer(lerpDuration + .01, false).timeout
 	HandFailsafe()
-	var animationName = "dealer use " + itemName
+
+	var animationName := "dealer use " + itemName
 	PlaySound(itemName)
 	animator_hands.play("RESET")
-	animator_hands.play(animationName)
-	var length = animator_hands.get_animation(animationName).get_length()
-	moving = false
-	await GlobalVariables.tree.create_timer(length, false).timeout
+	if animator_hands.has_animation(animationName):
+		animator_hands.play(animationName)
+		var length := animator_hands.get_animation(animationName).get_length()
+		moving = false
+		await GlobalVariables.tree.create_timer(length, false).timeout
+	else:
+		moving = false
 	stealing = false
-	pass
 
 @export var speaker_interaction : AudioStreamPlayer2D
 @export var sound_adrenaline : AudioStream
@@ -148,27 +180,30 @@ func PlaySound(itemName : String):
 			speaker_interaction.stream = sound_inverter
 			speaker_interaction.play()
 
-func RemoveItem_Remote(activeInstance : Node3D):
-	#var activeIndex
-	#var whichHandToGrabWith
-	#var whichGridSide
-	#var matchIndex
-	itemManager.itemArray_dealer.erase(activeInstance.get_child(1).itemName.to_lower())
-	itemManager.numberOfItemsGrabbed_enemy -= 1
-	#activeIndex = activeInstance.get_child(0).dealerGridIndex
-	#whichGridSide = activeInstance.get_child(0).whichSide
+func RemoveItem_Remote(activeInstance : Node3D) -> bool:
+	if !is_instance_valid(activeInstance) or activeInstance.get_child_count() < 2:
+		return false
+	var indicator := activeInstance.get_child(0) as PickupIndicator
+	var branch := activeInstance.get_child(1) as InteractionBranch
+	if indicator == null or branch == null or !indicator.isDealerItem:
+		return false
+	if !itemManager.itemArray_instances_dealer.has(activeInstance):
+		return false
+
+	itemManager.itemArray_dealer.erase(branch.itemName.to_lower())
+	itemManager.numberOfItemsGrabbed_enemy = maxi(0, itemManager.numberOfItemsGrabbed_enemy - 1)
 	itemManager.itemArray_instances_dealer.erase(activeInstance)
-	var tempindicator = activeInstance.get_child(0)
-	var gridname = tempindicator.dealerGridName
-	itemManager.gridParentArray_enemy_available.append(gridname)
-	pass
+	var gridname = indicator.dealerGridName
+	if gridname != null and !itemManager.gridParentArray_enemy_available.has(gridname):
+		itemManager.gridParentArray_enemy_available.append(gridname)
+	return true
 
 func ToggleHandVisible(selectedHand : String, state : bool):
-	if (selectedHand == "L" or "BOTH"):
+	if selectedHand == "L" or selectedHand == "BOTH":
 		for i in range(handArray_L.size()):
 			if (state): handArray_L[i].visible = true
 			else: handArray_L[i].visible = false
-	if (selectedHand == "R" or "BOTH"):
+	if selectedHand == "R" or selectedHand == "BOTH":
 		for i in range(handArray_R.size()):
 			if (state): handArray_R[i].visible = true
 			else: handArray_R[i].visible = false

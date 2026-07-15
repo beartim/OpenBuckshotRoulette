@@ -49,66 +49,99 @@ func _process(_delta: float) -> void:
 var stealing = false
 var stealing_fs = false
 func PickupItemFromTable(itemParent : Node3D, passedItemName : String):
-	if (stealing): 	items.Counter(false)
-	#SET INTERACTION PERMISSIONS, HIDE CURSOR
+	var was_stealing := stealing and stealing_fs
+	if stealing:
+		items.Counter(false)
+
+	# Item nodes are expected to contain PickupIndicator and InteractionBranch
+	# as children 0 and 1. Validate this before touching them; a queued/freed
+	# node in the old adrenaline arrays caused a native crash on iOS.
+	if !is_instance_valid(itemParent) or itemParent.get_child_count() < 2:
+		if stealing:
+			await items.RevertItemSteal_Timeout()
+		else:
+			EnablePermissions()
+		return
+
+	var indicator := itemParent.get_child(0) as PickupIndicator
+	var branch := itemParent.get_child(1) as InteractionBranch
+	if indicator == null or branch == null:
+		if stealing:
+			await items.RevertItemSteal_Timeout()
+		else:
+			EnablePermissions()
+		return
+
+	# Steal mode must never accept the player's own item or an item that has
+	# already been removed from the dealer's registry.
+	if was_stealing and (!indicator.isDealerItem or !items.itemArray_instances_dealer.has(itemParent)):
+		await items.RevertItemSteal_Timeout()
+		return
+
 	perm.SetIndicators(false)
 	perm.SetInteractionPermissions(false)
 	perm.RevertDescriptionUI()
 	cursor.SetCursor(false, false)
 	roundManager.ClearDeskUI(true)
-	#GET VARIABLES
+
 	temp_itemParent = itemParent
-	temp_indicator = itemParent.get_child(0)
-	temp_interaction = itemParent.get_child(1)
-	#STEAL
-	if (stealing && stealing_fs): 
-		hands.RemoveItem_Remote(temp_itemParent)
+	temp_indicator = indicator
+	temp_interaction = branch
+	var temp_name: String = branch.itemName
+
+	if was_stealing:
+		if !hands.RemoveItem_Remote(temp_itemParent):
+			await items.RevertItemSteal_Timeout()
+			return
 		items.RevertItemSteal()
-	#PLAY PICKUP SOUND
-	speaker_pickup.stream = temp_indicator.sound_pickup
-	speaker_pickup.pitch_scale = randf_range(.93, 1.0)
-	speaker_pickup.play()
-	#INTERACTION PERMISSIONS
-	#perm.SetIndicators(false)
-	#cursor.SetCursor(false, false)
-	#perm.SetInteractionPermissions(false)
+
+	if temp_indicator.sound_pickup != null:
+		speaker_pickup.stream = temp_indicator.sound_pickup
+		speaker_pickup.pitch_scale = randf_range(.93, 1.0)
+		speaker_pickup.play()
+
 	temp_indicator.lerpEnabled = false
 	temp_indicator.interactionAllowed = false
 	temp_indicator.SnapToMax()
 	temp_interaction.interactionAllowed = false
-	var temp_name = temp_interaction.itemName
-	#LERP
+
 	pos_current = temp_itemParent.transform.origin
 	rot_current = temp_itemParent.rotation_degrees
 	pos_next = pos_hand
 	rot_next = rot_hand
 	elapsed = 0
 	moving = true
-	await GlobalVariables.tree.create_timer(lerpDuration -.1, false).timeout
+	await GlobalVariables.tree.create_timer(maxf(lerpDuration - .1, 0.0), false).timeout
 	moving = false
-	if (!stealing): RemovePlayerItemFromGrid(temp_itemParent)
-	temp_itemParent.queue_free() #check where player grid index is given, and remove item from player item array, unoccupy given grid
-	if (stealing):
+
+	if !was_stealing:
+		RemovePlayerItemFromGrid(temp_itemParent)
+	temp_itemParent.queue_free()
+
+	if was_stealing:
 		camera.BeginLerp("home")
 		stealing_fs = false
 		await GlobalVariables.tree.create_timer(.4, false).timeout
 		pos_hand = pos_hand_main
 		rot_hand = rot_hand_main
-		var amountArray : Array[AmountResource] = amounts.array_amounts
-		for res in amountArray:
-			if (res.itemName == temp_name): 
-				res.amount_dealer -= 1
+		for res in amounts.array_amounts:
+			if res.itemName == temp_name:
+				res.amount_dealer = maxi(0, res.amount_dealer - 1)
 				break
-	InteractWith(passedItemName)
+
+	# A stolen item is used immediately; it never enters the player's grid, so
+	# only normal player-owned items decrement amount_player.
+	InteractWith(temp_name if temp_name != "" else passedItemName, !was_stealing)
 	stealing = false
 
-func InteractWith(itemName : String):
-	#INTERACTION
-	var amountArray : Array[AmountResource] = amounts.array_amounts
-	for res in amountArray:
-		if (res.itemName == itemName): 
-			res.amount_player -= 1
-			break
+func InteractWith(itemName : String, consume_player_item := true):
+	# A stolen dealer item is used directly and is not removed from the
+	# player's inventory count.
+	if consume_player_item:
+		for res in amounts.array_amounts:
+			if res.itemName == itemName:
+				res.amount_player = maxi(0, res.amount_player - 1)
+				break
 	
 	var isdup = false
 	for it in roundManager.playerCurrentTurnItemArray:
@@ -186,20 +219,26 @@ func InteractWith(itemName : String):
 
 @export var ach : Achievement
 func CheckAchievement_koni():
-	if ("cigarettes" in roundManager.playerCurrentTurnItemArray and "beer" in roundManager.playerCurrentTurnItemArray and "expired medicine" in roundManager.playerCurrentTurnItemArray): ach.UnlockAchievement("ach9")
+	if ach != null and ("cigarettes" in roundManager.playerCurrentTurnItemArray and "beer" in roundManager.playerCurrentTurnItemArray and "expired medicine" in roundManager.playerCurrentTurnItemArray):
+		ach.UnlockAchievement("ach9")
 
 func CheckAchievement_full():
 	var all = ["handsaw", "magnifying glass", "beer", "cigarettes", "handcuffs", "expired medicine", "burner phone", "adrenaline", "inverter"]
 	var pl = roundManager.playerCurrentTurnItemArray
-	if (all.size() == pl.size()): ach.UnlockAchievement("ach12")
+	if ach != null and all.size() == pl.size():
+		ach.UnlockAchievement("ach12")
 
 @export var anim_pp : AnimationPlayer
 @export var filter : FilterController
 func AdrenalineHit():
-	anim_pp.play("adrenaline brightness")
+	if anim_pp != null:
+		anim_pp.play("adrenaline brightness")
+	if filter == null:
+		return
 	filter.BeginPan(filter.lowPassDefaultValue, filter.lowPassMaxValue)
 	await GlobalVariables.tree.create_timer(6, false).timeout
-	filter.BeginPan(filter.effect_lowPass.cutoff_hz, filter.lowPassDefaultValue)
+	if is_instance_valid(filter) and filter.effect_lowPass != null:
+		filter.BeginPan(filter.effect_lowPass.cutoff_hz, filter.lowPassDefaultValue)
 
 func PlaySound(clip : AudioStream):
 	speaker_interaction.stream = clip

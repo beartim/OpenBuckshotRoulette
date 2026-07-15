@@ -1,57 +1,78 @@
-# OpenBuckshotRoulette iOS 移植套件 v4
+# OpenBuckshotRoulette 肾上腺素道具修复
 
-## 本次已修复
+适用仓库：`beartim/OpenBuckshotRoulette` 当前 `main`。
 
-这次错误来自语言名称 `ES LATAM`。Godot 4.7 把带空格的名称和路径直接写进
-`project.pbxproj`，但没有添加引号，导致 Xcode 报 `missing semicolon`。
+## 修复的问题
 
-v4 会在 Xcode 读取工程前自动把它修复为：
+- 拿起或使用肾上腺素后出现 iOS 原生闪退；
+- 使用肾上腺素后，相机移动到对面但不能正常选择物品；
+- 选择到已删除、非对手或已经失效的物品节点；
+- 偷来的物品被错误地从玩家库存计数中再次扣除；
+- 偷取超时后交互权限、手部位置或物品指示器没有正确恢复；
+- 临时交互数组长度不同导致越界。
 
-```text
-name = "ES LATAM";
-path = "ES LATAM.lproj/InfoPlist.strings";
-```
+## 安装方法
 
-修复器不是只处理这一种语言，而是会处理所有未加引号且包含空格的 PBX
-`name` 和 `path` 字段。
-
-## 最低 iOS 版本
-
-本套件把可真实运行的最低版本设置为 **iOS 15.0**。工作流、Godot 导出预设、
-Xcode 构建参数、Info.plist 和最终 Mach-O 都会进行设置或校验。
-
-无法把 Godot 4.7 版本真实降到 iOS 9.0，原因是官方 iOS 引擎模板本身以
-`-miphoneos-version-min=15.0` 编译，并且 Metal 渲染器要求 iOS 14 以上。
-只把 Info.plist 改成 9.0 会生成“看起来支持 iOS 9、实际无法启动”的 IPA，
-所以 v4 会拒绝低于 15.0 的目标。
-
-真正支持 iOS 9 需要把整个项目从 Godot 4.7 反向移植到旧版 Godot，替换渲染、
-脚本和资源格式，并使用旧 Xcode/SDK 重新编译引擎；这不是修改一个版本号即可完成。
-
-## 覆盖文件
-
-将套件中的以下目录复制到完整项目根目录：
+将 `scripts/` 中的四个文件覆盖到项目对应位置：
 
 ```text
-.github/workflows/build-ios.yml
-ios_port/build_ios.sh
-ios_port/export_presets.cfg.template
+scripts/ItemManager.gd
+scripts/ItemInteraction.gd
+scripts/HandManager.gd
+scripts/PermissionManager.gd
 ```
 
-提交并推送：
+也可以在项目根目录应用补丁：
 
 ```bash
-git add .github/workflows/build-ios.yml ios_port/build_ios.sh ios_port/export_presets.cfg.template
-git update-index --chmod=+x ios_port/build_ios.sh
-git commit -m "Fix iOS PBX localization paths and deployment target"
+patch -p1 < patches/0001-fix-adrenaline-steal-state.patch
+```
+
+提交：
+
+```bash
+git add scripts/ItemManager.gd \
+        scripts/ItemInteraction.gd \
+        scripts/HandManager.gd \
+        scripts/PermissionManager.gd
+
+git commit -m "Fix adrenaline item stealing state"
 git push
 ```
 
-在 GitHub Actions 手动运行时，`ios_deployment_target` 保持 `15.0`。
-构建成功后下载 `OpenBuckshotRoulette-iOS-unsigned`。
+然后使用现有的 iOS 14 OpenGL Compatibility 工作流重新构建 IPA。本修复只修改游戏脚本，不需要重新编译 Godot 4.7 模板。
 
-## v6：iOS 中文方框修复
+## 静态校验
 
-v6 会在构建前自动安装 `IOSFontFallback` Autoload。它保留游戏原来的英文字体，只在原字体找不到中文字形时依次使用项目自带的 Noto Sans SC/TC 和 iOS PingFang 系统字体。
+从项目根目录执行：
 
-无需手工修改每个 `.tscn`。覆盖 v6 的 `ios_port` 与工作流文件后重新构建即可。
+```bash
+python3 tools/validate_adrenaline_fix.py .
+```
+
+或只检查本套件：
+
+```bash
+python3 tools/validate_adrenaline_fix.py /path/to/OpenBuckshotRoulette-adrenaline-item-fix
+```
+
+## 建议测试顺序
+
+1. 玩家持有肾上腺素，对手至少有两个不同物品；
+2. 使用肾上腺素并选取对手物品，确认物品被立即使用；
+3. 检查对手物品数量减少、玩家物品数量没有被错误减为负数；
+4. 测试偷取手铐、锯子、香烟、药物、电话和转换器；
+5. 对手没有可偷物品时使用肾上腺素，确认能自动返回而不锁死；
+6. 进入偷取模式后等待 7 秒，确认超时正常恢复；
+7. 连续使用两次肾上腺素，确认不会保留上一次的失效引用。
+
+## 验证范围
+
+已完成：
+
+- 对当前仓库源码生成统一补丁；
+- 补丁反向和正向 dry-run；
+- 已知坏代码模式检查；
+- 数组配对、失效对象和计数边界静态检查。
+
+当前环境不能运行 iOS 真机，也没有与新崩溃 UUID 匹配的 dSYM，因此最终运行结果仍需用重新构建的 OpenGL IPA 真机验证。

@@ -396,89 +396,132 @@ func GrabItems_Enemy():
 
 var PREVIOUS_items_dyanmicIndicatorArray : Array[PickupIndicator]
 var PREVIOUS_items_dynamicInteractionArray : Array[InteractionBranch]
-func SetupItemSteal():
+
+func _save_player_item_interaction_arrays() -> void:
 	PREVIOUS_items_dyanmicIndicatorArray = []
 	PREVIOUS_items_dynamicInteractionArray = []
-	PREVIOUS_items_dyanmicIndicatorArray = items_dynamicIndicatorArray
-	PREVIOUS_items_dynamicInteractionArray = items_dynamicInteractionArray
+	for indicator in items_dynamicIndicatorArray:
+		if is_instance_valid(indicator):
+			PREVIOUS_items_dyanmicIndicatorArray.append(indicator)
+	for branch in items_dynamicInteractionArray:
+		if is_instance_valid(branch):
+			PREVIOUS_items_dynamicInteractionArray.append(branch)
+
+func _restore_player_item_interaction_arrays() -> void:
 	items_dynamicIndicatorArray = []
 	items_dynamicInteractionArray = []
+	for indicator in PREVIOUS_items_dyanmicIndicatorArray:
+		if is_instance_valid(indicator):
+			items_dynamicIndicatorArray.append(indicator)
+	for branch in PREVIOUS_items_dynamicInteractionArray:
+		if is_instance_valid(branch):
+			items_dynamicInteractionArray.append(branch)
+
+func _collect_dealer_steal_targets() -> void:
+	items_dynamicIndicatorArray = []
+	items_dynamicInteractionArray = []
+	for child in itemSpawnParent.get_children():
+		if !is_instance_valid(child) or child.get_child_count() < 2:
+			continue
+		var indicator := child.get_child(0) as PickupIndicator
+		var branch := child.get_child(1) as InteractionBranch
+		if indicator == null or branch == null:
+			continue
+		# Adrenaline may only target the dealer's currently registered items.
+		# This prevents the player's own items and queued-for-deletion nodes from
+		# entering the temporary interaction arrays.
+		if !indicator.isDealerItem or !itemArray_instances_dealer.has(child):
+			continue
+		items_dynamicIndicatorArray.append(indicator)
+		items_dynamicInteractionArray.append(branch)
+
+func _has_valid_steal_target() -> bool:
+	var pair_count := mini(items_dynamicIndicatorArray.size(), items_dynamicInteractionArray.size())
+	for i in range(pair_count):
+		var indicator := items_dynamicIndicatorArray[i]
+		var branch := items_dynamicInteractionArray[i]
+		if !is_instance_valid(indicator) or !is_instance_valid(branch):
+			continue
+		if !indicator.interactionInvalid and !branch.interactionInvalid:
+			return true
+	return false
+
+func SetupItemSteal():
+	Counter(false)
+	_save_player_item_interaction_arrays()
+	_collect_dealer_steal_targets()
 	interaction.pos_hand = interaction.pos_hand_stealing
 	interaction.rot_hand = interaction.rot_hand_stealing
-	
 	interaction.stealing = true
-	
-	var ch = itemSpawnParent.get_children()
-	for c in ch.size():
-		if(ch[c].get_child(0) is PickupIndicator):
-			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
-			#var temp_interaction : InteractionBranch = ch[c].get_child(1)
-			items_dynamicIndicatorArray.append(temp_indicator)
-			items_dynamicInteractionArray.append(temp_interaction)
-	
+	interaction.stealing_fs = false
+
+	if items_dynamicIndicatorArray.is_empty():
+		await RevertItemSteal_Timeout()
+		return
+
 	camera.BeginLerp("enemy items")
 	await GlobalVariables.tree.create_timer(.7, false).timeout
 	interaction.stealing_fs = true
 	interaction.EnablePermissions()
 	interaction.DisableShotgun()
 	roundManager.ClearDeskUI(true)
+
+	# Items such as another adrenaline, an already-used saw or handcuffs can be
+	# invalidated by SetStackInvalidIndicators(). If nothing remains usable,
+	# leave steal mode immediately instead of trapping the player for 7 seconds.
+	if !_has_valid_steal_target():
+		await RevertItemSteal_Timeout()
+		return
+
 	btnParent_stealing.visible = true
-	if (cursor.controller_active): btnparent_ff_stealing.grab_focus()
+	if cursor.controller_active:
+		btnparent_ff_stealing.grab_focus()
 	controller.previousFocus = btnparent_ff_stealing
-	#for c in ch.size():
-		#if(ch[c].get_child(0) is PickupIndicator):
-			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
-			#var temp_interaction : InteractionBranch = ch[c].get_child(1)
 	Counter(true)
 
-func RevertItemSteal(): 
+func RevertItemSteal() -> void:
+	Counter(false)
 	btnParent_stealing.visible = false
-	items_dynamicIndicatorArray = PREVIOUS_items_dyanmicIndicatorArray
-	items_dynamicInteractionArray = PREVIOUS_items_dynamicInteractionArray
+	_restore_player_item_interaction_arrays()
 
 func RevertItemSteal_Timeout():
+	Counter(false)
 	btnParent_stealing.visible = false
 	interaction.stealing = false
+	interaction.stealing_fs = false
 	interaction.DisablePermissions()
-	items_dynamicIndicatorArray = PREVIOUS_items_dyanmicIndicatorArray
-	items_dynamicInteractionArray = PREVIOUS_items_dynamicInteractionArray
-	var ch = itemSpawnParent.get_children()
-	for c in ch.size():
-		if(ch[c].get_child(0) is PickupIndicator):
-			#var temp_indicator : PickupIndicator = ch[c].get_child(0)
-			temp_indicator.Revert()
+
+	# Revert only valid dealer indicators collected for this steal attempt.
+	for indicator in items_dynamicIndicatorArray:
+		if is_instance_valid(indicator):
+			indicator.Revert()
+
+	_restore_player_item_interaction_arrays()
 	camera.BeginLerp("home")
 	await GlobalVariables.tree.create_timer(.4, false).timeout
-	interaction.stealing_fs = false
 	interaction.pos_hand = interaction.pos_hand_main
 	interaction.rot_hand = interaction.rot_hand_main
 	interaction.EnablePermissions()
 
 func Counter(starting : bool):
-	if (starting):
-		timer_steal_current = 0
-		counting = true
-		checking = true
-		fs = false
-	else:
-		timer_steal_current = 0
-		counting = false
-		checking = false
-		fs = true
+	timer_steal_current = 0.0
+	counting = starting
+	checking = starting
+	fs = !starting
 
 var timer_steal_current = 0.0
 var timer_steal_max = 7.0
 var counting = false
 var checking = false
 func ItemStealTimeout():
-	if (counting): timer_steal_current += get_process_delta_time()
+	if counting:
+		timer_steal_current += get_process_delta_time()
 
 var fs = false
 func CheckTimer():
-	if ((timer_steal_current > timer_steal_max) && checking && !fs):
-		RevertItemSteal_Timeout()
+	if timer_steal_current > timer_steal_max and checking and !fs:
 		fs = true
-	pass
+		RevertItemSteal_Timeout()
 
 func ResetDealerGrid():
 	#CLEAR DEALER GRID
